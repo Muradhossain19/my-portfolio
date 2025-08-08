@@ -6,6 +6,7 @@ export default function Home() {
     <main>
       <HeroSection />
       <ServiceSection />
+      {/* You can add more sections here as needed */}
     </main>
   );
 }
