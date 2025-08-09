@@ -136,7 +136,7 @@ const Footer = () => {
   return (
     <footer className="bg-[#1f2125] text-white relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-20 left-10 w-32 h-32 bg-[#FF004F] rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-10 w-40 h-40 bg-[#FF004F] rounded-full blur-3xl"></div>
         <div className="absolute top-1/2 left-1/2 w-24 h-24 bg-[#FF004F] rounded-full blur-2xl transform -translate-x-1/2 -translate-y-1/2"></div>
