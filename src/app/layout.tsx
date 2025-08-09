@@ -3,7 +3,7 @@
 import { Montserrat, Poppins } from "next/font/google"; // দুটি ফন্টই ইমপোর্ট করুন
 import "./globals.css";
 import Header from "@/components/Header/Header";
-
+import Footer from "@/components/Footer/Footer";
 // Montserrat ফন্ট লোড করুন (হেডিং ও বাটনের জন্য)
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -36,6 +36,7 @@ export default function RootLayout({
       >
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

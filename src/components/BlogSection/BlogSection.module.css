@@ -1,0 +1,88 @@
+/* src/components/BlogSection/BlogSection.module.css */
+.blogSection {
+  padding: 6rem 2rem;
+  background-color: #ecf0f3;
+  overflow-x: hidden; /* Horizontal overflow hide করুন */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%; /* Full width ensure করুন */
+}
+
+.postsGrid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(280px, 1fr)
+  ); /* Minimum width কমান */
+  gap: 2rem;
+  width: 100%; /* Full width */
+}
+
+.postCard {
+  background-color: #ecf0f3;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 10px 10px 20px #d1d9e6, -10px -10px 20px #ffffff;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  width: 100%; /* Card full width */
+  min-width: 0; /* Content wrap করতে */
+
+  /* Animation initial state */
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out,
+    box-shadow 0.3s ease;
+}
+
+.postCard.inView {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.postCard:hover {
+  box-shadow: 15px 15px 30px #d1d9e6, -15px -15px 30px #ffffff;
+}
+
+@media (max-width: 768px) {
+  .blogSection {
+    padding: 4rem 1rem; /* Padding কমান */
+    overflow-x: hidden; /* Mobile-এ horizontal scroll prevent */
+  }
+
+  .container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 0.5rem; /* Extra padding */
+  }
+
+  .postsGrid {
+    grid-template-columns: 1fr; /* Mobile-এ single column */
+    gap: 1.5rem; /* Gap কমান */
+  }
+
+  .postCard {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .blogSection {
+    padding: 3rem 0.5rem; /* আরও কম padding */
+  }
+
+  .container {
+    padding: 0 0.25rem;
+  }
+
+  .postsGrid {
+    gap: 1rem;
+  }
+}

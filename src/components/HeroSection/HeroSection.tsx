@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
+
 import { FaFacebookF, FaTwitter, FaLinkedinIn } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -56,9 +56,22 @@ const HeroSection = () => {
     },
   };
 
+  const scrollToContact = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const el = document.getElementById("contact");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      window.location.href = "/#contact";
+    }
+  };
+
   return (
     // ৩. ট্যাবলেট ডিভাইসের জন্য প্যাডিং যোগ করা হলো
-    <section className="bg-[#ECF0F3] min-h-[calc(100vh-80px)] flex items-center py-16 sm:py-20 md:pt-28 md:pb-20 lg:py-0">
+    <section
+      id="home"
+      className="bg-[#ECF0F3] min-h-[calc(100vh-80px)] flex items-center py-16 sm:py-20 md:pt-28 md:pb-20 lg:py-0"
+    >
       <div className="container mx-auto px-4">
         <motion.div
           className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
@@ -160,11 +173,12 @@ const HeroSection = () => {
                 </div>
                 {/* Hire Me বাটনটিকে একটি div এর মধ্যে রাখা হলো */}
                 <div>
-                  <Link href="/contact">
-                    <button className="w-28 h-11 text-sm font-semibold text-[#FF004F] bg-[#ECF0F3] rounded-md shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300">
-                      HIRE ME
-                    </button>
-                  </Link>
+                  <button
+                    className="w-28 h-11 text-sm font-semibold text-[#FF004F] bg-[#ECF0F3] rounded-md shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300"
+                    onClick={scrollToContact}
+                  >
+                    HIRE ME
+                  </button>
                 </div>
               </div>
 
@@ -196,11 +210,12 @@ const HeroSection = () => {
                   </div>
                 </div>
                 <div className="sm:ml-8 mt-4 sm:mt-0 self-end">
-                  <Link href="/contact">
-                    <button className="w-32 h-12 text-base font-semibold text-[#FF004F] bg-[#ECF0F3] rounded-md shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] hover:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300 cursor-pointer">
-                      HIRE ME
-                    </button>
-                  </Link>
+                  <button
+                    className="w-32 h-12 text-base font-semibold text-[#FF004F] bg-[#ECF0F3] rounded-md shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] hover:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300 cursor-pointer"
+                    onClick={scrollToContact}
+                  >
+                    HIRE ME
+                  </button>
                 </div>
               </div>
             </motion.div>
