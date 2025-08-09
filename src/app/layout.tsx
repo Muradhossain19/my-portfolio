@@ -4,6 +4,7 @@ import { Montserrat, Poppins } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
+import BackToTopButton from "@/components/BackToTopButton/BackToTopButton";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -31,10 +32,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${montserrat.variable} ${poppins.variable}`}>
-        {/* overflow-hidden wrapper টি সরিয়ে দিন */}
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        {/* Wrapper div to prevent overflow issues */}
+        <div className="overflow-hidden">
+          <Header />
+          <main>{children}</main>
+          <Footer />
+          <BackToTopButton />
+        </div>
       </body>
     </html>
   );

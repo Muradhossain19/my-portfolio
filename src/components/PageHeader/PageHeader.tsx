@@ -79,7 +79,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
           {/* Breadcrumbs */}
           <motion.nav
-            className="flex items-center justify-center flex-wrap gap-2 bg-[#ECF0F3] rounded-full px-6 py-3 shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] inline-flex"
+            className="items-center justify-center flex-wrap gap-2 bg-[#ECF0F3] rounded-full px-6 py-3 shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] inline-flex"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}

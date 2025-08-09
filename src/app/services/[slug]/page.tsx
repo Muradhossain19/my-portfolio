@@ -101,31 +101,18 @@ export default function ServicePage() {
     setExpandedFaq(expandedFaq === index ? null : index);
   };
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "nearest",
-      });
-    }
-  };
-
   return (
     <>
-      {/* PageHeader Component */}
       <PageHeader
         title={service.title}
         subtitle={service.subtitle}
         breadcrumbs={[
-          { label: "Home", href: "/" },
-          { label: "Services", href: "/" },
-          { label: service.title, href: `#` },
+          { label: "Services", href: "/services" },
+          { label: service.title, href: `/services/${service.slug}` },
         ]}
       />
 
-      <div className="bg-[#ECF0F3] min-h-screen overflow-x-hidden smooth-scroll">
+      <div className="bg-[#ECF0F3] overflow-x-hidden">
         {/* Hero Section - Modified */}
         <section className="py-16 md:py-20">
           {/* Reduced padding since PageHeader takes space */}
