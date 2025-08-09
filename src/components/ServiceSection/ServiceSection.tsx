@@ -79,7 +79,10 @@ const ServiceSection = () => {
   const headingText = "My Awesome Services";
 
   return (
-    <section id="services" className="bg-[#ECF0F3] py-20 md:py-28">
+    <section
+      id="services"
+      className="bg-[#ECF0F3] py-20 md:py-28 overflow-x-hidden"
+    >
       <div className="container mx-auto px-4">
         <motion.h2
           className="text-2xl md:text-4xl font-bold text-center text-[#1f2125] mb-4"

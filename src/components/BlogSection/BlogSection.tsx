@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react"; // useRef এবং useState থেকে অপ্রয়োজনীয় অংশ সরানো হয়েছে
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,79 +28,31 @@ const headingCharacter: Variants = {
 const BlogSection = () => {
   const headingText = "Latest Blog Posts";
   const [likes, setLikes] = useState<{ [key: number]: number }>({});
-  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
-  const cardRefs = useRef<{ [key: number]: HTMLElement | null }>({});
+  const [isClient, setIsClient] = useState(false);
 
-  // Show only first 3 posts
-  const latestPosts = blogData.slice(0, 3);
+  // useMemo ব্যবহার করে latestPosts স্থিতিশীল করা হয়েছে
+  const latestPosts = useMemo(() => blogData.slice(0, 3), []);
 
-  // Initialize likes from blog data
+  // localStorage থেকে ডেটা লোড করার জন্য useEffect
   useEffect(() => {
+    setIsClient(true);
     const initialLikes: { [key: number]: number } = {};
-    blogData.forEach((post) => {
-      initialLikes[post.id] = post.likes;
+    latestPosts.forEach((post) => {
+      const savedLikes = localStorage.getItem(`blog-likes-${post.id}`);
+      initialLikes[post.id] = savedLikes ? parseInt(savedLikes) : post.likes;
     });
     setLikes(initialLikes);
-  }, []);
-
-  // Intersection Observer for fade-in animation
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const cardId = parseInt(
-            entry.target.getAttribute("data-card-id") || "0"
-          );
-          if (entry.isIntersecting) {
-            setVisibleCards((prev) => new Set([...prev, cardId]));
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    // Observe all cards
-    Object.values(cardRefs.current).forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
-
-    return () => observer.disconnect();
   }, [latestPosts]);
-
-  // Update the likes display to check localStorage - ADD typeof check
-  const getCurrentLikes = (postId: number) => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem(`blog-likes-${postId}`);
-      return saved ? parseInt(saved) : likes[postId] || 0;
-    }
-    return likes[postId] || 0; // Fallback for server-side
-  };
 
   const handleLike = (id: number, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    // Check if already liked - ADD typeof check
-    if (typeof window !== "undefined") {
-      const userLiked = localStorage.getItem(`user-liked-${id}`);
-      if (userLiked === "true") return;
-
-      // Get current likes from localStorage or use default
-      const currentLikes = parseInt(
-        localStorage.getItem(`blog-likes-${id}`) || "0"
-      );
-      const newLikes = currentLikes + 1;
-
-      // Update state
-      setLikes((prev) => ({
-        ...prev,
-        [id]: newLikes,
-      }));
-
-      // Save to localStorage
-      localStorage.setItem(`blog-likes-${id}`, newLikes.toString());
-      localStorage.setItem(`user-liked-${id}`, "true");
-    }
+    const userLiked = localStorage.getItem(`user-liked-${id}`);
+    if (userLiked === "true") return;
+    const newLikes = (likes[id] || 0) + 1;
+    setLikes((prev) => ({ ...prev, [id]: newLikes }));
+    localStorage.setItem(`blog-likes-${id}`, newLikes.toString());
+    localStorage.setItem(`user-liked-${id}`, "true");
   };
 
   return (
@@ -136,19 +88,20 @@ const BlogSection = () => {
           of web development and design.
         </motion.p>
 
-        {/* Blog Grid - Latest 3 Posts */}
+        {/* Blog Grid - Framer Motion দিয়ে অ্যানিমেশন */}
         <div className={styles.postsGrid}>
           {latestPosts.map((post, index) => (
-            <article
+            <motion.article
               key={post.id}
-              ref={(el) => {
-                cardRefs.current[post.id] = el;
-              }}
-              data-card-id={post.id}
-              className={`${styles.postCard} ${
-                visibleCards.has(post.id) ? styles.inView : ""
-              } group cursor-pointer`} // <-- Add cursor-pointer here
-              style={{ transitionDelay: `${index * 0.15}s` }}
+              className={`${styles.postCard} group cursor-pointer`}
+              initial={{ opacity: 0, y: 40 }} // প্রাথমিক অবস্থা
+              whileInView={{ opacity: 1, y: 0 }} // অ্যানিমেশনের শেষ অবস্থা
+              viewport={{ once: true, amount: 0.2 }} // কখন অ্যানিমেশন শুরু হবে
+              transition={{
+                duration: 0.5,
+                delay: index * 0.1,
+                ease: "easeOut",
+              }} // অ্যানিমেশনের সময় ও ডিলে
             >
               {/* Featured Badge */}
               {post.featured && (
@@ -163,6 +116,7 @@ const BlogSection = () => {
                   src={post.image}
                   alt={post.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
@@ -220,13 +174,15 @@ const BlogSection = () => {
                       className="flex items-center gap-1 text-xs text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 cursor-pointer"
                     >
                       <FaHeart className="w-3 h-3" />
-                      <span>{getCurrentLikes(post.id)}</span>
+                      <span>
+                        {isClient ? likes[post.id] ?? post.likes : post.likes}
+                      </span>
                     </button>
                     <FaArrowRight className="w-3 h-3 text-[#FF004F] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                 </div>
               </div>
-            </article>
+            </motion.article>
           ))}
         </div>
 
