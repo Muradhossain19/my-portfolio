@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         </table>
         <h3 style="color:#FF004F;margin-top:24px;">Message</h3>
         <div style="background:#fff;padding:16px;border-radius:8px;color:#1f2125;">${message}</div>
-        <p style="margin-top:32px;color:#3c3e41;font-size:13px;">This message was sent from your portfolio order form.</p>
+        <p style="margin-top:32px;color:#3c3e41;font-size:13px;">This message was sent from your service order form.</p>
       </div>
     `;
   } else if (type === "contact") {
