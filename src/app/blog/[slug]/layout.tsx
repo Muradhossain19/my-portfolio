@@ -3,16 +3,17 @@ import { getBlogPostBySlug } from "../../../lib/blogData";
 
 interface BlogLayoutProps {
   children: React.ReactNode;
-  params: { slug: string };
+  params: Promise<{ slug: string }>; // <-- Promise যোগ করুন
 }
 
 // Generate metadata for each blog post (SEO optimization)
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>; // <-- Promise যোগ করুন
 }): Promise<Metadata> {
-  const post = getBlogPostBySlug(params.slug);
+  const { slug } = await params; // <-- await করুন
+  const post = getBlogPostBySlug(slug);
 
   if (!post) {
     return {
@@ -52,7 +53,7 @@ export async function generateMetadata({
       title: post.title,
       description: post.metaDescription,
       images: [post.image],
-      creator: "@your_twitter_handle", // আপনার Twitter handle দিন
+      creator: "@your_twitter_handle",
     },
 
     // Additional SEO
@@ -85,7 +86,6 @@ export async function generateMetadata({
 
 // Generate static params for all blog posts (for static generation)
 export async function generateStaticParams() {
-  // This will be used by Next.js to pre-generate pages
   const { blogData } = await import("../../../lib/blogData");
 
   return blogData.map((post) => ({
@@ -93,7 +93,13 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function BlogLayout({ children, params }: BlogLayoutProps) {
+export default async function BlogLayout({
+  children,
+  params,
+}: BlogLayoutProps) {
+  // <-- async করুন
+  const { slug } = await params; // <-- await করুন
+
   return (
     <>
       {/* JSON-LD structured data for better SEO */}
@@ -103,26 +109,26 @@ export default function BlogLayout({ children, params }: BlogLayoutProps) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "BlogPosting",
-            headline: getBlogPostBySlug(params.slug)?.title,
-            description: getBlogPostBySlug(params.slug)?.metaDescription,
-            image: getBlogPostBySlug(params.slug)?.image,
+            headline: getBlogPostBySlug(slug)?.title, // <-- slug ব্যবহার করুন
+            description: getBlogPostBySlug(slug)?.metaDescription,
+            image: getBlogPostBySlug(slug)?.image,
             author: {
               "@type": "Person",
-              name: getBlogPostBySlug(params.slug)?.author,
+              name: getBlogPostBySlug(slug)?.author,
             },
             publisher: {
               "@type": "Organization",
               name: "Murad Hossain",
               logo: {
                 "@type": "ImageObject",
-                url: "/logo.png", // আপনার logo path দিন
+                url: "/logo.png",
               },
             },
-            datePublished: getBlogPostBySlug(params.slug)?.date,
-            dateModified: getBlogPostBySlug(params.slug)?.date,
+            datePublished: getBlogPostBySlug(slug)?.date,
+            dateModified: getBlogPostBySlug(slug)?.date,
             mainEntityOfPage: {
               "@type": "WebPage",
-              "@id": `https://yourwebsite.com/blog/${params.slug}`, // আপনার website URL দিন
+              "@id": `https://yourwebsite.com/blog/${slug}`,
             },
           }),
         }}
