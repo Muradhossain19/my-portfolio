@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,14 +28,11 @@ import {
 } from "../../../lib/blogData";
 
 interface BlogPostPageProps {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: { slug: string }; // <-- Promise নয়, সরাসরি object
 }
 
 export default function BlogPostPage({ params }: BlogPostPageProps) {
-  // Unwrap params using React.use()
-  const { slug } = use(params);
+  const { slug } = params; // <-- use(params) নয়, সরাসরি destructure করুন
 
   const [post, setPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
