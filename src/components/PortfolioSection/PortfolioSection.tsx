@@ -227,24 +227,33 @@ const PortfolioSection = () => {
     }
   }, [activeFilter]);
 
-  // Load loves from localStorage
+  // Load loves from localStorage - ADD typeof check
   useEffect(() => {
-    const stored = localStorage.getItem(LOCAL_KEY);
-    if (stored) {
-      setLoves(JSON.parse(stored));
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(LOCAL_KEY);
+      if (stored) {
+        setLoves(JSON.parse(stored));
+      } else {
+        const initialLoves: { [key: number]: number } = {};
+        portfolioData.forEach((item) => {
+          initialLoves[item.id] = item.likes;
+        });
+        setLoves(initialLoves);
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(initialLoves));
+      }
     } else {
+      // Server-side fallback
       const initialLoves: { [key: number]: number } = {};
       portfolioData.forEach((item) => {
         initialLoves[item.id] = item.likes;
       });
       setLoves(initialLoves);
-      localStorage.setItem(LOCAL_KEY, JSON.stringify(initialLoves));
     }
   }, []);
 
-  // Save loves to localStorage whenever it changes
+  // Save loves to localStorage whenever it changes - ADD typeof check
   useEffect(() => {
-    if (Object.keys(loves).length > 0) {
+    if (typeof window !== "undefined" && Object.keys(loves).length > 0) {
       localStorage.setItem(LOCAL_KEY, JSON.stringify(loves));
     }
   }, [loves]);

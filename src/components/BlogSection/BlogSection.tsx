@@ -67,35 +67,40 @@ const BlogSection = () => {
     return () => observer.disconnect();
   }, [latestPosts]);
 
+  // Update the likes display to check localStorage - ADD typeof check
+  const getCurrentLikes = (postId: number) => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(`blog-likes-${postId}`);
+      return saved ? parseInt(saved) : likes[postId] || 0;
+    }
+    return likes[postId] || 0; // Fallback for server-side
+  };
+
   const handleLike = (id: number, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // Check if already liked
-    const userLiked = localStorage.getItem(`user-liked-${id}`);
-    if (userLiked === "true") return;
+    // Check if already liked - ADD typeof check
+    if (typeof window !== "undefined") {
+      const userLiked = localStorage.getItem(`user-liked-${id}`);
+      if (userLiked === "true") return;
 
-    // Get current likes from localStorage or use default
-    const currentLikes = parseInt(
-      localStorage.getItem(`blog-likes-${id}`) || "0"
-    );
-    const newLikes = currentLikes + 1;
+      // Get current likes from localStorage or use default
+      const currentLikes = parseInt(
+        localStorage.getItem(`blog-likes-${id}`) || "0"
+      );
+      const newLikes = currentLikes + 1;
 
-    // Update state
-    setLikes((prev) => ({
-      ...prev,
-      [id]: newLikes,
-    }));
+      // Update state
+      setLikes((prev) => ({
+        ...prev,
+        [id]: newLikes,
+      }));
 
-    // Save to localStorage
-    localStorage.setItem(`blog-likes-${id}`, newLikes.toString());
-    localStorage.setItem(`user-liked-${id}`, "true");
-  };
-
-  // Update the likes display to check localStorage
-  const getCurrentLikes = (postId: number) => {
-    const saved = localStorage.getItem(`blog-likes-${postId}`);
-    return saved ? parseInt(saved) : likes[postId] || 0;
+      // Save to localStorage
+      localStorage.setItem(`blog-likes-${id}`, newLikes.toString());
+      localStorage.setItem(`user-liked-${id}`, "true");
+    }
   };
 
   return (

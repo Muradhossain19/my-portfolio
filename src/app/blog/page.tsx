@@ -46,6 +46,25 @@ const BlogPage = () => {
     setLikes(initialLikes);
   }, []);
 
+  const handleLike = (id: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setLikes((prev) => ({
+      ...prev,
+      [id]: prev[id] + 1,
+    }));
+  };
+
+  // Get current likes from localStorage or state - ADD typeof check
+  const getCurrentLikes = (postId: number) => {
+    if (typeof window !== "undefined") {
+      // <-- Add this check
+      const saved = localStorage.getItem(`blog-likes-${postId}`);
+      return saved ? parseInt(saved) : likes[postId] || 0;
+    }
+    return likes[postId] || 0; // Server-side fallback
+  };
+
   // Filter posts based on category and search
   useEffect(() => {
     let posts = blogData;
@@ -71,28 +90,13 @@ const BlogPage = () => {
     setCurrentPage(1);
   }, [activeFilter, searchTerm]);
 
-  const handleLike = (id: number, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setLikes((prev) => ({
-      ...prev,
-      [id]: prev[id] + 1,
-    }));
-  };
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   // Pagination logic
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  // Get current likes from localStorage or state
-  const getCurrentLikes = (postId: number) => {
-    const saved = localStorage.getItem(`blog-likes-${postId}`);
-    return saved ? parseInt(saved) : likes[postId] || 0;
-  };
 
   return (
     <div className="bg-[#ECF0F3] min-h-screen">

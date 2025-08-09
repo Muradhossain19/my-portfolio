@@ -53,7 +53,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
   }, [params]);
 
   useEffect(() => {
-    if (!slug) return; // slug ready না হলে return করুন
+    if (!slug) return;
 
     const foundPost = getBlogPostBySlug(slug);
     if (!foundPost) {
@@ -61,14 +61,21 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     }
     setPost(foundPost);
 
-    // Load likes from localStorage
-    const savedLikes = localStorage.getItem(`blog-likes-${foundPost.id}`);
-    const currentLikes = savedLikes ? parseInt(savedLikes) : foundPost.likes;
-    setLikes(currentLikes);
+    // Load likes from localStorage - ADD typeof check
+    if (typeof window !== "undefined") {
+      // <-- Add this check
+      const savedLikes = localStorage.getItem(`blog-likes-${foundPost.id}`);
+      const currentLikes = savedLikes ? parseInt(savedLikes) : foundPost.likes;
+      setLikes(currentLikes);
 
-    // Check if user already liked this post
-    const userLiked = localStorage.getItem(`user-liked-${foundPost.id}`);
-    setIsLiked(userLiked === "true");
+      // Check if user already liked this post
+      const userLiked = localStorage.getItem(`user-liked-${foundPost.id}`);
+      setIsLiked(userLiked === "true");
+    } else {
+      // Server-side fallback
+      setLikes(foundPost.likes);
+      setIsLiked(false);
+    }
 
     setRelatedPosts(getRelatedPosts(foundPost.id, foundPost.category));
 
@@ -99,7 +106,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     if (currentIndex < blogData.length - 1) {
       setNextPost(blogData[currentIndex + 1]);
     }
-  }, [slug]); // slug dependency যোগ করুন
+  }, [slug]);
 
   // Reading progress tracker
   useEffect(() => {
@@ -127,9 +134,12 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     setLikes(newLikes);
     setIsLiked(true);
 
-    // Save to localStorage
-    localStorage.setItem(`blog-likes-${post.id}`, newLikes.toString());
-    localStorage.setItem(`user-liked-${post.id}`, "true");
+    // Save to localStorage - ADD typeof check
+    if (typeof window !== "undefined") {
+      // <-- Add this check
+      localStorage.setItem(`blog-likes-${post.id}`, newLikes.toString());
+      localStorage.setItem(`user-liked-${post.id}`, "true");
+    }
   };
 
   const handleShare = (platform: string) => {
@@ -154,12 +164,16 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     }
   };
 
-  // Get current likes from localStorage for display
+  // Get current likes from localStorage for display - ADD typeof check
   const getCurrentLikes = (postId: number) => {
-    const saved = localStorage.getItem(`blog-likes-${postId}`);
-    return saved
-      ? parseInt(saved)
-      : blogData.find((p) => p.id === postId)?.likes || 0;
+    if (typeof window !== "undefined") {
+      // <-- Add this check
+      const saved = localStorage.getItem(`blog-likes-${postId}`);
+      return saved
+        ? parseInt(saved)
+        : blogData.find((p) => p.id === postId)?.likes || 0;
+    }
+    return blogData.find((p) => p.id === postId)?.likes || 0; // Server-side fallback
   };
 
   if (!slug || !post) {
