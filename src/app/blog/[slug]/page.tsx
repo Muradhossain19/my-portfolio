@@ -28,12 +28,11 @@ import {
 } from "../../../lib/blogData";
 
 interface BlogPostPageProps {
-  params: { slug: string }; // <-- Promise নয়, সরাসরি object
+  params: Promise<{ slug: string }>; // <-- Promise যোগ করুন
 }
 
 export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = params; // <-- use(params) নয়, সরাসরি destructure করুন
-
+  const [slug, setSlug] = useState<string>("");
   const [post, setPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [recentPosts, setRecentPosts] = useState<BlogPost[]>([]);
@@ -44,7 +43,18 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
   const [nextPost, setNextPost] = useState<BlogPost | null>(null);
   const [prevPost, setPrevPost] = useState<BlogPost | null>(null);
 
+  // params resolve করার জন্য useEffect
   useEffect(() => {
+    const resolveParams = async () => {
+      const resolvedParams = await params;
+      setSlug(resolvedParams.slug);
+    };
+    resolveParams();
+  }, [params]);
+
+  useEffect(() => {
+    if (!slug) return; // slug ready না হলে return করুন
+
     const foundPost = getBlogPostBySlug(slug);
     if (!foundPost) {
       notFound();
@@ -89,7 +99,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     if (currentIndex < blogData.length - 1) {
       setNextPost(blogData[currentIndex + 1]);
     }
-  }, [slug]);
+  }, [slug]); // slug dependency যোগ করুন
 
   // Reading progress tracker
   useEffect(() => {
@@ -152,7 +162,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
       : blogData.find((p) => p.id === postId)?.likes || 0;
   };
 
-  if (!post) {
+  if (!slug || !post) {
     return (
       <div className="bg-[#ECF0F3] min-h-screen flex items-center justify-center">
         <div className="text-center">
