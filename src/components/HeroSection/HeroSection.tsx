@@ -186,20 +186,26 @@ const HeroSection = () => {
                   </h4>
                   <div className="flex space-x-4">
                     <a
-                      href="#"
-                      className="w-12 h-12 rounded-md bg-[#ECF0F3] flex items-center justify-center text-xl text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] hover:text-[#FF004F] hover:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300"
+                      href="https://www.facebook.com/murad.hossain.685"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-12 h-12 rounded-md bg-[#ECF0F3] flex items-center justify-center text-xl text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] hover:text-[#FF004F] hover:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300 cursor-pointer"
                     >
                       <FaFacebookF />
                     </a>
                     <a
-                      href="#"
-                      className="w-12 h-12 rounded-md bg-[#ECF0F3] flex items-center justify-center text-xl text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] hover:text-[#FF004F] hover:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300"
+                      href="https://x.com/MuradHo93458407"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-12 h-12 rounded-md bg-[#ECF0F3] flex items-center justify-center text-xl text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] hover:text-[#FF004F] hover:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300 cursor-pointer"
                     >
                       <FaTwitter />
                     </a>
                     <a
-                      href="#"
-                      className="w-12 h-12 rounded-md bg-[#ECF0F3] flex items-center justify-center text-xl text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] hover:text-[#FF004F] hover:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300"
+                      href="https://www.linkedin.com/in/wordpress-developer-murad/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-12 h-12 rounded-md bg-[#ECF0F3] flex items-center justify-center text-xl text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] hover:text-[#FF004F] hover:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300 cursor-pointer"
                     >
                       <FaLinkedinIn />
                     </a>
@@ -209,6 +215,7 @@ const HeroSection = () => {
                   <button
                     className="w-32 h-12 text-base font-semibold text-[#FF004F] bg-[#ECF0F3] rounded-md shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] hover:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300 cursor-pointer"
                     onClick={scrollToContact}
+                    type="button"
                   >
                     HIRE ME
                   </button>
