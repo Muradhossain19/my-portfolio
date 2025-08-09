@@ -108,12 +108,12 @@ const PricingSection = () => {
   const headingText = "My Pricing";
 
   return (
-    <section id="pricing" className="bg-[#ECF0F3] py-20 md:py-28">
+    <section id="pricing" className="bg-[#ECF0F3] py-10 md:py-16 ">
       <div className="container mx-auto px-4 sm:px-6 lg:px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Left Side - Heading with Wave Animation (Proper Sticky) */}
           <motion.div
-            className="lg:sticky lg:top-20"
+            className="lg:sticky lg:top-28 self-start"
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}

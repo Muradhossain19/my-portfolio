@@ -218,7 +218,10 @@ const TestimonialSection = () => {
   };
 
   return (
-    <section id="testimonial" className="bg-[#ECF0F3] py-20 md:py-28">
+    <section
+      id="testimonial"
+      className="bg-[#ECF0F3] py-10 md:py-16 overflow-x-hidden"
+    >
       <div className="container mx-auto px-4">
         {/* Heading */}
         <motion.h2

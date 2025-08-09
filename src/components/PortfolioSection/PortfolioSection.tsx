@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -215,6 +215,7 @@ const PortfolioSection = () => {
     null
   );
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
     if (activeFilter === "All") {
@@ -283,32 +284,68 @@ const PortfolioSection = () => {
   }
 
   const openModal = (project: PortfolioItem) => {
+    // First save scroll position
+    if (typeof window !== "undefined") {
+      const scrollY = window.scrollY;
+      setScrollPosition(scrollY);
+
+      // Small delay to ensure state is updated
+      setTimeout(() => {
+        document.body.style.overflow = "hidden";
+        document.body.style.position = "fixed";
+        document.body.style.width = "100%";
+        document.body.style.top = `-${scrollY}px`;
+      }, 0);
+    }
+
     setSelectedProject(project);
     setCurrentImageIndex(0);
-    document.body.style.overflow = "hidden";
   };
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
+    if (typeof window !== "undefined") {
+      // Get the saved scroll position
+      const scrollY = scrollPosition;
+
+      // Reset body styles first
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.top = "";
+
+      // Restore scroll position instantly without smooth animation
+      window.scrollTo({ top: scrollY, behavior: "instant" });
+    }
+
     setSelectedProject(null);
-    document.body.style.overflow = "unset";
+  }, [scrollPosition]);
+
+  // Image navigation functions যোগ করুন
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => Math.max(0, prev - 1));
   };
 
   const nextImage = () => {
-    if (
-      selectedProject &&
-      currentImageIndex < selectedProject.images.length - 1
-    ) {
-      setCurrentImageIndex(currentImageIndex + 1);
+    if (selectedProject) {
+      setCurrentImageIndex((prev) =>
+        Math.min(selectedProject.images.length - 1, prev + 1)
+      );
     }
   };
 
-  const prevImage = () => {
-    if (currentImageIndex > 0) {
-      setCurrentImageIndex(currentImageIndex - 1);
-    }
-  };
+  // Component unmount cleanup
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined") {
+        document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.width = "";
+        document.body.style.top = "";
+      }
+    };
+  }, []);
 
-  // Close modal on escape key
+  // Escape key handler
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -322,11 +359,20 @@ const PortfolioSection = () => {
 
     return () => {
       document.removeEventListener("keydown", handleEscape);
+      if (selectedProject && typeof window !== "undefined") {
+        document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.width = "";
+        document.body.style.top = "";
+      }
     };
-  }, [selectedProject]);
+  }, [selectedProject, closeModal]);
 
   return (
-    <section id="portfolio" className="bg-[#ECF0F3] py-20 md:py-28">
+    <section
+      id="portfolio"
+      className="bg-[#ECF0F3] py-10 md:py-16 overflow-x-hidden"
+    >
       <div className="container mx-auto px-4">
         {/* Heading */}
         <motion.h2

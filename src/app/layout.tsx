@@ -33,12 +33,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${montserrat.variable} ${poppins.variable}`}>
         {/* Wrapper div to prevent overflow issues */}
-        <div className="overflow-hidden">
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <BackToTopButton />
-        </div>
+        {/* <div className="overflow-hidden"> */}
+        <Header />
+        <main>{children}</main>
+        <Footer />
+        <BackToTopButton />
+        {/* </div> */}
       </body>
     </html>
   );

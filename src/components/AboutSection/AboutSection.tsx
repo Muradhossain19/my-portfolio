@@ -7,19 +7,19 @@ import { FaUser, FaLightbulb, FaHeart } from "react-icons/fa";
 // About information data
 const aboutInfo = [
   {
-    icon: <FaUser className="w-10 h-10 text-[#FF004F]" />,
+    icon: <FaUser className="w-8 h-8 text-[#FF004F]" />,
     title: "Who I Am",
     description:
       "I'm a passionate web developer with years of experience creating digital solutions that make a difference in people's lives.",
   },
   {
-    icon: <FaLightbulb className="w-10 h-10 text-[#FF004F]" />,
+    icon: <FaLightbulb className="w-8 h-8 text-[#FF004F]" />,
     title: "My Vision",
     description:
       "To create innovative, user-friendly web experiences that bridge the gap between technology and human needs.",
   },
   {
-    icon: <FaHeart className="w-10 h-10 text-[#FF004F]" />,
+    icon: <FaHeart className="w-8 h-8 text-[#FF004F]" />,
     title: "My Passion",
     description:
       "I love turning complex problems into simple, beautiful, and intuitive solutions through clean code and thoughtful design.",
@@ -34,7 +34,7 @@ const skills = [
   { name: "WordPress", percentage: 90 },
 ];
 
-// Animation variants (same as Service section)
+// Animation variants
 const headingContainer: Variants = {
   visible: { transition: { staggerChildren: 0.05 } },
   hidden: {},
@@ -94,7 +94,10 @@ const AboutSection = () => {
   const headingText = "About Me";
 
   return (
-    <section id="about" className="bg-[#ECF0F3] py-20 md:py-28">
+    <section
+      id="about"
+      className="bg-[#ECF0F3] py-10 md:py-16 overflow-x-hidden"
+    >
       <div className="container mx-auto px-4">
         {/* Heading */}
         <motion.h2
@@ -207,12 +210,12 @@ const AboutSection = () => {
           </motion.div>
         </div>
 
-        {/* About Info Cards */}
+        {/* About Info Cards (ডিজাইন আপডেট করা হয়েছে, অ্যানিমেশন আগের মতো) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {aboutInfo.map((info, index) => (
             <motion.div
               key={index}
-              className="group relative p-8 rounded-2xl bg-[#ECF0F3] text-center shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff] flex flex-col overflow-hidden"
+              className="group bg-[#ECF0F3] rounded-2xl p-8 flex flex-col h-full shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff]"
               variants={cardVariants}
               initial="hidden"
               whileInView="visible"
@@ -222,25 +225,19 @@ const AboutSection = () => {
                   "inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff",
                 y: -8,
               }}
-              whileTap={{
-                boxShadow:
-                  "inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff",
-              }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <motion.div
-                className="flex-grow"
-                whileHover={{ y: -10 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-              >
-                <div className="flex justify-center mb-6">{info.icon}</div>
-                <h3 className="text-xl font-bold text-[#1f2125] mb-3">
-                  {info.title}
-                </h3>
-                <p className="text-base text-[#3c3e41] leading-relaxed font-light">
-                  {info.description}
-                </p>
-              </motion.div>
+              <div className="mb-6">
+                <div className="w-16 h-16 bg-[#ECF0F3] rounded-xl flex items-center justify-center shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] transition-all duration-300 group-hover:shadow-[inset_2px_2px_5px_#d1d9e6,inset_-2px_-2px_5px_#ffffff]">
+                  {info.icon}
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-[#1f2125] mb-3">
+                {info.title}
+              </h3>
+              <p className="text-base text-[#3c3e41] leading-relaxed font-light">
+                {info.description}
+              </p>
             </motion.div>
           ))}
         </div>

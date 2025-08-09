@@ -140,11 +140,7 @@ const HeroSection = () => {
               experience.
             </motion.p>
 
-            {/* ২. শুধুমাত্র মোবাইলের জন্য নতুন লেআউট এবং ডেস্কটপের জন্য আগের লেআউট */}
-            {/* ২. শুধুমাত্র মোবাইলের জন্য নতুন লেআউট এবং ডেস্কটপের জন্য আগের লেআউট */}
             <motion.div className="pt-4" variants={itemVariants}>
-              {/* মোবাইলের জন্য (sm ব্রেকপয়েন্টের নিচে) */}
-              {/* মূল কন্টেইনারে `items-end` ব্যবহার করে নিচের লাইনে অ্যালাইন করা হলো */}
               <div className="sm:hidden flex justify-between items-end">
                 <div>
                   <h4 className="text-sm font-medium uppercase tracking-widest text-[#3c3e41] mb-3">
@@ -152,19 +148,19 @@ const HeroSection = () => {
                   </h4>
                   <div className="flex space-x-3">
                     <a
-                      href="#"
+                      href="https://www.facebook.com/murad.hossain.685"
                       className="w-11 h-11 rounded-md bg-[#ECF0F3] flex items-center justify-center text-lg text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300"
                     >
                       <FaFacebookF />
                     </a>
                     <a
-                      href="#"
+                      href="https://x.com/MuradHo93458407"
                       className="w-11 h-11 rounded-md bg-[#ECF0F3] flex items-center justify-center text-lg text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300"
                     >
                       <FaTwitter />
                     </a>
                     <a
-                      href="#"
+                      href="https://www.linkedin.com/in/wordpress-developer-murad/"
                       className="w-11 h-11 rounded-md bg-[#ECF0F3] flex items-center justify-center text-lg text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300"
                     >
                       <FaLinkedinIn />
