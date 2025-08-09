@@ -112,10 +112,20 @@ const Footer = () => {
     setIsSubscribing(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log("Newsletter subscription:", email);
-      setSubscriptionStatus("success");
-      setEmail("");
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "subscribe",
+          email,
+        }),
+      });
+      if (res.ok) {
+        setSubscriptionStatus("success");
+        setEmail("");
+      } else {
+        setSubscriptionStatus("error");
+      }
     } catch {
       setSubscriptionStatus("error");
     } finally {

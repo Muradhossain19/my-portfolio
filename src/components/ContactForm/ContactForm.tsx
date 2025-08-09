@@ -84,23 +84,34 @@ const ContactForm: React.FC<ContactFormProps> = ({
     setSubmitStatus("idle");
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("Form Submitted From Modal:", {
-        ...formData,
-        service: serviceTitle,
-        package: packageName,
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "order",
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+          price: formData.price,
+        }),
       });
-      setSubmitStatus("success");
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: `Inquiry for ${
-          packageName.charAt(0).toUpperCase() + packageName.slice(1)
-        } package - ${serviceTitle}`,
-        message: "",
-      });
+      if (res.ok) {
+        setSubmitStatus("success");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: `Inquiry for ${
+            packageName.charAt(0).toUpperCase() + packageName.slice(1)
+          } package - ${serviceTitle}`,
+          message: "",
+          price: packagePrice,
+        });
+      } else {
+        setSubmitStatus("error");
+      }
     } catch {
       setSubmitStatus("error");
     } finally {
