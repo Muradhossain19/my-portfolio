@@ -133,7 +133,9 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     async function fetchLikes() {
       const res = await fetch("/api/blog-likes");
       const data: Array<{ blog_id: number; likes: number }> = await res.json();
-      const found = data.find((d) => d.blog_id === post.id);
+      const found = data.find(
+        (d: { blog_id: number; likes: number }) => d.blog_id === post.id
+      );
       setLikes(found ? found.likes : post.likes);
     }
     fetchLikes();
@@ -496,7 +498,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                             </h4>
                             <div className="flex items-center gap-3 text-xs text-[#3c3e41]">
                               <span className="flex items-center gap-1">
-                                <FaHeart className="w-3 h-3" />
+                                <FaThumbsUp className="w-3 h-3" />
                                 {getCurrentLikes(popularPost.id)}
                               </span>
                             </div>

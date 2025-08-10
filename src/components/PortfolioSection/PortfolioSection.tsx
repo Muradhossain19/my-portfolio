@@ -372,8 +372,12 @@ const PortfolioSection = () => {
         const res = await fetch("/api/portfolio-loves");
         const data: Array<{ portfolio_id: number; loves: number }> =
           await res.json();
+        const lovesObj: { [key: number]: number } = {};
         portfolioData.forEach((item) => {
-          const found = data.find((d) => d.portfolio_id === item.id);
+          const found = data.find(
+            (d: { portfolio_id: number; loves: number }) =>
+              d.portfolio_id === item.id
+          );
           lovesObj[item.id] = found ? found.loves : item.likes;
         });
         setLoves(lovesObj);
@@ -400,10 +404,14 @@ const PortfolioSection = () => {
       });
       // Refetch loves after update
       const res = await fetch("/api/portfolio-loves");
-      const data = await res.json();
+      const data: Array<{ portfolio_id: number; loves: number }> =
+        await res.json();
       const lovesObj: { [key: number]: number } = {};
       portfolioData.forEach((item) => {
-        const found = data.find((d: any) => d.portfolio_id === item.id);
+        const found = data.find(
+          (d: { portfolio_id: number; loves: number }) =>
+            d.portfolio_id === item.id
+        );
         lovesObj[item.id] = found ? found.loves : item.likes;
       });
       setLoves(lovesObj);

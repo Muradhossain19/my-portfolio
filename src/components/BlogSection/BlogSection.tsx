@@ -55,7 +55,9 @@ const BlogSection = () => {
       const data: Array<{ blog_id: number; likes: number }> = await res.json();
       const likesObj: { [key: number]: number } = {};
       blogData.forEach((post) => {
-        const found = data.find((d) => d.blog_id === post.id);
+        const found = data.find(
+          (d: { blog_id: number; likes: number }) => d.blog_id === post.id
+        );
         likesObj[post.id] = found ? found.likes : post.likes;
       });
       setLikes(likesObj);

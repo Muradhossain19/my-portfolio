@@ -64,10 +64,10 @@ const BlogPage = () => {
     });
     // Refetch likes
     const res = await fetch("/api/blog-likes");
-    const data = await res.json();
+    const data: Array<{ blog_id: number; likes: number }> = await res.json();
     const likesObj: { [key: number]: number } = {};
     blogData.forEach((post) => {
-      const found = data.find((d: any) => d.blog_id === post.id);
+      const found = data.find((d) => d.blog_id === post.id); // <-- FIXED: d is typed above
       likesObj[post.id] = found ? found.likes : post.likes;
     });
     setLikes(likesObj);
