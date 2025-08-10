@@ -372,8 +372,6 @@ const PortfolioSection = () => {
         const res = await fetch("/api/portfolio-loves");
         const data: Array<{ portfolio_id: number; loves: number }> =
           await res.json();
-        // data: [{ portfolio_id: 1, loves: 5 }, ...]
-        const lovesObj: { [key: number]: number } = {};
         portfolioData.forEach((item) => {
           const found = data.find((d) => d.portfolio_id === item.id);
           lovesObj[item.id] = found ? found.loves : item.likes;
