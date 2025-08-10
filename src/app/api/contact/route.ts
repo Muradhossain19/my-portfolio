@@ -125,7 +125,7 @@ export async function POST(req: Request) {
     );
   } else if (data.type === "order") {
     await connection.query(
-      "INSERT INTO orders (name, email, phone, subject, message, price) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO orders_contact_form (name, email, phone, subject, message, price) VALUES (?, ?, ?, ?, ?, ?)",
       [
         data.name,
         data.email,
@@ -136,9 +136,10 @@ export async function POST(req: Request) {
       ]
     );
   } else if (data.type === "subscribe") {
-    await connection.query("INSERT INTO subscriptions (email) VALUES (?)", [
-      data.email,
-    ]);
+    await connection.query(
+      "INSERT INTO subscriptions_form (email) VALUES (?)",
+      [data.email]
+    );
   }
 
   // Email send logic
