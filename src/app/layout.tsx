@@ -19,9 +19,9 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: "Murad Hossain - Web Developer",
+  title: "Murad Hossain | Web Developer & WordPress Designer",
   description:
-    "Personal portfolio of Murad Hossain, a skilled web developer specializing in React, Next.js, and WordPress.",
+    "Looking for a professional WordPress Designer and Web Developer? I build fast, secure, and user-friendly websites tailored to your business needs. Contact me for a free consultation!",
 };
 
 export default function RootLayout({
