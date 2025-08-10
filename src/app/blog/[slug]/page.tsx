@@ -150,8 +150,10 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     });
     // Refetch likes
     const res = await fetch("/api/blog-likes");
-    const data = await res.json();
-    const found = data.find((d: any) => d.blog_id === post.id);
+    const data: Array<{ blog_id: number; likes: number }> = await res.json();
+    const found = data.find(
+      (d: { blog_id: number; likes: number }) => d.blog_id === post.id
+    ); // <-- FIXED
     setLikes(found ? found.likes : post.likes);
     setIsLiked(true);
   };
