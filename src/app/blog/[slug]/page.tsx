@@ -129,7 +129,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
 
   // Fetch likes from backend
   useEffect(() => {
-    if (!slug) return;
+    if (!slug || !post) return;
     async function fetchLikes() {
       const res = await fetch("/api/blog-likes");
       const data: Array<{ blog_id: number; likes: number }> = await res.json();
