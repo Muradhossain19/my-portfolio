@@ -20,162 +20,295 @@ import {
 const portfolioData = [
   {
     id: 1,
-    images: [
-      "/images/portfolio/my-protfoilo.png",
-      "/images/portfolio/my-protfoilo.png",
-      "/images/portfolio/my-protfoilo.png",
-    ],
-    category: "App Design",
-    title: "NFT Dashboard Application Development",
+    images: ["/images/portfolio/akhand-ekonomi.png"],
+    category: "Web Development",
+    title: "Akhand Ekonomi - Your Financial Partner",
     description:
-      "Through a wide variety of mobile applications, we've developed a unique visual system.",
+      "A professional and user-friendly website developed to offer comprehensive accounting and financial consulting services.",
     longDescription:
-      "A comprehensive NFT dashboard that allows users to track, manage, and analyze their digital assets. The platform features real-time market data, portfolio management, and advanced analytics tools.",
-    client: "George Wallace",
-    date: "15 June 2022",
-    services: "Web Application",
-    budget: "$10000+",
-    likes: 756,
-    link: "#",
+      "Developed a clean, professional, and responsive website for Akhand Ekonomi, a financial services firm. The platform is designed to build client trust and clearly present their core services, including accounting, financial statements, and tax consulting. The primary goal was to create an intuitive and informative online presence that allows potential clients to easily understand their offerings and get in touch.",
+    client: "Akhand",
+    date: "20 July 2025",
+    services: "Web Development",
+    budget: "$****",
+    likes: 1,
+    link: "https://akhandekonomi.se",
     features: [
-      "Real-time market tracking",
-      "Portfolio analytics",
-      "User-friendly interface",
-      "Mobile responsive design",
+      "Clear service presentation (Accounting, Consulting )",
+      "Easy-to-use contact and inquiry forms",
+      "Fully mobile-responsive design for all devices",
+      "SEO-optimized structure for better visibility",
     ],
   },
   {
     id: 2,
-    images: [
-      "/images/portfolio/my-protfoilo.png",
-      "/images/portfolio/my-protfoilo.png",
-      "/images/portfolio/my-protfoilo.png",
-    ],
+    images: ["/images/portfolio/schemafai.png"],
     category: "Web Development",
-    title: "Corporate Website for a Tech Company",
+    title: "Schemafai - A Scheduling Platform",
     description:
-      "A modern, responsive website built with cutting-edge technologies.",
+      "Developed a dynamic and intuitive staff scheduling platform to simplify workforce management and streamline operations.",
     longDescription:
       "A complete corporate website solution featuring modern design principles, seamless user experience, and robust backend functionality.",
-    client: "Tech Innovations Ltd",
-    date: "20 May 2022",
+    client: "Tizfai Technologies AB",
+    date: "2 May 2025",
     services: "Web Development",
-    budget: "$8000+",
-    likes: 630,
-    link: "#",
+    budget: "$****",
+    likes: 1,
+    link: "https://schemafai.se",
     features: [
       "Responsive design",
       "SEO optimized",
       "Fast loading speed",
-      "Content management system",
+      "Developed a secure user authentication system for staff",
     ],
   },
-  // Add more portfolio items with similar structure...
+
   {
     id: 3,
-    images: [
-      "/images/portfolio/my-protfoilo.png",
-      "/images/portfolio/my-protfoilo.png",
-      "/images/portfolio/my-protfoilo.png",
-    ],
+    images: ["/images/portfolio/MavinAds.png"],
     category: "WordPress",
-    title: "Custom Blog Theme for a Lifestyle Blogger",
+    title: "MavinAds - Leading Digital Marketing Agency",
     description:
-      "A beautiful, customizable WordPress theme for lifestyle bloggers.",
+      "Developed a professional and high-performance WordPress website to showcase their digital marketing services and attract new clients.",
     longDescription:
-      "Custom WordPress theme development with advanced customization options, SEO optimization, and social media integration.",
-    client: "Lifestyle Blog Co",
-    date: "10 April 2022",
-    services: "WordPress Development",
-    budget: "$5000+",
-    likes: 812,
-    link: "#",
+      "For MavinAds, a leading digital marketing agency, I built a fully customized WordPress website from the ground up. The project focused on creating a clean, corporate design that highlights their expertise in SEO, social media, and content marketing. Key objectives included ensuring fast load times, a seamless user experience, and implementing clear calls-to-action to boost lead generation.",
+    client: "Murad Hossain",
+    date: "10 July 2024",
+    services: "WordPress Solutions",
+    budget: "$****",
+    likes: 1,
+    link: "mavinads.com",
     features: [
-      "Custom post types",
-      "Advanced customizer",
-      "Social media integration",
-      "SEO optimized",
+      "Custom design to reflect the agency's brand identity",
+      "Service pages optimized for search engines (SEO )",
+      "Integrated contact forms and clear calls-to-action",
+      "Fully responsive and mobile-friendly layout",
     ],
   },
   {
     id: 4,
-    images: [
-      "/images/portfolio/my-protfoilo.png",
-      "/images/portfolio/my-protfoilo.png",
-      "/images/portfolio/my-protfoilo.png",
-    ],
-    category: "Web Development",
-    title: "E-commerce Platform for a Fashion Brand",
-    description: "Complete e-commerce solution with advanced features.",
+    images: ["/images/portfolio/Route-Runner-Brokerage-Update.png"],
+    category: "WordPress",
+    title: "Route Runner Brokerage - Your Logistics Partner",
+    description:
+      "A professional WordPress website designed for a logistics brokerage, focusing on service clarity and lead generation.",
     longDescription:
-      "A comprehensive e-commerce platform built for a fashion brand, featuring product management, payment integration, and order tracking.",
-    client: "Fashion Forward Inc",
-    date: "25 March 2022",
-    services: "E-commerce Development",
-    budget: "$15000+",
-    likes: 940,
-    link: "#",
+      "For Route Runner Brokerage, I developed a robust and professional WordPress website to establish their online presence in the logistics industry. The site was built to clearly communicate their core services, such as freight brokerage and carrier management. Key features include a streamlined quote request system, detailed service pages, and a design that builds trust and credibility with both shippers and carriers.",
+    client: "Route Runner Brokerage LLC",
+    date: "25 June 2025",
+    services: "WordPress Development",
+    budget: "$****",
+    likes: 1,
+    link: "https://routerunnersbrokerage.com/",
     features: [
-      "Product catalog",
-      "Payment gateway",
-      "Order management",
-      "Inventory tracking",
+      "Integrated freight quote request form",
+      "Dedicated pages for shipper and carrier services",
+      "Clean, professional design to build industry trust",
+      "Fully responsive layout for access on any device",
     ],
   },
   {
     id: 5,
-    images: [
-      "/images/portfolio/my-protfoilo.png",
-      "/images/portfolio/my-protfoilo.png",
-      "/images/portfolio/my-protfoilo.png",
-    ],
-    category: "App Design",
-    title: "Data Analytics Dashboard UI/UX",
-    description: "Intuitive dashboard design for data visualization.",
+    images: ["/images/portfolio/colorley-ecommerce.png"],
+    category: "E-commerce",
+    title: "Colorley - E-commerce Store",
+    description:
+      "A vibrant and user-friendly e-commerce store built on WooCommerce, designed to provide a seamless online shopping experience.",
     longDescription:
-      "A comprehensive analytics dashboard with advanced data visualization, real-time updates, and user-friendly interface design.",
-    client: "Data Insights Corp",
-    date: "5 February 2022",
-    services: "UI/UX Design",
-    budget: "$7000+",
-    likes: 550,
+      "I developed the Colorley e-commerce store, a complete online shopping platform using WordPress and WooCommerce. The project involved creating a visually appealing design to showcase products effectively, integrating secure payment gateways, and setting up an intuitive product management system. The primary focus was on optimizing the user journey from browsing to checkout, ensuring a smooth and enjoyable experience for customers.",
+    client: "Colorley Ltd",
+    date: "5 February 2025",
+    services: "E-commerce Solutions",
+    budget: "$****+",
+    likes: 1,
     link: "#",
     features: [
-      "Data visualization",
-      "Real-time updates",
-      "Interactive charts",
-      "Export functionality",
+      "Full-featured product catalog with filtering options",
+      "Secure payment gateway integration (e.g., Stripe, PayPal)",
+      "Streamlined and user-friendly checkout process",
+      "Mobile-responsive design for shopping on any device",
     ],
   },
   {
     id: 6,
-    images: [
-      "/images/portfolio/my-protfoilo.png",
-      "/images/portfolio/my-protfoilo.png",
-      "/images/portfolio/my-protfoilo.png",
-    ],
+    images: ["/images/portfolio/nosy-be-landing-page.png"],
     category: "WordPress",
-    title: "Custom Booking Plugin for WordPress",
-    description: "Advanced booking system plugin for WordPress websites.",
+    title: "Nosy Be - Real Estate Landing Page",
+    description:
+      "A high-converting WordPress landing page designed to capture leads for a premier real estate service or property.",
     longDescription:
-      "A feature-rich booking plugin for WordPress with calendar integration, payment processing, and advanced booking management.",
-    client: "Booking Solutions Ltd",
-    date: "18 January 2022",
-    services: "Plugin Development",
-    budget: "$6000+",
-    likes: 480,
+      "This project involved creating a sophisticated and persuasive landing page for 'Nosy Be,' a real estate service. The primary goal was to showcase a property or service with stunning visuals and compelling details to attract potential buyers or investors. The page was strategically designed with clear calls-to-action, an inquiry form, and key property highlights to maximize lead generation. It is fully responsive and optimized for fast loading to provide a premium user experience.",
+    client: "Nosy Be Real Estate",
+    date: "18 December 2024",
+    services: "WordPress Solutions",
+    budget: "$****",
+    likes: 1,
     link: "#",
     features: [
-      "Calendar integration",
-      "Payment processing",
-      "Email notifications",
-      "Advanced settings",
+      "Showcased high-resolution property photo gallery",
+      "Prominent lead capture and contact forms",
+      "Detailed property features and amenities section",
+      "Clean, modern design optimized for conversions",
+    ],
+  },
+  {
+    id: 7,
+    images: ["/images/portfolio/Analysify.png"],
+    category: "WordPress",
+    title: "Analysify - Personal Portfolio Website",
+    description:
+      "A sleek and modern personal portfolio website designed to showcase projects, skills, and professional experience effectively.",
+    longDescription:
+      "I developed 'Analysify,' a custom personal portfolio website, to create a strong online presence for a creative professional. The project focused on a clean, minimalist design that puts the portfolio pieces front and center. It features dedicated sections for an 'About Me' bio, a dynamic project gallery, and a clear contact form. The site is built to be fully responsive, ensuring a perfect viewing experience on any device, from desktops to smartphones.",
+    client: "Murad Hossain",
+    date: "12 July 2024",
+    services: "WordPress Solutions",
+    budget: "$****",
+    likes: 1,
+    link: "Analysify.com",
+    features: [
+      "Dynamic and filterable project gallery",
+      "Clean, minimalist user interface (UI) design",
+      "Integrated 'About Me' and 'Skills' sections",
+      "Responsive layout for seamless mobile and desktop viewing",
+    ],
+  },
+  {
+    id: 8,
+    images: ["/images/portfolio/aurabysr-ecommerce.jpg"],
+    category: "E-commerce",
+    title: "Aurabysr - E-commerce Website",
+    description:
+      "A modern and responsive e-commerce website built on WordPress, designed to showcase products and drive sales.",
+    longDescription:
+      "I developed 'Aurabysr,' a custom e-commerce website, to create a strong online presence for a retail brand. The project focused on a clean, minimalist design that puts the products front and center. It features dedicated sections for product categories, a dynamic product gallery, and a clear contact form. The site is built to be fully responsive, ensuring a perfect viewing experience on any device, from desktops to smartphones.",
+    client: "Aurabysr",
+    date: "10 May 2024",
+    services: "E-commerce Solutions",
+    budget: "$****",
+    likes: 1,
+    link: "#",
+    features: [
+      "Dynamic and filterable product gallery",
+      "Clean, minimalist user interface (UI) design",
+      "Integrated product categories and filters",
+      "Responsive layout for seamless mobile and desktop viewing",
+    ],
+  },
+  {
+    id: 9,
+    images: ["/images/portfolio/lakeside-roofing.png"],
+    category: "WordPress",
+    title: "Lakeside Roofing - Roofing Services Website",
+    description:
+      "A modern and responsive roofing services website built on WordPress, designed to showcase services and drive leads.",
+    longDescription:
+      "I developed 'Lakeside Roofing,' a custom roofing services website, to create a strong online presence for a local contractor. The project focused on a clean, minimalist design that puts the services front and center. It features dedicated sections for service categories, a dynamic service gallery, and a clear contact form. The site is built to be fully responsive, ensuring a perfect viewing experience on any device, from desktops to smartphones.",
+    client: "Lakeside Roofing",
+    date: "5 March 2024",
+    services: "WordPress Solutions",
+    budget: "$****",
+    likes: 1,
+    link: "lakeside-roofing.com",
+    features: [
+      "Prominent 'Request a Free Quote' call-to-action",
+      "Detailed service pages (e.g., Roof Repair, Installation)",
+      "Project gallery to showcase completed roofing work",
+      "Customer testimonials section to build trust and credibility",
+    ],
+  },
+  {
+    id: 10,
+    images: ["/images/portfolio/Serpixi.png"],
+    category: "WordPress",
+    title: "Serpixi - Digital Marketing Agency",
+    description:
+      "A modern and responsive digital marketing agency website built on WordPress, designed to showcase services and drive leads.",
+    longDescription:
+      "I developed 'Serpixi,' a custom digital marketing agency website, to create a strong online presence for a marketing firm. The project focused on a clean, minimalist design that puts the services front and center. It features dedicated sections for service categories, a dynamic service gallery, and a clear contact form. The site is built to be fully responsive, ensuring a perfect viewing experience on any device, from desktops to smartphones.",
+    client: "Serpixi Marketing Co. Ltd",
+    date: "21 October 2024",
+    services: "WordPress Solutions",
+    budget: "$****",
+    likes: 1,
+    link: "#",
+    features: [
+      "Clear presentation of core services (SEO, PPC, SMM)",
+      "Case studies section to demonstrate proven results",
+      "Integrated blog for content marketing and industry insights",
+      "Strategic calls-to-action for consultation requests",
+    ],
+  },
+  {
+    id: 11,
+    images: ["/images/portfolio/tizfai.png"],
+    category: "WordPress",
+    title: "Tizfai - Your IT Solutions Partner",
+    description:
+      "A professional and secure WordPress website for an IT solutions provider, designed to showcase services and build client trust.",
+    longDescription:
+      "I developed the website for 'Tizfai,' an IT solutions partner, to establish a credible and professional online presence. The project focused on clearly structuring their complex services, such as managed IT, cybersecurity, and cloud solutions. The site is designed to be highly informative and trustworthy, featuring detailed service pages, client testimonials, and a streamlined process for requesting a consultation or support.",
+    client: "Tizfai Technologies AB",
+    date: "28 January 2024",
+    services: "WordPress Solutions",
+    budget: "$****",
+    likes: 1,
+    link: "#",
+    features: [
+      "Detailed breakdown of IT services (e.g., Cybersecurity, Cloud Solutions)",
+      "Integrated support ticket or consultation request form",
+      "Client testimonials section to build credibility",
+      "Secure, professional design reflecting industry standards",
+    ],
+  },
+  {
+    id: 12,
+    images: ["/images/portfolio/medfai.png"],
+    category: "WordPress",
+    title: "Medfai - Healthcare App Landing Page",
+    description:
+      "A clean and trustworthy landing page for the Medfai app, designed to drive downloads and clearly explain its features.",
+    longDescription:
+      "I created a dedicated landing page for 'Medfai,' a healthcare IT app, using WordPress. The primary objective was to build trust and encourage user downloads. The design is clean, professional, and focuses on the app's core benefits, such as appointment scheduling and secure patient data management. The page includes clear calls-to-action, app store download buttons, and a section explaining how the app works, ensuring a seamless user journey from discovery to download.",
+    client: "Tizfai Technologies AB",
+    date: "14 December 2023",
+    services: "WordPress Solutions",
+    budget: "$****",
+    likes: 1,
+    link: "#",
+    features: [
+      "Prominent App Store and Google Play download buttons",
+      "Clear explanation of the app's key features and benefits",
+      "A 'How It Works' section with visual guides",
+      "Trust-building elements like security badges and testimonials",
+    ],
+  },
+  {
+    id: 13,
+    images: ["/images/portfolio/techguidecenter.png"],
+    category: "WordPress",
+    title: "TechGuideCenter - Your Tech Resource Hub",
+    description:
+      "A content-rich affiliate blog website built on WordPress, designed for optimal user engagement and maximizing affiliate revenue.",
+    longDescription:
+      "I developed 'TechGuideCenter,' a comprehensive tech affiliate blog, to serve as a go-to resource for tech enthusiasts. The project focused on creating a user-friendly layout that prioritizes content readability and navigation. Key aspects included implementing a robust category and tag system for easy content discovery, optimizing page speed for better user experience and SEO, and strategically placing affiliate links and calls-to-action to drive conversions.",
+    client: "Murad Hossain",
+    date: "4 November 2023",
+    services: "WordPress Solutions",
+    budget: "$****",
+    likes: 1,
+    link: "#",
+    features: [
+      "Advanced blog layout with categories and search functionality",
+      "SEO-optimized structure for high search engine ranking",
+      "Strategically integrated affiliate links and ad spaces",
+      "Fast-loading and mobile-responsive design for readers",
     ],
   },
 ];
 
 // Categories for filtering
-const categories = ["All", "Web Development", "WordPress", "App Design"];
+const categories = ["All", "Web Development", "WordPress", "E-commerce"];
 
 // Animation Variants
 const headingContainer: Variants = {
@@ -217,6 +350,11 @@ const PortfolioSection = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [scrollPosition, setScrollPosition] = useState(0);
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+
   useEffect(() => {
     if (activeFilter === "All") {
       setFilteredItems(portfolioData);
@@ -226,6 +364,7 @@ const PortfolioSection = () => {
       );
       setFilteredItems(newItems);
     }
+    setCurrentPage(1); // Reset to first page on filter change
   }, [activeFilter]);
 
   // Load loves from localStorage - ADD typeof check
@@ -368,6 +507,13 @@ const PortfolioSection = () => {
     };
   }, [selectedProject, closeModal]);
 
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   return (
     <section
       id="portfolio"
@@ -416,7 +562,7 @@ const PortfolioSection = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           <AnimatePresence>
-            {filteredItems.map((item) => (
+            {currentItems.map((item) => (
               <motion.div
                 key={item.id}
                 layout
@@ -467,6 +613,42 @@ const PortfolioSection = () => {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-12">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 rounded-lg bg-[#ECF0F3] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] text-[#3c3e41] disabled:opacity-50 disabled:cursor-not-allowed hover:text-[#FF004F] transition-colors duration-300"
+            >
+              Previous
+            </button>
+            {[...Array(totalPages)].map((_, index) => {
+              const pageNumber = index + 1;
+              return (
+                <button
+                  key={pageNumber}
+                  onClick={() => paginate(pageNumber)}
+                  className={`w-10 h-10 rounded-lg font-semibold transition-all duration-300 ${
+                    currentPage === pageNumber
+                      ? "bg-[#FF004F] text-white shadow-lg"
+                      : "bg-[#ECF0F3] text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] hover:text-[#FF004F]"
+                  }`}
+                >
+                  {pageNumber}
+                </button>
+              );
+            })}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 rounded-lg bg-[#ECF0F3] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] text-[#3c3e41] disabled:opacity-50 disabled:cursor-not-allowed hover:text-[#FF004F] transition-colors duration-300"
+            >
+              Next
+            </button>
+          </div>
+        )}
 
         {/* Project Detail Modal */}
         <AnimatePresence>

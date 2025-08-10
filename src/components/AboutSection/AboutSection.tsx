@@ -145,14 +145,14 @@ const AboutSection = () => {
                 My Journey
               </h3>
               <p className="text-base text-[#3c3e41] leading-relaxed mb-4 font-light">
-                With over 5 years of experience in web development, I&#39;ve had
-                the privilege of working with diverse clients and projects that
-                have shaped my expertise and perspective.
+                With 3+ years of dedicated experience in web development, I have
+                successfully delivered high-quality, responsive websites.
               </p>
               <p className="text-base text-[#3c3e41] leading-relaxed font-light">
-                I believe in continuous learning and staying updated with the
-                latest technologies to deliver cutting-edge solutions that
-                exceed expectations.
+                I am deeply committed to continuous learning and leveraging the
+                latest technologies to provide cutting-edge, SEO-friendly
+                solutions that consistently drive measurable results and exceed
+                all expectations.
               </p>
             </div>
           </motion.div>

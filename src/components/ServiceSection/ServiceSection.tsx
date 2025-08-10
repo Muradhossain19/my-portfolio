@@ -18,21 +18,21 @@ const services = [
     icon: <FaCode className="w-8 h-8 text-[#FF004F]" />,
     title: "Custom Web Development",
     description:
-      "Building unique, user-friendly websites from scratch, tailored to your brand's identity and business goals.",
+      "I build powerful, custom web applications using React/Next.js for the frontend and Laravel/PHP for a secure backend.",
     link: "/services/web-development",
   },
   {
     icon: <FaWordpress className="w-8 h-8 text-[#FF004F]" />,
     title: "WordPress Solutions",
     description:
-      "Custom theme & plugin development, and headless solutions to create powerful, flexible WordPress sites.",
+      "I create and manage professional WordPress websites using advanced customization to build a fast, secure, and unique online presence for you.",
     link: "/services/wordpress",
   },
   {
     icon: <FaShoppingCart className="w-8 h-8 text-[#FF004F]" />,
     title: "E-commerce Solutions",
     description:
-      "Developing robust online stores with WooCommerce or custom Laravel solutions to boost your sales effectively.",
+      "I build powerful and secure e-commerce stores using WooCommerce, designed to boost your sales and grow your business online.",
     link: "/services/ecommerce",
   },
 ];
@@ -110,8 +110,8 @@ const ServiceSection = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.5 }}
         >
-          I provide a wide range of services to help you build and grow your
-          online presence.
+          From custom web development to SEO optimization, I offer complete
+          services to build and grow your online presence.
         </motion.p>
 
         {/* সার্ভিস কার্ড (ডিজাইন আপডেট করা হয়েছে) */}
@@ -140,13 +140,13 @@ const ServiceSection = () => {
                 <h3 className="text-xl font-bold text-[#1f2125] mb-3">
                   {service.title}
                 </h3>
-                <p className="text-base text-[#3c3e41] leading-relaxed font-light mb-6">
+                <p className="text-base text-[#3c3e41] leading-relaxed font-light mb-2">
                   {service.description}
                 </p>
               </div>
 
               {/* লিঙ্ক সেকশন (কার্যকারিতা ঠিক রেখে টেক্সট পরিবর্তন করা হয়েছে) */}
-              <div className="hidden md:block mt-auto pt-6">
+              <div className="hidden md:block mt-auto pt-3">
                 <div className="transform translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-in-out">
                   <Link
                     href={service.link}
@@ -157,7 +157,7 @@ const ServiceSection = () => {
                 </div>
               </div>
 
-              <div className="md:hidden mt-auto pt-6">
+              <div className="md:hidden mt-auto pt-3">
                 <Link
                   href={service.link}
                   className="font-semibold text-[#FF004F] flex items-center justify-start gap-2"

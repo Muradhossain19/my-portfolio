@@ -135,9 +135,9 @@ const HeroSection = () => {
               style={{ fontWeight: 400 }}
               variants={itemVariants}
             >
-              I build things for the web. I am a passionate developer creating
-              modern and responsive web applications with a focus on user
-              experience.
+              I build modern, responsive web applications with a strong focus on
+              user experience. Let&#39;s create a fast, beautiful, and
+              SEO-friendly website to help your business grow online.
             </motion.p>
 
             <motion.div className="pt-4" variants={itemVariants}>
