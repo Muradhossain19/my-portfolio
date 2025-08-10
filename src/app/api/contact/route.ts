@@ -153,8 +153,14 @@ export async function POST(req: Request) {
   });
 
   // Owner ke email
+  const ownerEmail = process.env.EMAIL_TO ?? "";
+  if (!ownerEmail) {
+    throw new Error(
+      "Owner email (EMAIL_TO) is not set in environment variables."
+    );
+  }
   await sendEmail({
-    to: process.env.EMAIL_TO,
+    to: ownerEmail,
     subject:
       data.type === "order" ? "New Order Received" : "New Contact Message",
     html,
