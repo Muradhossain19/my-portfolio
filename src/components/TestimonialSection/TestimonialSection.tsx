@@ -9,9 +9,22 @@ import {
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
+import ReviewModal from "../ReviewModal/ReviewModal";
+
+type Review = {
+  id?: number;
+  name: string;
+  position: string;
+  company: string;
+  project: string;
+  image: string; // base64 or url
+  date: string;
+  rating: number;
+  testimonial: string;
+};
 
 // Testimonial Data
-const testimonialsData = [
+const testimonialsData: Review[] = [
   {
     id: 1,
     name: "Sarah Johnson",
@@ -151,7 +164,22 @@ const TestimonialSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [startCounting, setStartCounting] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [testimonials, setTestimonials] = useState<Review[]>(testimonialsData);
+  const [resetKey, setResetKey] = useState(0);
   const statsRef = useRef<HTMLDivElement>(null);
+
+  const isAdmin = true; // Only set true for owner/admin
+
+  // Fetch reviews from API
+  useEffect(() => {
+    async function fetchReviews() {
+      const res = await fetch("/api/reviews");
+      const data = await res.json();
+      setTestimonials(data.length ? data : testimonialsData);
+    }
+    fetchReviews();
+  }, []);
 
   // Intersection Observer for counting
   useEffect(() => {
@@ -186,19 +214,19 @@ const TestimonialSection = () => {
   useEffect(() => {
     if (isAutoPlaying) {
       const interval = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % testimonialsData.length);
+        setCurrentIndex((prev) => (prev + 1) % testimonials.length);
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, testimonials.length]);
 
   const nextTestimonial = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonialsData.length);
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
   };
 
   const prevTestimonial = () => {
     setCurrentIndex(
-      (prev) => (prev - 1 + testimonialsData.length) % testimonialsData.length
+      (prev) => (prev - 1 + testimonials.length) % testimonials.length
     );
   };
 
@@ -216,6 +244,63 @@ const TestimonialSection = () => {
       />
     ));
   };
+
+  // Helper: convert image file to base64
+  const fileToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  // Add review and post to API
+  const handleAddReview = async (
+    review: Omit<Review, "id" | "image"> & { image: File | null }
+  ) => {
+    let imageUrl = "/images/hero-image.webp";
+    if (review.image) {
+      imageUrl = await fileToBase64(review.image);
+    }
+    const newReview: Review = {
+      ...review,
+      image: imageUrl,
+      id: testimonials.length + 1,
+    };
+    await fetch("/api/reviews", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newReview),
+    });
+    setTestimonials((prev) => [...prev, newReview]);
+    setStartCounting(false);
+  };
+
+  const handleOpenReviewModal = () => {
+    setResetKey((prev) => prev + 1); // Change key to force reset
+    setShowReviewModal(true);
+  };
+
+  const handleDeleteReview = async (id: number) => {
+    await fetch("/api/reviews", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id,
+        token: process.env.NEXT_PUBLIC_ADMIN_TOKEN || "your-secret-token",
+      }),
+    });
+    setTestimonials((prev) => prev.filter((review) => review.id !== id));
+    setCurrentIndex(0);
+  };
+
+  // For stats calculation:
+  const happyClients: number = testimonials.length;
+  const projectsCompleted: number = testimonials.length;
+  const averageRating: number =
+    testimonials.length > 0
+      ? testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length
+      : 0;
 
   return (
     <section
@@ -283,8 +368,8 @@ const TestimonialSection = () => {
                     <div className="w-32 h-32 rounded-full overflow-hidden shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff] p-2 bg-[#ECF0F3]">
                       <div className="w-full h-full rounded-full overflow-hidden">
                         <Image
-                          src={testimonialsData[currentIndex].image}
-                          alt={testimonialsData[currentIndex].name}
+                          src={testimonials[currentIndex].image}
+                          alt={testimonials[currentIndex].name}
                           width={120}
                           height={120}
                           className="w-full h-full object-cover"
@@ -294,7 +379,7 @@ const TestimonialSection = () => {
                     {/* Rating Badge */}
                     <div className="absolute -bottom-2 -right-2 lg:right-0 bg-[#ECF0F3] rounded-full p-3 shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff]">
                       <div className="flex gap-1">
-                        {renderStars(testimonialsData[currentIndex].rating)}
+                        {renderStars(testimonials[currentIndex].rating)}
                       </div>
                     </div>
                   </div>
@@ -303,25 +388,25 @@ const TestimonialSection = () => {
                 {/* Testimonial Content */}
                 <div className="lg:col-span-2 text-center lg:text-left">
                   <blockquote className="text-lg md:text-xl text-[#1f2125] leading-relaxed mb-6 font-light md:font-medium">
-                    &ldquo;{testimonialsData[currentIndex].testimonial}&rdquo;
+                    &ldquo;{testimonials[currentIndex].testimonial}&rdquo;
                   </blockquote>
 
                   <div className="space-y-2">
                     <h4 className="text-xl text-[#1f2125] font-light md:font-bold">
-                      {testimonialsData[currentIndex].name}
+                      {testimonials[currentIndex].name}
                     </h4>
                     <p className="text-[#FF004F] font-light md:font-semibold">
-                      {testimonialsData[currentIndex].position}
+                      {testimonials[currentIndex].position}
                     </p>
                     <p className="text-[#3c3e41] font-light md:font-normal">
-                      {testimonialsData[currentIndex].company}
+                      {testimonials[currentIndex].company}
                     </p>
                     <div className="flex items-center justify-center lg:justify-start gap-4 pt-2">
                       <span className="text-sm text-[#3c3e41] bg-[#ECF0F3] px-3 py-1 rounded-full shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] font-light md:font-normal">
-                        {testimonialsData[currentIndex].project}
+                        {testimonials[currentIndex].project}
                       </span>
                       <span className="text-sm text-[#3c3e41] font-light md:font-normal">
-                        {testimonialsData[currentIndex].date}
+                        {testimonials[currentIndex].date}
                       </span>
                     </div>
                   </div>
@@ -342,13 +427,25 @@ const TestimonialSection = () => {
               >
                 <FaChevronRight />
               </button>
+
+              {/* Delete Button for Admin */}
+              {isAdmin && (
+                <button
+                  onClick={() =>
+                    handleDeleteReview(testimonials[currentIndex].id!)
+                  }
+                  className="absolute top-6 right-20 bg-[#FF004F] text-white px-4 py-2 rounded-xl font-semibold shadow hover:bg-[#e6003d] transition-colors duration-300"
+                >
+                  Delete
+                </button>
+              )}
             </motion.div>
           </AnimatePresence>
         </motion.div>
 
         {/* Dots Indicator */}
         <div className="flex justify-center gap-3 mb-12">
-          {testimonialsData.map((_, index) => (
+          {testimonials.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
@@ -361,6 +458,15 @@ const TestimonialSection = () => {
           ))}
         </div>
 
+        <div className="flex justify-center mb-8">
+          <button
+            onClick={handleOpenReviewModal}
+            className="bg-[#FF004F] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#e6003d] transition-colors duration-300 shadow-[5px_5px_15px_#d1d9e6,-5px_-5px_15px_#ffffff] text-center cursor-pointer"
+          >
+            Write a Review
+          </button>
+        </div>
+
         {/* Stats Section */}
         <motion.div
           ref={statsRef}
@@ -371,9 +477,17 @@ const TestimonialSection = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
         >
           {[
-            { number: 150, label: "Happy Clients", suffix: "+" },
-            { number: 200, label: "Projects Completed", suffix: "+" },
-            { number: 5, label: "Average Rating", suffix: "★" },
+            { number: happyClients, label: "Happy Clients", suffix: "+" },
+            {
+              number: projectsCompleted,
+              label: "Projects Completed",
+              suffix: "+",
+            },
+            {
+              number: parseFloat(averageRating.toFixed(1)), // <-- Fix here
+              label: "Average Rating",
+              suffix: "★",
+            },
             { number: 3, label: "Years Experience", suffix: "+" },
           ].map((stat, index) => (
             <motion.div
@@ -396,6 +510,13 @@ const TestimonialSection = () => {
             </motion.div>
           ))}
         </motion.div>
+
+        <ReviewModal
+          key={resetKey}
+          isOpen={showReviewModal}
+          onClose={() => setShowReviewModal(false)}
+          onSubmit={handleAddReview}
+        />
       </div>
     </section>
   );
