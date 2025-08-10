@@ -92,23 +92,25 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               <span>Home</span>
             </Link>
 
-            {breadcrumbs.map((item, index) => (
-              <React.Fragment key={index}>
-                <FaChevronRight className="w-3 h-3 text-[#3c3e41]" />
-                {index === breadcrumbs.length - 1 ? (
-                  <span className="text-[#FF004F] text-sm font-semibold">
-                    {item.label}
-                  </span>
-                ) : (
-                  <Link
-                    href={item.href}
-                    className="text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 text-sm font-medium"
-                  >
-                    {item.label}
-                  </Link>
-                )}
-              </React.Fragment>
-            ))}
+            {breadcrumbs.map((item, index) =>
+              item.label === "Home" ? null : (
+                <React.Fragment key={index}>
+                  <FaChevronRight className="w-3 h-3 text-[#3c3e41]" />
+                  {index === breadcrumbs.length - 1 ? (
+                    <span className="text-[#FF004F] text-sm font-semibold">
+                      {item.label}
+                    </span>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className="text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 text-sm font-medium"
+                    >
+                      {item.label}
+                    </Link>
+                  )}
+                </React.Fragment>
+              )
+            )}
           </motion.nav>
         </div>
       </div>
