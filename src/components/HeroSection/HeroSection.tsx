@@ -233,7 +233,7 @@ const HeroSection = () => {
           >
             <div className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] lg:w-[400px] lg:h-[400px] bg-[#ECF0F3] rounded-full shadow-[20px_20px_60px_#d1d9e6,-20px_-20px_60px_#ffffff]">
               <Image
-                src="/images/hero-image.png"
+                src="/images/hero-image.webp"
                 alt="Murad Hossain - Web Developer"
                 layout="fill"
                 objectFit="cover"

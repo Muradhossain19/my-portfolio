@@ -17,7 +17,7 @@ const testimonialsData = [
     name: "Sarah Johnson",
     position: "CEO at TechFlow",
     company: "TechFlow Solutions",
-    image: "/images/hero-image.png",
+    image: "/images/hero-image.webp",
     rating: 5,
     testimonial:
       "Working with this team was an absolute pleasure. They delivered beyond our expectations and the attention to detail was remarkable. The project was completed on time and within budget.",
@@ -29,7 +29,7 @@ const testimonialsData = [
     name: "Michael Chen",
     position: "Product Manager",
     company: "Digital Innovations",
-    image: "/images/hero-image.png",
+    image: "/images/hero-image.webp",
     rating: 5,
     testimonial:
       "Exceptional work quality and professional approach. The team understood our requirements perfectly and delivered a solution that exceeded our expectations. Highly recommended!",
@@ -41,7 +41,7 @@ const testimonialsData = [
     name: "Emily Rodriguez",
     position: "Marketing Director",
     company: "Creative Agency",
-    image: "/images/hero-image.png",
+    image: "/images/hero-image.webp",
     rating: 5,
     testimonial:
       "Outstanding creativity and technical expertise. The final product was exactly what we envisioned and more. The communication throughout the project was excellent.",
@@ -53,7 +53,7 @@ const testimonialsData = [
     name: "David Thompson",
     position: "Founder",
     company: "StartupHub",
-    image: "/images/hero-image.png",
+    image: "/images/hero-image.webp",
     rating: 5,
     testimonial:
       "Professional, reliable, and incredibly talented. They transformed our vision into reality with impressive attention to detail and innovative solutions.",
@@ -65,7 +65,7 @@ const testimonialsData = [
     name: "Lisa Wang",
     position: "CTO",
     company: "DataCorp",
-    image: "/images/hero-image.png",
+    image: "/images/hero-image.webp",
     rating: 5,
     testimonial:
       "Brilliant execution and seamless collaboration. The team's expertise in both design and development made our project a huge success. Will definitely work with them again.",
