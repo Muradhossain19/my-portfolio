@@ -337,8 +337,6 @@ const modalContentVariants: Variants = {
   exit: { scale: 0.8, opacity: 0 },
 };
 
-const LOCAL_KEY = "portfolio_loves";
-
 const PortfolioSection = () => {
   const headingText = "My Portfolio";
   const [activeFilter, setActiveFilter] = useState("All");
@@ -372,11 +370,12 @@ const PortfolioSection = () => {
     async function fetchLoves() {
       try {
         const res = await fetch("/api/portfolio-loves");
-        const data = await res.json();
+        const data: Array<{ portfolio_id: number; loves: number }> =
+          await res.json();
         // data: [{ portfolio_id: 1, loves: 5 }, ...]
         const lovesObj: { [key: number]: number } = {};
         portfolioData.forEach((item) => {
-          const found = data.find((d: any) => d.portfolio_id === item.id);
+          const found = data.find((d) => d.portfolio_id === item.id);
           lovesObj[item.id] = found ? found.loves : item.likes;
         });
         setLoves(lovesObj);

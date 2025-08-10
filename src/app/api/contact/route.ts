@@ -9,7 +9,7 @@ const dbConfig = {
   database: process.env.DB_NAME,
 };
 
-const getEmailHtml = (data: any) => `
+const getEmailHtml = (data: Record<string, unknown>) => `
   <!-- Responsive Email Template for Contact/Order -->
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f6f6f6; padding:30px 0;">
     <tr>

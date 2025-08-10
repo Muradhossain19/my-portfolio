@@ -132,8 +132,8 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     if (!slug) return;
     async function fetchLikes() {
       const res = await fetch("/api/blog-likes");
-      const data = await res.json();
-      const found = data.find((d: any) => d.blog_id === post?.id);
+      const data: Array<{ blog_id: number; likes: number }> = await res.json();
+      const found = data.find((d) => d.blog_id === post?.id);
       setLikes(found ? found.likes : post?.likes || 0);
     }
     fetchLikes();
