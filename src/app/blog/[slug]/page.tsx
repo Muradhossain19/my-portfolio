@@ -131,6 +131,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
   useEffect(() => {
     if (!slug || !post) return;
     async function fetchLikes() {
+      if (!post) return; // <-- Add this guard
       const res = await fetch("/api/blog-likes");
       const data: Array<{ blog_id: number; likes: number }> = await res.json();
       const found = data.find(
