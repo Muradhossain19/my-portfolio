@@ -4,7 +4,12 @@ import React, { useState, useEffect, useMemo } from "react"; // useRef এবং
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { FaCalendarAlt, FaUser, FaArrowRight, FaHeart } from "react-icons/fa";
+import {
+  FaCalendarAlt,
+  FaUser,
+  FaArrowRight,
+  FaThumbsUp,
+} from "react-icons/fa"; // FaHeart পরিবর্তে FaThumbsUp ব্যবহার করা হয়েছে
 import styles from "./BlogSection.module.css";
 
 // Import blogData from lib
@@ -28,6 +33,7 @@ const headingCharacter: Variants = {
 const BlogSection = () => {
   const headingText = "Latest Blog Posts";
   const [likes, setLikes] = useState<{ [key: number]: number }>({});
+  const [likedPosts, setLikedPosts] = useState<{ [key: number]: boolean }>({});
   const [isClient, setIsClient] = useState(false);
 
   // useMemo ব্যবহার করে latestPosts স্থিতিশীল করা হয়েছে
@@ -44,15 +50,41 @@ const BlogSection = () => {
     setLikes(initialLikes);
   }, [latestPosts]);
 
-  const handleLike = (id: number, e: React.MouseEvent) => {
+  // Fetch likes from backend
+  useEffect(() => {
+    async function fetchLikes() {
+      const res = await fetch("/api/blog-likes");
+      const data = await res.json();
+      const likesObj: { [key: number]: number } = {};
+      blogData.forEach((post) => {
+        const found = data.find((d: any) => d.blog_id === post.id);
+        likesObj[post.id] = found ? found.likes : post.likes;
+      });
+      setLikes(likesObj);
+    }
+    fetchLikes();
+  }, []);
+
+  // Like button handler
+  const handleLike = async (id: number, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const userLiked = localStorage.getItem(`user-liked-${id}`);
-    if (userLiked === "true") return;
-    const newLikes = (likes[id] || 0) + 1;
-    setLikes((prev) => ({ ...prev, [id]: newLikes }));
-    localStorage.setItem(`blog-likes-${id}`, newLikes.toString());
-    localStorage.setItem(`user-liked-${id}`, "true");
+    if (likedPosts[id]) return; // Prevent multiple likes per session
+    await fetch("/api/blog-likes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ blog_id: id }),
+    });
+    // Refetch likes
+    const res = await fetch("/api/blog-likes");
+    const data = await res.json();
+    const likesObj: { [key: number]: number } = {};
+    blogData.forEach((post) => {
+      const found = data.find((d: any) => d.blog_id === post.id);
+      likesObj[post.id] = found ? found.likes : post.likes;
+    });
+    setLikes(likesObj);
+    setLikedPosts((prev) => ({ ...prev, [id]: true }));
   };
 
   return (
@@ -171,12 +203,15 @@ const BlogSection = () => {
                     <div className="flex items-center gap-3">
                       <button
                         onClick={(e) => handleLike(post.id, e)}
-                        className="flex items-center gap-1 text-xs text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 cursor-pointer"
+                        className={`flex items-center gap-1 text-xs text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 cursor-pointer ${
+                          likedPosts[post.id]
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
+                        }`}
+                        disabled={likedPosts[post.id]}
                       >
-                        <FaHeart className="w-3 h-3" />
-                        <span>
-                          {isClient ? likes[post.id] ?? post.likes : post.likes}
-                        </span>
+                        <FaThumbsUp className="w-3 h-3" />
+                        <span>{likes[post.id] ?? post.likes}</span>
                       </button>
                       <FaArrowRight className="w-3 h-3 text-[#FF004F] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>

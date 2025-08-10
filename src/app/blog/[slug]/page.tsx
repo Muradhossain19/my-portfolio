@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
 import {
   FaCalendarAlt,
   FaUser,
-  FaHeart,
+  FaThumbsUp,
   FaClock,
   FaFacebookF,
   FaTwitter,
@@ -127,19 +127,31 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     return () => window.removeEventListener("scroll", updateReadingProgress);
   }, []);
 
-  const handleLike = () => {
-    if (!post || isLiked) return;
-
-    const newLikes = likes + 1;
-    setLikes(newLikes);
-    setIsLiked(true);
-
-    // Save to localStorage - ADD typeof check
-    if (typeof window !== "undefined") {
-      // <-- Add this check
-      localStorage.setItem(`blog-likes-${post.id}`, newLikes.toString());
-      localStorage.setItem(`user-liked-${post.id}`, "true");
+  // Fetch likes from backend
+  useEffect(() => {
+    if (!slug) return;
+    async function fetchLikes() {
+      const res = await fetch("/api/blog-likes");
+      const data = await res.json();
+      const found = data.find((d: any) => d.blog_id === post?.id);
+      setLikes(found ? found.likes : post?.likes || 0);
     }
+    fetchLikes();
+  }, [slug, post]);
+
+  const handleLike = async () => {
+    if (!post || isLiked) return;
+    await fetch("/api/blog-likes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ blog_id: post.id }),
+    });
+    // Refetch likes
+    const res = await fetch("/api/blog-likes");
+    const data = await res.json();
+    const found = data.find((d: any) => d.blog_id === post.id);
+    setLikes(found ? found.likes : post.likes);
+    setIsLiked(true);
   };
 
   const handleShare = (platform: string) => {
@@ -299,7 +311,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                         : "bg-[#ECF0F3] text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] hover:text-[#FF004F] hover:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] cursor-pointer"
                     }`}
                   >
-                    <FaHeart className="w-4 h-4" />
+                    <FaThumbsUp className="w-4 h-4" />
                     <span>{likes}</span>
                   </button>
                 </div>

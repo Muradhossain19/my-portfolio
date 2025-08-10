@@ -367,43 +367,56 @@ const PortfolioSection = () => {
     setCurrentPage(1); // Reset to first page on filter change
   }, [activeFilter]);
 
-  // Load loves from localStorage - ADD typeof check
+  // Fetch loves from backend on mount
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem(LOCAL_KEY);
-      if (stored) {
-        setLoves(JSON.parse(stored));
-      } else {
+    async function fetchLoves() {
+      try {
+        const res = await fetch("/api/portfolio-loves");
+        const data = await res.json();
+        // data: [{ portfolio_id: 1, loves: 5 }, ...]
+        const lovesObj: { [key: number]: number } = {};
+        portfolioData.forEach((item) => {
+          const found = data.find((d: any) => d.portfolio_id === item.id);
+          lovesObj[item.id] = found ? found.loves : item.likes;
+        });
+        setLoves(lovesObj);
+      } catch {
+        // fallback to initial likes if API fails
         const initialLoves: { [key: number]: number } = {};
         portfolioData.forEach((item) => {
           initialLoves[item.id] = item.likes;
         });
         setLoves(initialLoves);
-        localStorage.setItem(LOCAL_KEY, JSON.stringify(initialLoves));
       }
-    } else {
-      // Server-side fallback
-      const initialLoves: { [key: number]: number } = {};
-      portfolioData.forEach((item) => {
-        initialLoves[item.id] = item.likes;
-      });
-      setLoves(initialLoves);
     }
+    fetchLoves();
   }, []);
 
-  // Save loves to localStorage whenever it changes - ADD typeof check
-  useEffect(() => {
-    if (typeof window !== "undefined" && Object.keys(loves).length > 0) {
-      localStorage.setItem(LOCAL_KEY, JSON.stringify(loves));
-    }
-  }, [loves]);
-
-  const handleLove = (id: number, e: React.MouseEvent) => {
+  // Update love count in backend and refetch
+  const handleLove = async (id: number, e: React.MouseEvent) => {
     e.stopPropagation();
-    setLoves((prev) => ({
-      ...prev,
-      [id]: prev[id] + 1,
-    }));
+    try {
+      await fetch("/api/portfolio-loves", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ portfolio_id: id }),
+      });
+      // Refetch loves after update
+      const res = await fetch("/api/portfolio-loves");
+      const data = await res.json();
+      const lovesObj: { [key: number]: number } = {};
+      portfolioData.forEach((item) => {
+        const found = data.find((d: any) => d.portfolio_id === item.id);
+        lovesObj[item.id] = found ? found.loves : item.likes;
+      });
+      setLoves(lovesObj);
+    } catch {
+      // fallback: increment locally
+      setLoves((prev) => ({
+        ...prev,
+        [id]: prev[id] + 1,
+      }));
+    }
   };
 
   interface PortfolioItem {

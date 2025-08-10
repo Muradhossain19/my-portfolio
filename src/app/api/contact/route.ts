@@ -1,73 +1,94 @@
 import { NextResponse } from "next/server";
+import mysql from "mysql2/promise";
 import nodemailer from "nodemailer";
 
-export async function POST(req: Request) {
-  const body = await req.json();
-  const { type, name, email, phone, subject, message, price, service } = body;
+const dbConfig = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+};
 
-  let mailSubject = "";
-  let mailHtml = "";
+const getEmailHtml = (data: any) => `
+  <!-- Responsive Email Template for Contact/Order -->
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f6f6f6; padding:30px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.05); font-family:Arial,sans-serif;">
+          <tr>
+            <td style="padding:32px 32px 16px 32px; text-align:center;">
+              <h2 style="margin:0; color:#222;">
+                ${
+                  data.type === "order"
+                    ? "Order Received!"
+                    : "Thank You for Contacting Us!"
+                }
+              </h2>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 32px 24px 32px;">
+              <p style="font-size:16px; color:#444; margin:0 0 16px 0;">
+                Hi <strong>${data.name}</strong>,
+              </p>
+              <p style="font-size:16px; color:#444; margin:0 0 16px 0;">
+                ${
+                  data.type === "order"
+                    ? "We have received your order request and will get back to you soon."
+                    : "We have received your message and will get back to you soon."
+                }
+                <br><br>
+                <strong>Details:</strong>
+              </p>
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9f9f9; border-radius:6px;">
+                <tr>
+                  <td style="padding:12px 16px; font-size:15px; color:#333;">
+                    <strong>Email:</strong> ${data.email}<br>
+                    <strong>Phone:</strong> ${data.phone}<br>
+                    <strong>Subject:</strong> ${data.subject}<br>
+                    ${
+                      data.type === "contact"
+                        ? `<strong>Service:</strong> ${data.service}<br>`
+                        : ""
+                    }
+                    <strong>Message:</strong><br>
+                    ${data.message}
+                    ${
+                      data.type === "order"
+                        ? `<br><strong>Price:</strong> ${data.price}`
+                        : ""
+                    }
+                  </td>
+                </tr>
+              </table>
+              <p style="font-size:15px; color:#888; margin:24px 0 0 0;">
+                If you have any urgent queries, feel free to reply to this email.<br>
+                <br>
+                Best regards,<br>
+                <strong>Murad Hossain Portfolio Team</strong>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:16px 32px; text-align:center; font-size:13px; color:#aaa;">
+              &copy; 2025 Murad Hossain Portfolio. All rights reserved.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+`;
 
-  if (type === "order") {
-    mailSubject = `New Order: ${subject}`;
-    mailHtml = `
-      <div style="background:#ECF0F3;padding:32px;border-radius:16px;font-family:sans-serif;">
-        <h2 style="color:#FF004F;margin-bottom:16px;">New Order Received</h2>
-        <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;">
-          <tr style="background:#FF004F;color:#fff;">
-            <th style="padding:8px;text-align:left;">Field</th>
-            <th style="padding:8px;text-align:left;">Details</th>
-          </tr>
-          <tr><td style="padding:8px;">Name</td><td style="padding:8px;">${name}</td></tr>
-          <tr><td style="padding:8px;">Email</td><td style="padding:8px;">${email}</td></tr>
-          <tr><td style="padding:8px;">Phone</td><td style="padding:8px;">${phone}</td></tr>
-          <tr><td style="padding:8px;">Subject</td><td style="padding:8px;">${subject}</td></tr>
-          <tr><td style="padding:8px;">Package Price</td><td style="padding:8px;">${price}</td></tr>
-        </table>
-        <h3 style="color:#FF004F;margin-top:24px;">Message</h3>
-        <div style="background:#fff;padding:16px;border-radius:8px;color:#1f2125;">${message}</div>
-        <p style="margin-top:32px;color:#3c3e41;font-size:13px;">This message was sent from your service order form.</p>
-      </div>
-    `;
-  } else if (type === "contact") {
-    mailSubject = `Contact Inquiry: ${subject}`;
-    mailHtml = `
-      <div style="background:#ECF0F3;padding:32px;border-radius:16px;font-family:sans-serif;">
-        <h2 style="color:#FF004F;margin-bottom:16px;">New Contact Inquiry</h2>
-        <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;">
-          <tr style="background:#FF004F;color:#fff;">
-            <th style="padding:8px;text-align:left;">Field</th>
-            <th style="padding:8px;text-align:left;">Details</th>
-          </tr>
-          <tr><td style="padding:8px;">Name</td><td style="padding:8px;">${name}</td></tr>
-          <tr><td style="padding:8px;">Email</td><td style="padding:8px;">${email}</td></tr>
-          <tr><td style="padding:8px;">Phone</td><td style="padding:8px;">${phone}</td></tr>
-          <tr><td style="padding:8px;">Subject</td><td style="padding:8px;">${subject}</td></tr>
-          <tr><td style="padding:8px;">Service</td><td style="padding:8px;">${service}</td></tr>
-        </table>
-        <h3 style="color:#FF004F;margin-top:24px;">Message</h3>
-        <div style="background:#fff;padding:16px;border-radius:8px;color:#1f2125;">${message}</div>
-        <p style="margin-top:32px;color:#3c3e41;font-size:13px;">This message was sent from your portfolio contact form.</p>
-      </div>
-    `;
-  } else if (type === "subscribe") {
-    mailSubject = `New Subscriber`;
-    mailHtml = `
-      <div style="background:#ECF0F3;padding:32px;border-radius:16px;font-family:sans-serif;">
-        <h2 style="color:#FF004F;margin-bottom:16px;">New Newsletter Subscriber</h2>
-        <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;">
-          <tr style="background:#FF004F;color:#fff;">
-            <th style="padding:8px;text-align:left;">Email</th>
-          </tr>
-          <tr><td style="padding:8px;">${email}</td></tr>
-        </table>
-        <p style="margin-top:32px;color:#3c3e41;font-size:13px;">This message was sent from your portfolio subscribe form.</p>
-      </div>
-    `;
-  } else {
-    return NextResponse.json({ error: "Invalid form type" }, { status: 400 });
-  }
-
+async function sendEmail({
+  to,
+  subject,
+  html,
+}: {
+  to: string;
+  subject: string;
+  html: string;
+}) {
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: Number(process.env.EMAIL_PORT),
@@ -78,18 +99,67 @@ export async function POST(req: Request) {
     },
   });
 
-  try {
-    await transporter.sendMail({
-      from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_TO,
-      subject: mailSubject,
-      html: mailHtml, // এখানে html property ব্যবহার করুন
-    });
-    return NextResponse.json({ success: true }, { status: 200 });
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to send email" },
-      { status: 500 }
+  await transporter.sendMail({
+    from: `"Murad Hossain Portfolio" <${process.env.EMAIL_USER}>`,
+    to,
+    subject,
+    html,
+  });
+}
+
+export async function POST(req: Request) {
+  const data = await req.json();
+  const connection = await mysql.createConnection(dbConfig);
+
+  if (data.type === "contact") {
+    await connection.query(
+      "INSERT INTO contacts_form (name, email, phone, subject, service, message) VALUES (?, ?, ?, ?, ?, ?)",
+      [
+        data.name,
+        data.email,
+        data.phone,
+        data.subject,
+        data.service,
+        data.message,
+      ]
     );
+  } else if (data.type === "order") {
+    await connection.query(
+      "INSERT INTO orders (name, email, phone, subject, message, price) VALUES (?, ?, ?, ?, ?, ?)",
+      [
+        data.name,
+        data.email,
+        data.phone,
+        data.subject,
+        data.message,
+        data.price,
+      ]
+    );
+  } else if (data.type === "subscribe") {
+    await connection.query("INSERT INTO subscriptions (email) VALUES (?)", [
+      data.email,
+    ]);
   }
+
+  // Email send logic
+  const html = getEmailHtml(data);
+
+  // User ke email
+  await sendEmail({
+    to: data.email,
+    subject:
+      data.type === "order" ? "Order Confirmation" : "Contact Confirmation",
+    html,
+  });
+
+  // Owner ke email
+  await sendEmail({
+    to: process.env.EMAIL_TO,
+    subject:
+      data.type === "order" ? "New Order Received" : "New Contact Message",
+    html,
+  });
+
+  await connection.end();
+  return NextResponse.json({ success: true });
 }

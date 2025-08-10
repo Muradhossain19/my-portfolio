@@ -7,7 +7,7 @@ import Link from "next/link";
 import {
   FaCalendarAlt,
   FaUser,
-  FaHeart,
+  FaThumbsUp,
   FaSearch,
   FaArrowRight,
   FaTag,
@@ -31,38 +31,47 @@ const BlogPage = () => {
   const [filteredPosts, setFilteredPosts] = useState(blogData);
   const [searchTerm, setSearchTerm] = useState("");
   const [likes, setLikes] = useState<{ [key: number]: number }>({});
+  const [likedPosts, setLikedPosts] = useState<{ [key: number]: boolean }>({});
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 6;
 
   // Breadcrumbs data
   const breadcrumbs = [{ label: "Blog", href: "/blog" }];
 
-  // Initialize likes from blog data
+  // Fetch likes from backend
   useEffect(() => {
-    const initialLikes: { [key: number]: number } = {};
-    blogData.forEach((post) => {
-      initialLikes[post.id] = post.likes;
-    });
-    setLikes(initialLikes);
+    async function fetchLikes() {
+      const res = await fetch("/api/blog-likes");
+      const data = await res.json();
+      const likesObj: { [key: number]: number } = {};
+      blogData.forEach((post) => {
+        const found = data.find((d: any) => d.blog_id === post.id);
+        likesObj[post.id] = found ? found.likes : post.likes;
+      });
+      setLikes(likesObj);
+    }
+    fetchLikes();
   }, []);
 
-  const handleLike = (id: number, e: React.MouseEvent) => {
+  const handleLike = async (id: number, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setLikes((prev) => ({
-      ...prev,
-      [id]: prev[id] + 1,
-    }));
-  };
-
-  // Get current likes from localStorage or state - ADD typeof check
-  const getCurrentLikes = (postId: number) => {
-    if (typeof window !== "undefined") {
-      // <-- Add this check
-      const saved = localStorage.getItem(`blog-likes-${postId}`);
-      return saved ? parseInt(saved) : likes[postId] || 0;
-    }
-    return likes[postId] || 0; // Server-side fallback
+    if (likedPosts[id]) return;
+    await fetch("/api/blog-likes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ blog_id: id }),
+    });
+    // Refetch likes
+    const res = await fetch("/api/blog-likes");
+    const data = await res.json();
+    const likesObj: { [key: number]: number } = {};
+    blogData.forEach((post) => {
+      const found = data.find((d: any) => d.blog_id === post.id);
+      likesObj[post.id] = found ? found.likes : post.likes;
+    });
+    setLikes(likesObj);
+    setLikedPosts((prev) => ({ ...prev, [id]: true }));
   };
 
   // Filter posts based on category and search
@@ -242,10 +251,15 @@ const BlogPage = () => {
                         <div className="flex items-center gap-3">
                           <button
                             onClick={(e) => handleLike(post.id, e)}
-                            className="flex items-center gap-1 text-xs text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 cursor-pointer"
+                            className={`flex items-center gap-1 text-xs text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 cursor-pointer ${
+                              likedPosts[post.id]
+                                ? "opacity-50 cursor-not-allowed"
+                                : ""
+                            }`}
+                            disabled={likedPosts[post.id]}
                           >
-                            <FaHeart className="w-3 h-3" />
-                            <span>{getCurrentLikes(post.id)}</span>
+                            <FaThumbsUp className="w-3 h-3" />
+                            <span>{likes[post.id] ?? post.likes}</span>
                           </button>
                           <FaArrowRight className="w-3 h-3 text-[#FF004F] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </div>
