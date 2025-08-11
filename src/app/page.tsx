@@ -31,6 +31,11 @@ export default function Home() {
             }),
           }}
         />
+
+        <meta
+          name="google-site-verification"
+          content="HfnbO6pivguUmdwXN7OgwPFw1JxvOBOBZoefaJPm5xo"
+        />
       </Head>
       <Suspense fallback={null}>
         <SectionScroller />
