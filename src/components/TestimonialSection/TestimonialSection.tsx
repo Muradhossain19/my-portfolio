@@ -25,66 +25,66 @@ type Review = {
 
 // Testimonial Data
 const testimonialsData: Review[] = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    position: "CEO at TechFlow",
-    company: "TechFlow Solutions",
-    image: "/images/hero-image.webp",
-    rating: 5,
-    testimonial:
-      "Working with this team was an absolute pleasure. They delivered beyond our expectations and the attention to detail was remarkable. The project was completed on time and within budget.",
-    project: "E-commerce Platform",
-    date: "March 2024",
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    position: "Product Manager",
-    company: "Digital Innovations",
-    image: "/images/hero-image.webp",
-    rating: 5,
-    testimonial:
-      "Exceptional work quality and professional approach. The team understood our requirements perfectly and delivered a solution that exceeded our expectations. Highly recommended!",
-    project: "Mobile App Development",
-    date: "February 2024",
-  },
-  {
-    id: 3,
-    name: "Emily Rodriguez",
-    position: "Marketing Director",
-    company: "Creative Agency",
-    image: "/images/hero-image.webp",
-    rating: 5,
-    testimonial:
-      "Outstanding creativity and technical expertise. The final product was exactly what we envisioned and more. The communication throughout the project was excellent.",
-    project: "Brand Website Redesign",
-    date: "January 2024",
-  },
-  {
-    id: 4,
-    name: "David Thompson",
-    position: "Founder",
-    company: "StartupHub",
-    image: "/images/hero-image.webp",
-    rating: 5,
-    testimonial:
-      "Professional, reliable, and incredibly talented. They transformed our vision into reality with impressive attention to detail and innovative solutions.",
-    project: "SaaS Platform",
-    date: "December 2023",
-  },
-  {
-    id: 5,
-    name: "Lisa Wang",
-    position: "CTO",
-    company: "DataCorp",
-    image: "/images/hero-image.webp",
-    rating: 5,
-    testimonial:
-      "Brilliant execution and seamless collaboration. The team's expertise in both design and development made our project a huge success. Will definitely work with them again.",
-    project: "Analytics Dashboard",
-    date: "November 2023",
-  },
+  // {
+  //   id: 1,
+  //   name: "Sarah Johnson",
+  //   position: "CEO at TechFlow",
+  //   company: "TechFlow Solutions",
+  //   image: "/images/hero-image.webp",
+  //   rating: 5,
+  //   testimonial:
+  //     "Working with this team was an absolute pleasure. They delivered beyond our expectations and the attention to detail was remarkable. The project was completed on time and within budget.",
+  //   project: "E-commerce Platform",
+  //   date: "March 2024",
+  // },
+  // {
+  //   id: 2,
+  //   name: "Michael Chen",
+  //   position: "Product Manager",
+  //   company: "Digital Innovations",
+  //   image: "/images/hero-image.webp",
+  //   rating: 5,
+  //   testimonial:
+  //     "Exceptional work quality and professional approach. The team understood our requirements perfectly and delivered a solution that exceeded our expectations. Highly recommended!",
+  //   project: "Mobile App Development",
+  //   date: "February 2024",
+  // },
+  // {
+  //   id: 3,
+  //   name: "Emily Rodriguez",
+  //   position: "Marketing Director",
+  //   company: "Creative Agency",
+  //   image: "/images/hero-image.webp",
+  //   rating: 5,
+  //   testimonial:
+  //     "Outstanding creativity and technical expertise. The final product was exactly what we envisioned and more. The communication throughout the project was excellent.",
+  //   project: "Brand Website Redesign",
+  //   date: "January 2024",
+  // },
+  // {
+  //   id: 4,
+  //   name: "David Thompson",
+  //   position: "Founder",
+  //   company: "StartupHub",
+  //   image: "/images/hero-image.webp",
+  //   rating: 5,
+  //   testimonial:
+  //     "Professional, reliable, and incredibly talented. They transformed our vision into reality with impressive attention to detail and innovative solutions.",
+  //   project: "SaaS Platform",
+  //   date: "December 2023",
+  // },
+  // {
+  //   id: 5,
+  //   name: "Lisa Wang",
+  //   position: "CTO",
+  //   company: "DataCorp",
+  //   image: "/images/hero-image.webp",
+  //   rating: 5,
+  //   testimonial:
+  //     "Brilliant execution and seamless collaboration. The team's expertise in both design and development made our project a huge success. Will definitely work with them again.",
+  //   project: "Analytics Dashboard",
+  //   date: "November 2023",
+  // },
 ];
 
 // Animation Variants
