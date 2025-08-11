@@ -31,48 +31,26 @@ const BlogPage = () => {
   const [filteredPosts, setFilteredPosts] = useState(blogData);
   const [searchTerm, setSearchTerm] = useState("");
   const [likes, setLikes] = useState<{ [key: number]: number }>({});
-  const [likedPosts, setLikedPosts] = useState<{ [key: number]: boolean }>({});
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 6;
 
   // Breadcrumbs data
   const breadcrumbs = [{ label: "Blog", href: "/blog" }];
 
-  // Fetch likes from backend
   useEffect(() => {
     async function fetchLikes() {
       const res = await fetch("/api/blog-likes");
-      const data: Array<{ blog_id: number; likes: number }> = await res.json();
+      const data: Array<{ blog_id: number; likes_count: number }> =
+        await res.json();
       const likesObj: { [key: number]: number } = {};
       blogData.forEach((post) => {
         const found = data.find((d) => d.blog_id === post.id);
-        likesObj[post.id] = found ? found.likes : post.likes;
+        likesObj[post.id] = found ? found.likes_count : post.likes;
       });
       setLikes(likesObj);
     }
     fetchLikes();
   }, []);
-
-  const handleLike = async (id: number, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (likedPosts[id]) return;
-    await fetch("/api/blog-likes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ blog_id: id }),
-    });
-    // Refetch likes
-    const res = await fetch("/api/blog-likes");
-    const data: Array<{ blog_id: number; likes: number }> = await res.json();
-    const likesObj: { [key: number]: number } = {};
-    blogData.forEach((post) => {
-      const found = data.find((d) => d.blog_id === post.id); // <-- FIXED: d is typed above
-      likesObj[post.id] = found ? found.likes : post.likes;
-    });
-    setLikes(likesObj);
-    setLikedPosts((prev) => ({ ...prev, [id]: true }));
-  };
 
   // Filter posts based on category and search
   useEffect(() => {
@@ -250,13 +228,8 @@ const BlogPage = () => {
                         {/* Action Buttons */}
                         <div className="flex items-center gap-3">
                           <button
-                            onClick={(e) => handleLike(post.id, e)}
-                            className={`flex items-center gap-1 text-xs text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 cursor-pointer ${
-                              likedPosts[post.id]
-                                ? "opacity-50 cursor-not-allowed"
-                                : ""
-                            }`}
-                            disabled={likedPosts[post.id]}
+                            className="flex items-center gap-1 text-xs text-[#3c3e41] opacity-50"
+                            disabled
                           >
                             <FaThumbsUp className="w-3 h-3" />
                             <span>{likes[post.id] ?? post.likes}</span>

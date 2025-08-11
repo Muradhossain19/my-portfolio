@@ -128,16 +128,16 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
   }, []);
 
   // Fetch likes from backend
+  // Fetch likes from backend
   useEffect(() => {
     if (!slug || !post) return;
     async function fetchLikes() {
-      if (!post) return; // <-- Add this guard
+      if (!post) return;
       const res = await fetch("/api/blog-likes");
-      const data: Array<{ blog_id: number; likes: number }> = await res.json();
-      const found = data.find(
-        (d: { blog_id: number; likes: number }) => d.blog_id === post.id
-      );
-      setLikes(found ? found.likes : post.likes);
+      const data: Array<{ blog_id: number; likes_count: number }> =
+        await res.json();
+      const found = data.find((d) => d.blog_id === post.id);
+      setLikes(found ? found.likes_count : post.likes);
     }
     fetchLikes();
   }, [slug, post]);
@@ -151,11 +151,10 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     });
     // Refetch likes
     const res = await fetch("/api/blog-likes");
-    const data: Array<{ blog_id: number; likes: number }> = await res.json();
-    const found = data.find(
-      (d: { blog_id: number; likes: number }) => d.blog_id === post.id
-    ); // <-- FIXED
-    setLikes(found ? found.likes : post.likes);
+    const data: Array<{ blog_id: number; likes_count: number }> =
+      await res.json();
+    const found = data.find((d) => d.blog_id === post.id);
+    setLikes(found ? found.likes_count : post.likes);
     setIsLiked(true);
   };
 

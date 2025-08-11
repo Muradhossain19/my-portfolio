@@ -50,7 +50,7 @@ const Footer = () => {
     { label: "About", section: "about" },
     { label: "Portfolio", section: "portfolio" },
     { label: "Testimonial", section: "testimonial" },
-    { label: "Price", section: "pricing" },
+    // { label: "Price", section: "pricing" },
     { label: "Blog", href: "/blog" }, // Blog page link only
     { label: "Contact", section: "contact" },
   ];
