@@ -370,15 +370,15 @@ const PortfolioSection = () => {
     async function fetchLoves() {
       try {
         const res = await fetch("/api/portfolio-loves");
-        const data: Array<{ portfolio_id: number; loves: number }> =
+        const data: Array<{ portfolio_id: number; loves_count: number }> =
           await res.json();
         const lovesObj: { [key: number]: number } = {};
         portfolioData.forEach((item) => {
           const found = data.find(
-            (d: { portfolio_id: number; loves: number }) =>
+            (d: { portfolio_id: number; loves_count: number }) =>
               d.portfolio_id === item.id
           );
-          lovesObj[item.id] = found ? found.loves : item.likes;
+          lovesObj[item.id] = found ? found.loves_count : item.likes;
         });
         setLoves(lovesObj);
       } catch {
@@ -404,15 +404,15 @@ const PortfolioSection = () => {
       });
       // Refetch loves after update
       const res = await fetch("/api/portfolio-loves");
-      const data: Array<{ portfolio_id: number; loves: number }> =
+      const data: Array<{ portfolio_id: number; loves_count: number }> =
         await res.json();
       const lovesObj: { [key: number]: number } = {};
       portfolioData.forEach((item) => {
         const found = data.find(
-          (d: { portfolio_id: number; loves: number }) =>
+          (d: { portfolio_id: number; loves_count: number }) =>
             d.portfolio_id === item.id
         );
-        lovesObj[item.id] = found ? found.loves : item.likes;
+        lovesObj[item.id] = found ? found.loves_count : item.likes;
       });
       setLoves(lovesObj);
     } catch {

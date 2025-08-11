@@ -169,8 +169,6 @@ const TestimonialSection = () => {
   const [resetKey, setResetKey] = useState(0);
   const statsRef = useRef<HTMLDivElement>(null);
 
-  const isAdmin = true; // Only set true for owner/admin
-
   // Fetch reviews from API
   useEffect(() => {
     async function fetchReviews() {
@@ -279,19 +277,6 @@ const TestimonialSection = () => {
   const handleOpenReviewModal = () => {
     setResetKey((prev) => prev + 1); // Change key to force reset
     setShowReviewModal(true);
-  };
-
-  const handleDeleteReview = async (id: number) => {
-    await fetch("/api/reviews", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id,
-        token: process.env.NEXT_PUBLIC_ADMIN_TOKEN || "your-secret-token",
-      }),
-    });
-    setTestimonials((prev) => prev.filter((review) => review.id !== id));
-    setCurrentIndex(0);
   };
 
   // For stats calculation:
@@ -427,18 +412,6 @@ const TestimonialSection = () => {
               >
                 <FaChevronRight />
               </button>
-
-              {/* Delete Button for Admin */}
-              {isAdmin && (
-                <button
-                  onClick={() =>
-                    handleDeleteReview(testimonials[currentIndex].id!)
-                  }
-                  className="absolute top-6 right-20 bg-[#FF004F] text-white px-4 py-2 rounded-xl font-semibold shadow hover:bg-[#e6003d] transition-colors duration-300"
-                >
-                  Delete
-                </button>
-              )}
             </motion.div>
           </AnimatePresence>
         </motion.div>
