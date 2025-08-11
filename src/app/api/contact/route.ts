@@ -11,7 +11,7 @@ const pool = new Pool({
 });
 
 // ডেটার জন্য একটি ইন্টারফেস
-interface FormData {
+type ContactFormData = {
   type: "contact" | "order" | "subscribe";
   name?: string;
   email: string;
@@ -20,7 +20,7 @@ interface FormData {
   service?: string;
   message?: string;
   price?: string;
-}
+};
 // ইমেইলের জন্য HTML টেমপ্লেট
 // এখানে `any` এর পরিবর্তে `ContactFormData` ব্যবহার করা হয়েছে
 const getEmailHtml = (data: ContactFormData) => `
@@ -148,7 +148,7 @@ async function sendEmail({
 export async function POST(req: Request) {
   const client = await pool.connect();
   try {
-    const data: FormData = await req.json();
+    const data: ContactFormData = await req.json();
 
     if (data.type === "contact") {
       await client.query(
