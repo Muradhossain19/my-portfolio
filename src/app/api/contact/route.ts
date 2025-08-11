@@ -9,15 +9,27 @@ const dbConfig = {
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
   port: 3306,
-  connectTimeout: 20000, // কানেকশন টাইমআউট ২০ সেকেন্ড
+  connectTimeout: 20000,
   ssl: {
-    // SSL অপশন (ডিবাগিং এর জন্য)
     rejectUnauthorized: false,
   },
 };
 
-// ইমেইলের জন্য HTML টেমপ্লেট (কোনো পরিবর্তন নেই)
-const getEmailHtml = (data: Record<string, any>) => `
+// ডেটার জন্য একটি ইন্টারফেস তৈরি করুন
+interface ContactFormData {
+  type: "contact" | "order" | "subscribe";
+  name?: string;
+  email: string;
+  phone?: string;
+  subject?: string;
+  service?: string;
+  message?: string;
+  price?: string;
+}
+
+// ইমেইলের জন্য HTML টেমপ্লেট
+// এখানে `any` এর পরিবর্তে `ContactFormData` ব্যবহার করা হয়েছে
+const getEmailHtml = (data: ContactFormData) => `
   <!-- Responsive Email Template for Contact/Order -->
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f6f6f6; padding:30px 0;">
     <tr>
@@ -110,7 +122,7 @@ ${data.message}`
   </table>
 `;
 
-// ইমেইল পাঠানোর ফাংশন (কোনো পরিবর্তন নেই)
+// ইমেইল পাঠানোর ফাংশন
 async function sendEmail({
   to,
   subject,
@@ -138,12 +150,12 @@ async function sendEmail({
   });
 }
 
-// মূল POST ফাংশন (আপডেট করা হয়েছে)
+// মূল POST ফাংশন
 export async function POST(req: Request) {
-  let connection; // কানেকশন ভ্যারিয়েবলটি বাইরে ডিক্লেয়ার করুন
+  let connection;
 
   try {
-    const data = await req.json();
+    const data: ContactFormData = await req.json();
 
     // --- ধাপ ১: ডাটাবেস অপারেশন ---
     connection = await mysql.createConnection(dbConfig);
@@ -178,14 +190,12 @@ export async function POST(req: Request) {
         [data.email]
       );
     } else {
-      // যদি কোনো পরিচিত type না পাওয়া যায়
       throw new Error("Invalid data type provided.");
     }
 
     // --- ধাপ ২: ইমেইল পাঠানো ---
     const html = getEmailHtml(data);
 
-    // ব্যবহারকারীকে কনফার্মেশন ইমেইল
     await sendEmail({
       to: data.email,
       subject:
@@ -193,13 +203,8 @@ export async function POST(req: Request) {
       html,
     });
 
-    // মালিককে নোটিফিকেশন ইমেইল
     const ownerEmail = process.env.EMAIL_TO;
-    if (!ownerEmail) {
-      console.warn(
-        "Owner email (EMAIL_TO) is not set. Skipping owner notification."
-      );
-    } else {
+    if (ownerEmail) {
       await sendEmail({
         to: ownerEmail,
         subject:
@@ -212,12 +217,14 @@ export async function POST(req: Request) {
       success: true,
       message: "Form submitted successfully!",
     });
-  } catch (error: any) {
+  } catch (error) {
+    // এখানে `any` এর পরিবর্তে শুধু `error` ব্যবহার করা হয়েছে
     // --- এরর হ্যান্ডলিং ---
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
     console.error("[API_ERROR]", {
-      message: error.message,
-      code: error.code, // যেমন 'ETIMEDOUT'
-      stack: error.stack,
+      message: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
     });
 
     return NextResponse.json(
@@ -226,7 +233,6 @@ export async function POST(req: Request) {
     );
   } finally {
     // --- ধাপ ৩: কানেকশন বন্ধ করা ---
-    // কানেকশন সফলভাবে তৈরি হয়ে থাকলে, সবশেষে এটি বন্ধ করুন
     if (connection) {
       await connection.end();
     }
