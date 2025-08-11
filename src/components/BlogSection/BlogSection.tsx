@@ -91,7 +91,7 @@ const BlogSection = () => {
           {latestPosts.map((post, index) => (
             <Link href={`/blog/${post.slug}`} key={post.id}>
               <motion.article
-                className={`${styles.postCard} group cursor-pointer`}
+                className={`${styles.postCard} relative group cursor-pointer`}
                 initial={{ opacity: 0, y: 40 }} // প্রাথমিক অবস্থা
                 whileInView={{ opacity: 1, y: 0 }} // অ্যানিমেশনের শেষ অবস্থা
                 viewport={{ once: true, amount: 0.2 }} // কখন অ্যানিমেশন শুরু হবে

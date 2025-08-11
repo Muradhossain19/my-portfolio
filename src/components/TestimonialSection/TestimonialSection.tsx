@@ -431,6 +431,7 @@ const TestimonialSection = () => {
               {/* Navigation Arrows */}
               <button
                 onClick={prevTestimonial}
+                aria-label="Previous testimonial"
                 className="absolute left-0 md:left-2 lg:-left-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-[#ECF0F3] rounded-full shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] flex items-center justify-center text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 active:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-5px_10px_#ffffff] z-10"
               >
                 <FaChevronLeft />
@@ -438,7 +439,8 @@ const TestimonialSection = () => {
 
               <button
                 onClick={nextTestimonial}
-                className="absolute right-0 md:right-2 lg:-right-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-[#ECF0F3] rounded-full shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] flex items-center justify-center text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 active:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-5px_10px_#ffffff] z-10"
+                aria-label="Next testimonial"
+                className="absolute right-0 md:right-2 lg:-right-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-[#ECF0F3] rounded-full shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] flex items-center justify-center text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 active:shadow-[inset_3px_3c_6px_#d1d9e6,inset_-3px_-5px_10px_#ffffff] z-10"
               >
                 <FaChevronRight />
               </button>
@@ -452,6 +454,7 @@ const TestimonialSection = () => {
             <button
               key={index}
               onClick={() => goToSlide(index)}
+              aria-label={`Go to testimonial ${index + 1}`}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
                 index === currentIndex
                   ? "bg-[#FF004F] shadow-[2px_2px_4px_#d1d9e6,-2px_-2px_4px_#ffffff]"
