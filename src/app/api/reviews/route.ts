@@ -3,7 +3,6 @@
 import { NextResponse } from "next/server";
 import { Pool } from "pg";
 
-// Neon ডাটাবেস কানেকশন পুল
 const pool = new Pool({
   connectionString: process.env.POSTGRES_URL,
   ssl: { rejectUnauthorized: false },
@@ -33,14 +32,19 @@ export async function POST(req: Request) {
   const client = await pool.connect();
   try {
     const data = await req.json();
-    // আপনার টেবিলের কলাম অনুযায়ী ডেটা যোগ করুন
     await client.query(
-      "INSERT INTO reviews (reviewer_name, reviewer_title, review_text, rating) VALUES ($1, $2, $3, $4)",
+      `INSERT INTO reviews 
+      (reviewer_name, reviewer_title, review_text, rating, company, project, image, date) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
       [
         data.name || data.reviewer_name,
         data.position || data.reviewer_title,
         data.testimonial || data.review_text,
         data.rating,
+        data.company || "",
+        data.project || "",
+        data.image || "/images/hero-image.webp",
+        data.date || "",
       ]
     );
     return NextResponse.json({

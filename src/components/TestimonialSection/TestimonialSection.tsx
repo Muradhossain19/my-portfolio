@@ -17,7 +17,7 @@ type Review = {
   position: string;
   company: string;
   project: string;
-  image: string; // base64 or url
+  image: string;
   date: string;
   rating: number;
   testimonial: string;
