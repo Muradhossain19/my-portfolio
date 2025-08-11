@@ -467,6 +467,7 @@ const TestimonialSection = () => {
         <div className="flex justify-center mb-8">
           <button
             onClick={handleOpenReviewModal}
+            aria-label="Write a Review"
             className="bg-[#FF004F] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#e6003d] transition-colors duration-300 shadow-[5px_5px_15px_#d1d9e6,-5px_-5px_15px_#ffffff] text-center cursor-pointer"
           >
             Write a Review

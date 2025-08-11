@@ -159,16 +159,21 @@ export default function ReviewModal({
               </div>
               {/* Service Taken */}
               <div>
-                <label className="block text-[#1f2125] font-semibold mb-2">
+                <label
+                  htmlFor="project"
+                  className="block text-[#1f2125] font-semibold mb-2"
+                >
                   Service Taken *
                 </label>
                 <div className="relative">
                   <select
+                    id="project"
                     name="project"
                     required
                     value={form.project}
                     onChange={handleChange}
                     className="w-full pl-12 pr-4 py-4 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] text-[#1f2125] font-light transition-all duration-300 focus:shadow-[inset_8px_8px_16px_#d1d9e6,inset_-8px_-8px_16px_#ffffff] appearance-none"
+                    aria-label="Service Taken"
                   >
                     <option value="">Select a service</option>
                     {services.map((s) => (

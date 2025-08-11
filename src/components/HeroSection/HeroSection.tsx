@@ -143,24 +143,27 @@ const HeroSection = () => {
             <motion.div className="pt-4" variants={itemVariants}>
               <div className="sm:hidden flex justify-between items-end">
                 <div>
-                  <h4 className="text-sm font-medium uppercase tracking-widest text-[#3c3e41] mb-3">
+                  <h2 className="text-sm font-medium uppercase tracking-widest text-[#3c3e41] mb-3">
                     Find With Me
-                  </h4>
+                  </h2>
                   <div className="flex space-x-3">
                     <a
                       href="https://www.facebook.com/murad.hossain.685"
+                      aria-label="Facebook profile"
                       className="w-11 h-11 rounded-md bg-[#ECF0F3] flex items-center justify-center text-lg text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300"
                     >
                       <FaFacebookF />
                     </a>
                     <a
                       href="https://x.com/MuradHo93458407"
+                      aria-label="Twitter profile"
                       className="w-11 h-11 rounded-md bg-[#ECF0F3] flex items-center justify-center text-lg text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300"
                     >
                       <FaTwitter />
                     </a>
                     <a
                       href="https://www.linkedin.com/in/wordpress-developer-murad/"
+                      aria-label="LinkedIn profile"
                       className="w-11 h-11 rounded-md bg-[#ECF0F3] flex items-center justify-center text-lg text-[#3c3e41] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300"
                     >
                       <FaLinkedinIn />
@@ -170,7 +173,7 @@ const HeroSection = () => {
                 {/* Hire Me বাটনটিকে একটি div এর মধ্যে রাখা হলো */}
                 <div>
                   <button
-                    className="w-28 h-11 text-sm font-semibold text-[#FF004F] bg-[#ECF0F3] rounded-md shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300"
+                    className="w-28 h-11 text-sm font-semibold text-white bg-[#FF004F] rounded-md shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-300"
                     onClick={scrollToContact}
                   >
                     HIRE ME
