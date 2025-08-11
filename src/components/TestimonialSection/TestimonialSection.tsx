@@ -379,8 +379,11 @@ const TestimonialSection = () => {
                     <div className="w-32 h-32 rounded-full overflow-hidden shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff] p-2 bg-[#ECF0F3]">
                       <div className="w-full h-full rounded-full overflow-hidden">
                         <Image
-                          src={testimonials[currentIndex].image}
-                          alt={testimonials[currentIndex].name}
+                          src={
+                            testimonials[currentIndex]?.image ||
+                            "/images/hero-image.webp"
+                          }
+                          alt={testimonials[currentIndex]?.name || "Client"}
                           width={120}
                           height={120}
                           className="w-full h-full object-cover"
@@ -399,25 +402,26 @@ const TestimonialSection = () => {
                 {/* Testimonial Content */}
                 <div className="lg:col-span-2 text-center lg:text-left">
                   <blockquote className="text-lg md:text-xl text-[#1f2125] leading-relaxed mb-6 font-light md:font-medium">
-                    &ldquo;{testimonials[currentIndex].testimonial}&rdquo;
+                    &ldquo;{testimonials[currentIndex]?.testimonial || ""}
+                    &rdquo;
                   </blockquote>
 
                   <div className="space-y-2">
                     <h4 className="text-xl text-[#1f2125] font-light md:font-bold">
-                      {testimonials[currentIndex].name}
+                      {testimonials[currentIndex]?.name || ""}
                     </h4>
                     <p className="text-[#FF004F] font-light md:font-semibold">
-                      {testimonials[currentIndex].position}
+                      {testimonials[currentIndex]?.position || ""}
                     </p>
                     <p className="text-[#3c3e41] font-light md:font-normal">
-                      {testimonials[currentIndex].company}
+                      {testimonials[currentIndex]?.company || ""}
                     </p>
                     <div className="flex items-center justify-center lg:justify-start gap-4 pt-2">
                       <span className="text-sm text-[#3c3e41] bg-[#ECF0F3] px-3 py-1 rounded-full shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] font-light md:font-normal">
-                        {testimonials[currentIndex].project}
+                        {testimonials[currentIndex]?.project || ""}
                       </span>
                       <span className="text-sm text-[#3c3e41] font-light md:font-normal">
-                        {testimonials[currentIndex].date}
+                        {testimonials[currentIndex]?.date || ""}
                       </span>
                     </div>
                   </div>
