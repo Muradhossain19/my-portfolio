@@ -238,10 +238,11 @@ const HeroSection = () => {
               <Image
                 src="/images/hero-image.webp"
                 alt="Murad Hossain - Web Developer"
-                layout="fill"
-                objectFit="cover"
+                fill
+                priority // ensures preload for LCP
+                fetchPriority="high" // Next.js 13+ supports this for even higher priority
                 className="rounded-full p-3"
-                priority
+                sizes="(max-width: 640px) 100vw, 400px" // helps browser pick optimal size
               />
             </div>
           </motion.div>

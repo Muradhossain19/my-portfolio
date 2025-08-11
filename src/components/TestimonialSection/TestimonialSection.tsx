@@ -407,9 +407,9 @@ const TestimonialSection = () => {
                   </blockquote>
 
                   <div className="space-y-2">
-                    <h4 className="text-base md:text-xl text-[#1f2125] font-light md:font-bold mt-2">
+                    <h3 className="text-base md:text-xl text-[#1f2125] font-light md:font-bold mt-2">
                       {testimonials[currentIndex]?.name || ""}
-                    </h4>
+                    </h3>
                     <p className="text-xs md:text-base text-[#FF004F] font-light md:font-semibold">
                       {testimonials[currentIndex]?.position || ""}
                     </p>

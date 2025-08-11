@@ -32,7 +32,7 @@ const portfolioData = [
     services: "Web Development",
     budget: "$****",
     likes: 1,
-    link: "https://akhandekonomi.se",
+    link: "#",
     features: [
       "Clear service presentation (Accounting, Consulting )",
       "Easy-to-use contact and inquiry forms",
@@ -54,7 +54,7 @@ const portfolioData = [
     services: "Web Development",
     budget: "$****",
     likes: 1,
-    link: "https://schemafai.se",
+    link: "#",
     features: [
       "Responsive design",
       "SEO optimized",
@@ -99,7 +99,7 @@ const portfolioData = [
     services: "WordPress Development",
     budget: "$****",
     likes: 1,
-    link: "https://routerunnersbrokerage.com/",
+    link: "#",
     features: [
       "Integrated freight quote request form",
       "Dedicated pages for shipper and carrier services",
@@ -209,7 +209,7 @@ const portfolioData = [
     services: "WordPress Solutions",
     budget: "$****",
     likes: 1,
-    link: "lakeside-roofing.com",
+    link: "#",
     features: [
       "Prominent 'Request a Free Quote' call-to-action",
       "Detailed service pages (e.g., Roof Repair, Installation)",
@@ -842,17 +842,20 @@ const PortfolioSection = () => {
                       </div>
                     </div>
 
-                    {/* Action Buttons */}
+                    {/* Modal Action Buttons */}
                     <div className="flex gap-4 pt-2">
                       <button
-                        className="flex-1 bg-[#FF004F] text-white py-2.5 px-6 rounded-lg font-semibold text-center hover:bg-[#e6003d] transition-colors duration-300 text-sm"
+                        className="flex-1 bg-[#FF004F] text-white py-2.5 px-6 rounded-lg font-semibold text-center hover:bg-[#e6003d] transition-colors duration-300 text-sm shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff]"
                         onClick={scrollToContactAndClose}
+                        aria-label="Hire Me"
+                        style={{ border: "2px solid #1f2125" }} // extra border for contrast
                       >
                         HIRE ME
                       </button>
                       <button
                         onClick={(e) => handleLove(selectedProject.id, e)}
                         className="px-4 py-2.5 rounded-lg bg-[#ECF0F3] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] flex items-center gap-2 text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300"
+                        aria-label="Love"
                       >
                         <FaHeart />
                         <span>{loves[selectedProject.id]}</span>
