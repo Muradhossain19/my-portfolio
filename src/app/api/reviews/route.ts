@@ -36,7 +36,12 @@ export async function POST(req: Request) {
     // আপনার টেবিলের কলাম অনুযায়ী ডেটা যোগ করুন
     await client.query(
       "INSERT INTO reviews (reviewer_name, reviewer_title, review_text, rating) VALUES ($1, $2, $3, $4)",
-      [data.reviewer_name, data.reviewer_title, data.review_text, data.rating]
+      [
+        data.name || data.reviewer_name,
+        data.position || data.reviewer_title,
+        data.testimonial || data.review_text,
+        data.rating,
+      ]
     );
     return NextResponse.json({
       success: true,
