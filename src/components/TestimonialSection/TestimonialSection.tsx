@@ -25,18 +25,18 @@ type Review = {
 
 // Testimonial Data
 const testimonialsData: Review[] = [
-  // {
-  //   id: 1,
-  //   name: "Sarah Johnson",
-  //   position: "CEO at TechFlow",
-  //   company: "TechFlow Solutions",
-  //   image: "/images/hero-image.webp",
-  //   rating: 5,
-  //   testimonial:
-  //     "Working with this team was an absolute pleasure. They delivered beyond our expectations and the attention to detail was remarkable. The project was completed on time and within budget.",
-  //   project: "E-commerce Platform",
-  //   date: "March 2024",
-  // },
+  {
+    id: 1,
+    name: "Sarah Johnson",
+    position: "CEO at TechFlow",
+    company: "TechFlow Solutions",
+    image: "/images/hero-image.webp",
+    rating: 5,
+    testimonial:
+      "Working with this team was an absolute pleasure. They delivered beyond our expectations and the attention to detail was remarkable. The project was completed on time and within budget.",
+    project: "E-commerce Platform",
+    date: "March 2024",
+  },
   // {
   //   id: 2,
   //   name: "Michael Chen",
