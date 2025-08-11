@@ -16,7 +16,7 @@ const navItems = [
   { name: "About", section: "about" },
   { name: "Portfolio", section: "portfolio" },
   { name: "Testimonial", section: "testimonial" },
-  { name: "Price", section: "pricing" },
+  // { name: "Price", section: "pricing" },
   { name: "Blog", section: "blog", isPage: true },
   { name: "Contact", section: "contact" },
 ];

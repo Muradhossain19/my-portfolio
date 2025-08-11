@@ -11,6 +11,7 @@ import {
   FaTimes,
   FaImage,
 } from "react-icons/fa";
+import { services } from "@/app/services/[slug]/ServiceData";
 
 const currentDate = new Date();
 const monthYear = currentDate.toLocaleString("default", {
@@ -53,7 +54,9 @@ export default function ReviewModal({
   const [success, setSuccess] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value, files } = e.target as HTMLInputElement;
     setForm((prev) => ({
@@ -160,16 +163,21 @@ export default function ReviewModal({
                   Service Taken *
                 </label>
                 <div className="relative">
-                  <input
+                  <select
                     name="project"
-                    type="text"
                     required
-                    placeholder="Service Taken"
-                    className="w-full pl-12 pr-4 py-4 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] text-[#1f2125] placeholder-[#3c3e41] font-light transition-all duration-300 focus:shadow-[inset_8px_8px_16px_#d1d9e6,inset_-8px_-8px_16px_#ffffff]"
                     value={form.project}
                     onChange={handleChange}
-                  />
-                  <FaClipboardList className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#3c3e41] w-4 h-4" />
+                    className="w-full pl-12 pr-4 py-4 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] text-[#1f2125] font-light transition-all duration-300 focus:shadow-[inset_8px_8px_16px_#d1d9e6,inset_-8px_-8px_16px_#ffffff] appearance-none"
+                  >
+                    <option value="">Select a service</option>
+                    {services.map((s) => (
+                      <option key={s.slug} value={s.title}>
+                        {s.title}
+                      </option>
+                    ))}
+                  </select>
+                  <FaClipboardList className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#3c3e41] w-4 h-4 pointer-events-none" />
                 </div>
               </div>
               {/* Image Upload */}

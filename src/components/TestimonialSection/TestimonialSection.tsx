@@ -401,19 +401,19 @@ const TestimonialSection = () => {
 
                 {/* Testimonial Content */}
                 <div className="lg:col-span-2 text-center lg:text-left">
-                  <blockquote className="text-lg md:text-xl text-[#1f2125] leading-relaxed mb-6 font-light md:font-medium">
+                  <blockquote className="text-sm md:text-base text-[#1f2125] leading-relaxed mb-6 font-light md:font-medium">
                     &ldquo;{testimonials[currentIndex]?.testimonial || ""}
                     &rdquo;
                   </blockquote>
 
                   <div className="space-y-2">
-                    <h4 className="text-xl text-[#1f2125] font-light md:font-bold">
+                    <h4 className="text-base md:text-xl text-[#1f2125] font-light md:font-bold mt-2">
                       {testimonials[currentIndex]?.name || ""}
                     </h4>
-                    <p className="text-[#FF004F] font-light md:font-semibold">
+                    <p className="text-xs md:text-base text-[#FF004F] font-light md:font-semibold">
                       {testimonials[currentIndex]?.position || ""}
                     </p>
-                    <p className="text-[#3c3e41] font-light md:font-normal">
+                    <p className="text-xs md:text-base text-[#3c3e41] font-light md:font-normal">
                       {testimonials[currentIndex]?.company || ""}
                     </p>
                     <div className="flex items-center justify-center lg:justify-start gap-4 pt-2">
@@ -431,14 +431,14 @@ const TestimonialSection = () => {
               {/* Navigation Arrows */}
               <button
                 onClick={prevTestimonial}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-[#ECF0F3] rounded-full shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] flex items-center justify-center text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 active:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-5px_10px_#ffffff]"
+                className="absolute left-0 md:left-2 lg:-left-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-[#ECF0F3] rounded-full shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] flex items-center justify-center text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 active:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-5px_10px_#ffffff] z-10"
               >
                 <FaChevronLeft />
               </button>
 
               <button
                 onClick={nextTestimonial}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-[#ECF0F3] rounded-full shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] flex items-center justify-center text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 active:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-5px_10px_#ffffff]"
+                className="absolute right-0 md:right-2 lg:-right-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-[#ECF0F3] rounded-full shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] flex items-center justify-center text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 active:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-5px_10px_#ffffff] z-10"
               >
                 <FaChevronRight />
               </button>

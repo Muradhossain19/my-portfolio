@@ -116,6 +116,80 @@ ${data.message}`
   </table>
 `;
 
+// Owner email template
+const getOwnerEmailHtml = (data: ContactFormData) => `
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f6f6f6; padding:30px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.05); font-family:Arial,sans-serif;">
+          <tr>
+            <td style="padding:32px 32px 16px 32px; text-align:center;">
+              <h2 style="margin:0; color:#222;">
+                ${
+                  data.type === "order"
+                    ? "New Order Received"
+                    : "New Contact Message"
+                }
+              </h2>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 32px 24px 32px;">
+              <p style="font-size:16px; color:#444; margin:0 0 16px 0;">
+                You have received a new ${
+                  data.type === "order" ? "order" : "contact"
+                } submission from your portfolio website.
+              </p>
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9f9f9; border-radius:6px;">
+                <tr>
+                  <td style="padding:12px 16px; font-size:15px; color:#333;">
+                    <strong>Name:</strong> ${data.name || "N/A"}<br/>
+                    <strong>Email:</strong> ${data.email}<br/>
+                    ${
+                      data.phone
+                        ? `<strong>Phone:</strong> ${data.phone}<br/>`
+                        : ""
+                    }
+                    ${
+                      data.subject
+                        ? `<strong>Subject:</strong> ${data.subject}<br/>`
+                        : ""
+                    }
+                    ${
+                      data.service
+                        ? `<strong>Service:</strong> ${data.service}<br/>`
+                        : ""
+                    }
+                    ${
+                      data.message
+                        ? `<strong>Message:</strong> ${data.message}<br/>`
+                        : ""
+                    }
+                    ${
+                      data.price
+                        ? `<strong>Price:</strong> ${data.price}<br/>`
+                        : ""
+                    }
+                  </td>
+                </tr>
+              </table>
+              <p style="font-size:15px; color:#888; margin:24px 0 0 0;">
+                Please respond to the client as soon as possible.<br/><br/>
+                <strong>Murad Hossain Portfolio System</strong>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:16px 32px; text-align:center; font-size:13px; color:#aaa;">
+              &copy; ${new Date().getFullYear()} Murad Hossain Portfolio. All rights reserved.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+`;
+
 // ইমেইল পাঠানোর ফাংশন
 async function sendEmail({
   to,
@@ -185,6 +259,7 @@ export async function POST(req: Request) {
     // --- ধাপ ২: ইমেইল পাঠানো ---
     const html = getEmailHtml(data);
 
+    // Send confirmation to user
     await sendEmail({
       to: data.email,
       subject:
@@ -192,13 +267,14 @@ export async function POST(req: Request) {
       html,
     });
 
+    // Send notification to owner
     const ownerEmail = process.env.EMAIL_TO;
     if (ownerEmail) {
       await sendEmail({
         to: ownerEmail,
         subject:
           data.type === "order" ? "New Order Received" : "New Contact Message",
-        html,
+        html: getOwnerEmailHtml(data),
       });
     }
 

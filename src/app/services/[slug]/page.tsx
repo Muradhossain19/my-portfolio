@@ -30,9 +30,9 @@ import {
   FaPlus,
   FaMinus,
 } from "react-icons/fa";
+import { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { useState, useCallback, useEffect } from "react";
 import ContactModal from "@/components/ContactModal/ContactModal";
 
 // Animation variants
@@ -109,6 +109,16 @@ type PortfolioExample = {
   features: string[];
 };
 
+type DbReview = {
+  id: number;
+  name: string;
+  company: string;
+  image: string;
+  rating: number;
+  testimonial: string;
+  project: string;
+};
+
 export default function ServicePage() {
   const { slug } = useParams<{ slug: string }>();
   const service = services.find((s) => s.slug === slug);
@@ -118,6 +128,7 @@ export default function ServicePage() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
+  // Testimonial carousel setup
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: "start" },
     [Autoplay({ delay: 4000, stopOnInteraction: false })]
@@ -134,6 +145,27 @@ export default function ServicePage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [loves, setLoves] = useState<{ [key: string]: number }>({});
+  // Fetch reviews from database for this service
+  const [dbReviews, setDbReviews] = useState<DbReview[]>([]);
+
+  useEffect(() => {
+    if (service) {
+      fetch(`/api/reviews?project=${encodeURIComponent(service.title)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const mapped = data.map((item: DbReview) => ({
+            id: item.id,
+            name: item.name,
+            company: item.company,
+            image: item.image || "/images/hero-image.webp",
+            rating: item.rating,
+            testimonial: item.testimonial,
+            project: item.project,
+          }));
+          setDbReviews(mapped);
+        });
+    }
+  }, [service]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -780,7 +812,7 @@ export default function ServicePage() {
           </div>
         </section>
 
-        {/* Testimonials Section - New Professional Slider Design */}
+        {/* Testimonials Section - Carousel, database reviews */}
         <section className="py-16 md:py-20">
           <div className="container mx-auto px-4 max-w-6xl">
             <motion.div
@@ -798,7 +830,7 @@ export default function ServicePage() {
               </p>
             </motion.div>
 
-            {service.testimonials.length > 0 && (
+            {dbReviews.length > 0 && (
               <motion.div
                 className="relative"
                 initial={{ opacity: 0 }}
@@ -808,27 +840,45 @@ export default function ServicePage() {
               >
                 <div className="overflow-hidden" ref={emblaRef}>
                   <div className="flex -ml-4">
-                    {service.testimonials.map((testimonial, index) => (
+                    {dbReviews.map((review, index) => (
                       <div
-                        key={index}
+                        key={review.id || index}
                         className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.3333%] pl-4"
                       >
                         <div className="h-full flex flex-col bg-[#ECF0F3] rounded-2xl p-8 shadow-[inset_10px_10px_20px_#d1d9e6,inset_-10px_-10px_20px_#ffffff]">
                           <FaQuoteLeft className="text-[#FF004F] w-8 h-8 mb-6 opacity-40" />
                           <p className="text-[#3c3e41] mb-6 leading-relaxed font-light flex-grow">
-                            {testimonial.feedback}
+                            {review.testimonial}
                           </p>
                           <div className="flex items-center gap-4 mt-auto pt-6 border-t border-[#d1d9e6]">
-                            <div className="w-12 h-12 bg-[#ECF0F3] rounded-full flex items-center justify-center shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff]">
-                              <FaUser className="text-[#FF004F] w-5 h-5" />
+                            <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] bg-[#ECF0F3]">
+                              <Image
+                                src={review.image}
+                                alt={review.name}
+                                width={48}
+                                height={48}
+                                className="object-cover rounded-full"
+                              />
                             </div>
                             <div>
                               <div className="font-semibold text-base text-[#1f2125]">
-                                {testimonial.name}
+                                {review.name}
                               </div>
                               <div className="text-sm text-[#3c3e41] flex items-center gap-1.5">
                                 <FaBuilding className="w-3 h-3" />
-                                {testimonial.company}
+                                {review.company}
+                              </div>
+                              <div className="flex gap-1 pt-1">
+                                {Array.from({ length: 5 }, (_, i) => (
+                                  <FaStar
+                                    key={i}
+                                    className={`w-4 h-4 ${
+                                      i < review.rating
+                                        ? "text-[#FF004F]"
+                                        : "text-gray-300"
+                                    }`}
+                                  />
+                                ))}
                               </div>
                             </div>
                           </div>
@@ -839,7 +889,7 @@ export default function ServicePage() {
                 </div>
 
                 {/* Navigation Arrows */}
-                {service.testimonials.length > 3 && (
+                {dbReviews.length > 3 && (
                   <>
                     <button
                       onClick={scrollPrev}
@@ -858,6 +908,12 @@ export default function ServicePage() {
                   </>
                 )}
               </motion.div>
+            )}
+
+            {dbReviews.length === 0 && (
+              <div className="text-center text-[#3c3e41] py-12">
+                No reviews yet for this service.
+              </div>
             )}
           </div>
         </section>

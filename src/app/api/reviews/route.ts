@@ -9,12 +9,25 @@ const pool = new Pool({
 });
 
 // সব রিভিউ পাওয়ার জন্য
-export async function GET() {
+export async function GET(req: Request) {
   const client = await pool.connect();
   try {
-    const { rows } = await client.query(
-      "SELECT * FROM reviews ORDER BY id DESC"
-    );
+    const { searchParams } = new URL(req.url);
+    const project = searchParams.get("project"); // service/category/project name
+
+    let rows;
+    if (project) {
+      const result = await client.query(
+        "SELECT * FROM reviews WHERE project = $1 ORDER BY id DESC",
+        [project]
+      );
+      rows = result.rows;
+    } else {
+      const result = await client.query(
+        "SELECT * FROM reviews ORDER BY id DESC"
+      );
+      rows = result.rows;
+    }
     return NextResponse.json(rows);
   } catch (error: unknown) {
     console.error("[API_ERROR]", error);
