@@ -174,7 +174,33 @@ const TestimonialSection = () => {
     async function fetchReviews() {
       const res = await fetch("/api/reviews");
       const data = await res.json();
-      setTestimonials(data.length ? data : testimonialsData);
+      // Map API data to Review format
+      type ApiReview = {
+        id: number;
+        reviewer_name: string;
+        reviewer_title: string;
+        company?: string;
+        project?: string;
+        image?: string;
+        date?: string;
+        rating: number;
+        review_text: string;
+      };
+
+      const mapped = data.length
+        ? data.map((item: ApiReview) => ({
+            id: item.id,
+            name: item.reviewer_name,
+            position: item.reviewer_title,
+            company: item.company || "",
+            project: item.project || "",
+            image: item.image || "/images/hero-image.webp",
+            date: item.date || "",
+            rating: item.rating,
+            testimonial: item.review_text,
+          }))
+        : testimonialsData;
+      setTestimonials(mapped);
     }
     fetchReviews();
   }, []);
