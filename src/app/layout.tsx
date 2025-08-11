@@ -22,6 +22,9 @@ export const metadata = {
   title: "Murad Hossain | Web Developer & WordPress Designer",
   description:
     "Looking for a professional WordPress Designer and Web Developer? I build fast, secure, and user-friendly websites tailored to your business needs. Contact me for a free consultation!",
+  verification: {
+    google: "HfnbO6pivguUmdwXN7OgwPFw1JxvOBOBZoefaJPm5xo",
+  },
 };
 
 export default function RootLayout({
@@ -32,13 +35,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${montserrat.variable} ${poppins.variable}`}>
-        {/* Wrapper div to prevent overflow issues */}
-        {/* <div className="overflow-hidden"> */}
         <Header />
         <main>{children}</main>
         <Footer />
         <BackToTopButton />
-        {/* </div> */}
       </body>
     </html>
   );
