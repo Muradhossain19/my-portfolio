@@ -483,7 +483,7 @@ const TestimonialSection = () => {
               suffix: "+",
             },
             {
-              number: parseFloat(averageRating.toFixed(1)), // <-- Fix here
+              number: parseFloat(averageRating.toFixed(1)),
               label: "Average Rating",
               suffix: "★",
             },
@@ -501,7 +501,7 @@ const TestimonialSection = () => {
                 <CountUp
                   end={stat.number}
                   suffix={stat.suffix}
-                  duration={2}
+                  duration={0.7} // <-- speed up here
                   shouldStart={startCounting}
                 />
               </div>

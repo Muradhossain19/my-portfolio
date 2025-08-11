@@ -477,6 +477,16 @@ const PortfolioSection = () => {
     setSelectedProject(null);
   }, [scrollPosition]);
 
+  const scrollToContactAndClose = () => {
+    closeModal();
+    setTimeout(() => {
+      const contactSection = document.getElementById("contact");
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100); // modal close animation wait
+  };
+
   // Image navigation functions যোগ করুন
   const prevImage = () => {
     setCurrentImageIndex((prev) => Math.max(0, prev - 1));
@@ -834,7 +844,10 @@ const PortfolioSection = () => {
 
                     {/* Action Buttons */}
                     <div className="flex gap-4 pt-2">
-                      <button className="flex-1 bg-[#FF004F] text-white py-2.5 px-6 rounded-lg font-semibold text-center hover:bg-[#e6003d] transition-colors duration-300 text-sm">
+                      <button
+                        className="flex-1 bg-[#FF004F] text-white py-2.5 px-6 rounded-lg font-semibold text-center hover:bg-[#e6003d] transition-colors duration-300 text-sm"
+                        onClick={scrollToContactAndClose}
+                      >
                         HIRE ME
                       </button>
                       <button
