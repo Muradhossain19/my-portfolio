@@ -77,7 +77,7 @@ const portfolioData = [
     services: "WordPress Solutions",
     budget: "$****",
     likes: 1,
-    link: "mavinads.com",
+    link: "#",
     features: [
       "Custom design to reflect the agency's brand identity",
       "Service pages optimized for search engines (SEO )",
