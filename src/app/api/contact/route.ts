@@ -1,22 +1,17 @@
+// File: src/app/api/contact/route.ts
+
 import { NextResponse } from "next/server";
-import mysql from "mysql2/promise";
+import { Pool } from "pg";
 import nodemailer from "nodemailer";
 
-// ডাটাবেস কনফিগারেশন অবজেক্ট
-const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  port: 3306,
-  connectTimeout: 20000,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-};
+// Neon ডাটাবেস কানেকশন পুল
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
-// ডেটার জন্য একটি ইন্টারফেস তৈরি করুন
-interface ContactFormData {
+// ডেটার জন্য একটি ইন্টারফেস
+interface FormData {
   type: "contact" | "order" | "subscribe";
   name?: string;
   email: string;
@@ -26,7 +21,6 @@ interface ContactFormData {
   message?: string;
   price?: string;
 }
-
 // ইমেইলের জন্য HTML টেমপ্লেট
 // এখানে `any` এর পরিবর্তে `ContactFormData` ব্যবহার করা হয়েছে
 const getEmailHtml = (data: ContactFormData) => `
@@ -152,17 +146,13 @@ async function sendEmail({
 
 // মূল POST ফাংশন
 export async function POST(req: Request) {
-  let connection;
-
+  const client = await pool.connect();
   try {
-    const data: ContactFormData = await req.json();
-
-    // --- ধাপ ১: ডাটাবেস অপারেশন ---
-    connection = await mysql.createConnection(dbConfig);
+    const data: FormData = await req.json();
 
     if (data.type === "contact") {
-      await connection.query(
-        "INSERT INTO contacts_form (name, email, phone, subject, service, message) VALUES (?, ?, ?, ?, ?, ?)",
+      await client.query(
+        "INSERT INTO contacts_form (name, email, phone, subject, service, message) VALUES ($1, $2, $3, $4, $5, $6)",
         [
           data.name,
           data.email,
@@ -173,8 +163,8 @@ export async function POST(req: Request) {
         ]
       );
     } else if (data.type === "order") {
-      await connection.query(
-        "INSERT INTO orders_contact_form (name, email, phone, subject, message, price) VALUES (?, ?, ?, ?, ?, ?)",
+      await client.query(
+        "INSERT INTO orders_contact_form (name, email, phone, subject, message, price) VALUES ($1, $2, $3, $4, $5, $6)",
         [
           data.name,
           data.email,
@@ -185,10 +175,9 @@ export async function POST(req: Request) {
         ]
       );
     } else if (data.type === "subscribe") {
-      await connection.query(
-        "INSERT INTO subscriptions_form (email) VALUES (?)",
-        [data.email]
-      );
+      await client.query("INSERT INTO subscriptions_form (email) VALUES ($1)", [
+        data.email,
+      ]);
     } else {
       throw new Error("Invalid data type provided.");
     }
@@ -217,24 +206,13 @@ export async function POST(req: Request) {
       success: true,
       message: "Form submitted successfully!",
     });
-  } catch (error) {
-    // এখানে `any` এর পরিবর্তে শুধু `error` ব্যবহার করা হয়েছে
-    // --- এরর হ্যান্ডলিং ---
-    const errorMessage =
-      error instanceof Error ? error.message : "An unknown error occurred";
-    console.error("[API_ERROR]", {
-      message: errorMessage,
-      stack: error instanceof Error ? error.stack : undefined,
-    });
-
+  } catch (error: unknown) {
+    console.error("[API_ERROR]", error);
     return NextResponse.json(
       { success: false, message: "An internal server error occurred." },
       { status: 500 }
     );
   } finally {
-    // --- ধাপ ৩: কানেকশন বন্ধ করা ---
-    if (connection) {
-      await connection.end();
-    }
+    client.release();
   }
 }

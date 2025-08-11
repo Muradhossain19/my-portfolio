@@ -1,49 +1,87 @@
+// File: src/app/api/reviews/route.ts
+
 import { NextResponse } from "next/server";
-import mysql from "mysql2/promise";
+import { Pool } from "pg";
 
-const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-};
+// Neon ডাটাবেস কানেকশন পুল
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
+// সব রিভিউ পাওয়ার জন্য
 export async function GET() {
-  const connection = await mysql.createConnection(dbConfig);
-  const [rows] = await connection.query(
-    "SELECT * FROM reviews ORDER BY id DESC"
-  );
-  await connection.end();
-  return NextResponse.json(rows);
-}
-
-export async function POST(req: Request) {
-  const data = await req.json();
-  const connection = await mysql.createConnection(dbConfig);
-  await connection.query(
-    "INSERT INTO reviews (name, position, company, project, image, date, rating, testimonial) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-    [
-      data.name,
-      data.position,
-      data.company,
-      data.project,
-      data.image,
-      data.date,
-      data.rating,
-      data.testimonial,
-    ]
-  );
-  await connection.end();
-  return NextResponse.json({ success: true });
-}
-
-export async function DELETE(req: Request) {
-  const { id, token } = await req.json();
-  if (token !== process.env.ADMIN_TOKEN) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const client = await pool.connect();
+  try {
+    const { rows } = await client.query(
+      "SELECT * FROM reviews ORDER BY id DESC"
+    );
+    return NextResponse.json(rows);
+  } catch (error: unknown) {
+    console.error("[API_ERROR]", error);
+    return NextResponse.json(
+      { success: false, message: "An internal server error occurred." },
+      { status: 500 }
+    );
+  } finally {
+    client.release();
   }
-  const connection = await mysql.createConnection(dbConfig);
-  await connection.query("DELETE FROM reviews WHERE id = ?", [id]);
-  await connection.end();
-  return NextResponse.json({ success: true });
+}
+
+// নতুন রিভিউ যোগ করার জন্য
+export async function POST(req: Request) {
+  const client = await pool.connect();
+  try {
+    const data = await req.json();
+    // আপনার টেবিলের কলাম অনুযায়ী ডেটা যোগ করুন
+    await client.query(
+      "INSERT INTO reviews (reviewer_name, reviewer_title, review_text, rating) VALUES ($1, $2, $3, $4)",
+      [data.reviewer_name, data.reviewer_title, data.review_text, data.rating]
+    );
+    return NextResponse.json({
+      success: true,
+      message: "Review added successfully.",
+    });
+  } catch (error: unknown) {
+    console.error("[API_ERROR]", error);
+    return NextResponse.json(
+      { success: false, message: "An internal server error occurred." },
+      { status: 500 }
+    );
+  } finally {
+    client.release();
+  }
+}
+
+// একটি রিভিউ ডিলিট করার জন্য
+export async function DELETE(req: Request) {
+  const client = await pool.connect();
+  try {
+    const { id, token } = await req.json();
+
+    // অ্যাডমিন টোকেন দিয়ে সুরক্ষা
+    if (token !== process.env.ADMIN_TOKEN) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    if (!id) {
+      return NextResponse.json(
+        { error: "Review ID is required." },
+        { status: 400 }
+      );
+    }
+
+    await client.query("DELETE FROM reviews WHERE id = $1", [id]);
+    return NextResponse.json({
+      success: true,
+      message: "Review deleted successfully.",
+    });
+  } catch (error: unknown) {
+    console.error("[API_ERROR]", error);
+    return NextResponse.json(
+      { success: false, message: "An internal server error occurred." },
+      { status: 500 }
+    );
+  } finally {
+    client.release();
+  }
 }
