@@ -48,7 +48,7 @@ const Footer = () => {
     { label: "Home", section: "home" },
     { label: "About", section: "about" },
     { label: "Portfolio", section: "portfolio" },
-    { label: "Testimonial", section: "testimonial" },
+    // { label: "Testimonial", section: "testimonial" },
     { label: "Testimonials", href: "/testimonials" }, // Add testimonials page link
     { label: "Blog", href: "/blog" },
     { label: "Contact", section: "contact" },

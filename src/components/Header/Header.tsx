@@ -15,7 +15,7 @@ const navItems = [
   { name: "Services", section: "services" },
   { name: "About", section: "about" },
   { name: "Portfolio", section: "portfolio" },
-  { name: "Testimonial", section: "testimonials", isPage: true },
+  { name: "Testimonial", section: "testimonial", isPage: true },
   { name: "Blog", section: "blog", isPage: true },
   { name: "Contact", section: "contact" },
 ];
@@ -51,6 +51,10 @@ const Header = () => {
 
       if (section === "blog") {
         router.push("/blog");
+        return;
+      }
+      if (section === "testimonial") {
+        router.push("/testimonials");
         return;
       }
 

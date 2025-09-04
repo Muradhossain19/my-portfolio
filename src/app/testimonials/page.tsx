@@ -14,6 +14,7 @@ import {
   FaTimes,
   FaChevronDown, // Add this import
 } from "react-icons/fa";
+import CountUp from "react-countup";
 import PageHeader from "../../components/PageHeader/PageHeader";
 
 type Review = {
@@ -205,7 +206,7 @@ const TestimonialsPage = () => {
               transition={{ duration: 0.4 }}
             >
               <div className="text-2xl md:text-3xl font-bold text-[#FF004F] mb-2">
-                {reviews.length}+
+                <CountUp end={reviews.length} duration={1.5} />+
               </div>
               <div className="text-[#3c3e41] font-medium">Happy Clients</div>
             </motion.div>
@@ -218,7 +219,7 @@ const TestimonialsPage = () => {
               transition={{ duration: 0.4, delay: 0.1 }}
             >
               <div className="text-2xl md:text-3xl font-bold text-[#FF004F] mb-2">
-                {reviews.length}+
+                <CountUp end={reviews.length} duration={1.5} />+
               </div>
               <div className="text-[#3c3e41] font-medium">
                 Projects Completed
@@ -232,14 +233,22 @@ const TestimonialsPage = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: 0.2 }}
             >
-              <div className="text-2xl md:text-3xl font-bold text-[#FF004F] mb-2">
-                {reviews.length > 0
-                  ? (
-                      reviews.reduce((sum, r) => sum + r.rating, 0) /
-                      reviews.length
-                    ).toFixed(1)
-                  : "0.0"}
-                ★
+              <div className="text-2xl md:text-3xl font-bold text-[#FF004F] mb-2 flex flex-row items-center justify-center gap-2">
+                <CountUp
+                  end={
+                    reviews.length > 0
+                      ? Number(
+                          (
+                            reviews.reduce((sum, r) => sum + r.rating, 0) /
+                            reviews.length
+                          ).toFixed(1)
+                        )
+                      : 0
+                  }
+                  decimals={1}
+                  duration={1.5}
+                />
+                <FaStar />
               </div>
               <div className="text-[#3c3e41] font-medium">Average Rating</div>
             </motion.div>
@@ -252,7 +261,7 @@ const TestimonialsPage = () => {
               transition={{ duration: 0.4, delay: 0.3 }}
             >
               <div className="text-2xl md:text-3xl font-bold text-[#FF004F] mb-2">
-                3+
+                <CountUp end={3} duration={1.5} />+
               </div>
               <div className="text-[#3c3e41] font-medium">Years Experience</div>
             </motion.div>
