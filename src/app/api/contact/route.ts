@@ -21,8 +21,7 @@ type ContactFormData = {
   message?: string;
   price?: string;
 };
-// ইমেইলের জন্য HTML টেমপ্লেট
-// এখানে `any` এর পরিবর্তে `ContactFormData` ব্যবহার করা হয়েছে
+
 const getEmailHtml = (data: ContactFormData) => `
   <!-- Responsive Email Template for Contact/Order -->
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f6f6f6; padding:30px 0;">
@@ -51,56 +50,71 @@ const getEmailHtml = (data: ContactFormData) => `
                     ? "We have received your order request and will get back to you soon."
                     : "We have received your message and will get back to you soon."
                 }
-                  
-  
-
                 <strong>Details:</strong>
               </p>
               <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9f9f9; border-radius:6px;">
                 <tr>
                   <td style="padding:12px 16px; font-size:15px; color:#333;">
-                    <strong>Email:</strong> ${data.email}  
-
-                    ${
-                      data.phone
-                        ? `<strong>Phone:</strong> ${data.phone}  
-`
-                        : ""
-                    }
-                    ${
-                      data.subject
-                        ? `<strong>Subject:</strong> ${data.subject}  
-`
-                        : ""
-                    }
-                    ${
-                      data.service
-                        ? `<strong>Service:</strong> ${data.service}  
-`
-                        : ""
-                    }
-                    ${
-                      data.message
-                        ? `<strong>Message:</strong>  
-${data.message}`
-                        : ""
-                    }
-                    ${
-                      data.price
-                        ? `  
-<strong>Price:</strong> ${data.price}`
-                        : ""
-                    }
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding:6px 0;"><strong>Email:</strong></td>
+                        <td style="padding:6px 0;">
+                          <a href="mailto:${
+                            data.email
+                          }" style="color:#0073e6;text-decoration:underline;">${
+  data.email
+}</a>
+                        </td>
+                      </tr>
+                      ${
+                        data.phone
+                          ? `<tr>
+                              <td style="padding:6px 0;"><strong>Phone:</strong></td>
+                              <td style="padding:6px 0;">
+                                <a href="tel:${data.phone}" style="color:#0073e6;text-decoration:underline;">${data.phone}</a>
+                              </td>
+                            </tr>`
+                          : ""
+                      }
+                      ${
+                        data.subject
+                          ? `<tr>
+                              <td style="padding:6px 0;"><strong>Subject:</strong></td>
+                              <td style="padding:6px 0;">${data.subject}</td>
+                            </tr>`
+                          : ""
+                      }
+                      ${
+                        data.service
+                          ? `<tr>
+                              <td style="padding:6px 0;"><strong>Service:</strong></td>
+                              <td style="padding:6px 0;">${data.service}</td>
+                            </tr>`
+                          : ""
+                      }
+                      ${
+                        data.message
+                          ? `<tr>
+                              <td style="padding:6px 0; vertical-align:top;"><strong>Message:</strong></td>
+                              <td style="padding:6px 0;">${data.message}</td>
+                            </tr>`
+                          : ""
+                      }
+                      ${
+                        data.price
+                          ? `<tr>
+                              <td style="padding:6px 0;"><strong>Price:</strong></td>
+                              <td style="padding:6px 0;">${data.price}</td>
+                            </tr>`
+                          : ""
+                      }
+                    </table>
                   </td>
                 </tr>
               </table>
               <p style="font-size:15px; color:#888; margin:24px 0 0 0;">
-                If you have any urgent queries, feel free to reply to this email.  
-
-                  
-
-                Best regards,  
-
+                If you have any urgent queries, feel free to reply to this email.<br/><br/>
+                Best regards,<br/>
                 <strong>Murad Hossain Portfolio Team</strong>
               </p>
             </td>
@@ -175,13 +189,13 @@ const getOwnerEmailHtml = (data: ContactFormData) => `
               </table>
               <p style="font-size:15px; color:#888; margin:24px 0 0 0;">
                 Please respond to the client as soon as possible.<br/><br/>
-                <strong>Murad Hossain Portfolio System</strong>
+                <strong>Murad Hossain</strong>
               </p>
             </td>
           </tr>
           <tr>
             <td style="padding:16px 32px; text-align:center; font-size:13px; color:#aaa;">
-              &copy; ${new Date().getFullYear()} Murad Hossain Portfolio. All rights reserved.
+              &copy; ${new Date().getFullYear()} Murad Hossain. All rights reserved.
             </td>
           </tr>
         </table>

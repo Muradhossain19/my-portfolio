@@ -66,6 +66,9 @@ const ContactSection = () => {
     "idle" | "success" | "error"
   >("idle");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [messageTimeout, setMessageTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
 
   // Services dropdown options
   const services = [
@@ -224,6 +227,11 @@ const ContactSection = () => {
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
+
+      // Auto-hide message after 3 seconds
+      if (messageTimeout) clearTimeout(messageTimeout);
+      const timeout = setTimeout(() => setSubmitStatus("idle"), 3000);
+      setMessageTimeout(timeout);
     }
   };
 
@@ -540,7 +548,7 @@ const ContactSection = () => {
                   className={`w-full py-4 px-8 rounded-xl font-semibold text-white transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer ${
                     isSubmitting
                       ? "bg-[#3c3e41]"
-                      : "bg-[#FF004F] hover:bg-[#e6003d] shadow-[5px_5px_15px_#d1d9e6,-5px_-5px_15px_#ffffff] hover:shadow-[8px_8px_20px_#d1d9e6,-8px_-8px_20px_#ffffff] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff]"
+                      : "bg-[#FF004F] hover:bg-[#e6003d] shadow-[5px_5px_15px_#d1d9e6,-5px_-5px_15px_#ffffff] hover:shadow-[8px_8px_20px_#d1d9e6,-8px_-8px_20px_#d1d9e6] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff]"
                   }`}
                   whileHover={!isSubmitting ? { scale: 1.02 } : {}}
                   whileTap={!isSubmitting ? { scale: 0.98 } : {}}
