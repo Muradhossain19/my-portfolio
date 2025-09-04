@@ -11,7 +11,7 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaCalendarAlt,
-  FaDollarSign,
+  // FaDollarSign,
   FaUser,
   FaCog,
 } from "react-icons/fa";
@@ -809,7 +809,7 @@ const PortfolioSection = () => {
                         </p>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-[#ECF0F3] shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff]">
+                      {/* <div className="p-3 rounded-xl bg-[#ECF0F3] shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff]">
                         <div className="flex items-center gap-2 text-[#FF004F] mb-1">
                           <FaDollarSign className="w-3 h-3" />
                           <span className="text-xs font-medium">Budget</span>
@@ -817,7 +817,7 @@ const PortfolioSection = () => {
                         <p className="text-[#1f2125] font-semibold text-sm">
                           {selectedProject.budget}
                         </p>
-                      </div>
+                      </div> */}
                     </div>
 
                     {/* Features */}
@@ -848,7 +848,6 @@ const PortfolioSection = () => {
                         className="flex-1 bg-[#FF004F] text-white py-2.5 px-6 rounded-lg font-semibold text-center hover:bg-[#e6003d] transition-colors duration-300 text-sm shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff]"
                         onClick={scrollToContactAndClose}
                         aria-label="Hire Me"
-                        style={{ border: "2px solid #1f2125" }} // extra border for contrast
                       >
                         HIRE ME
                       </button>

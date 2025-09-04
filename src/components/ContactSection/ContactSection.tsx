@@ -13,6 +13,7 @@ import {
   FaCheckCircle,
   FaExclamationTriangle,
 } from "react-icons/fa";
+import CustomDropdown from "./CustomDropdown";
 
 // Animation Variants
 const containerVariants: Variants = {
@@ -69,13 +70,8 @@ const ContactSection = () => {
   // Services dropdown options
   const services = [
     "Web Development",
-    "WordPress Development",
-    "E-commerce Development",
-    "UI/UX Design",
-    "Website Maintenance",
-    "SEO Optimization",
-    "Consultation",
-    "Other",
+    "WordPress Solutions",
+    "E-commerce Solutions",
   ];
 
   // Contact information
@@ -83,22 +79,38 @@ const ContactSection = () => {
     {
       icon: FaMapMarkerAlt,
       title: "Address",
-      details: ["123 Main Street", "Dhaka, Bangladesh"],
+      details: ["1550, Sreenagar, Dhaka, Bangladesh"],
     },
     {
       icon: FaEnvelope,
       title: "Email",
-      details: ["hello@muradhossain.com", "contact@muradhossain.com"],
+      details: [
+        <a
+          key="email"
+          href="mailto:hello@muradhossain.com"
+          className="text-[#FF004F] underline hover:text-[#e6003d] transition-colors"
+        >
+          hello@muradhossain.com
+        </a>,
+      ],
     },
     {
       icon: FaPhone,
       title: "Phone",
-      details: ["+880 1700 000000", "+880 1800 000000"],
+      details: [
+        <a
+          key="phone"
+          href="tel:+8801947996585"
+          className="text-[#FF004F] underline hover:text-[#e6003d] transition-colors"
+        >
+          +880 1947 996585
+        </a>,
+      ],
     },
     {
       icon: FaClock,
       title: "Working Hours",
-      details: ["Mon - Fri: 9AM - 6PM", "Sat: 10AM - 4PM"],
+      details: ["Monday - Friday"],
     },
   ];
 
@@ -151,6 +163,20 @@ const ContactSection = () => {
       setErrors((prev) => ({
         ...prev,
         [name]: "",
+      }));
+    }
+  };
+
+  // Handle dropdown change
+  const handleDropdownChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      service: value,
+    }));
+    if (errors.service) {
+      setErrors((prev) => ({
+        ...prev,
+        service: "",
       }));
     }
   };
@@ -464,21 +490,13 @@ const ContactSection = () => {
                   <label className="block text-[#1f2125] font-semibold mb-2">
                     Service Interested In *
                   </label>
-                  <select
-                    name="service"
+                  <CustomDropdown
+                    options={services}
                     value={formData.service}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-4 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] text-[#1f2125] font-light transition-all duration-300 focus:shadow-[inset_8px_8px_16px_#d1d9e6,inset_-8px_-8px_16px_#ffffff] ${
-                      errors.service ? "border-red-300" : ""
-                    }`}
-                  >
-                    <option value="">Select a service</option>
-                    {services.map((service, index) => (
-                      <option key={index} value={service}>
-                        {service}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={handleDropdownChange}
+                    name="service"
+                    error={errors.service}
+                  />
                   {errors.service && (
                     <p className="text-red-500 text-sm mt-1">
                       {errors.service}

@@ -16,7 +16,7 @@ import Link from "next/link";
 const services = [
   {
     icon: <FaCode className="w-8 h-8 text-[#FF004F]" />,
-    title: "Custom Web Development",
+    title: "Web Development",
     description:
       "I build powerful, custom web applications using React/Next.js for the frontend and Laravel/PHP for a secure backend.",
     link: "/services/web-development",
@@ -117,55 +117,45 @@ const ServiceSection = () => {
         {/* সার্ভিস কার্ড (ডিজাইন আপডেট করা হয়েছে) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <motion.div
+            <Link
               key={index}
-              className="group bg-[#ECF0F3] rounded-2xl p-8 flex flex-col h-full shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff]"
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              whileHover={{
-                boxShadow:
-                  "inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff",
-                y: -8,
-              }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
+              href={service.link}
+              className="group"
+              style={{ textDecoration: "none" }}
             >
-              <div className="flex-grow">
-                <div className="mb-6">
-                  <div className="w-16 h-16 bg-[#ECF0F3] rounded-xl flex items-center justify-center shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] transition-all duration-300 group-hover:shadow-[inset_2px_2px_5px_#d1d9e6,inset_-2px_-2px_5px_#ffffff]">
-                    {service.icon}
+              <motion.div
+                className="bg-[#ECF0F3] rounded-2xl p-8 flex flex-col h-full shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff] cursor-pointer"
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
+                whileHover={{
+                  boxShadow:
+                    "inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff",
+                  y: -8,
+                }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                <div className="flex-grow">
+                  <div className="mb-6">
+                    <div className="w-16 h-16 bg-[#ECF0F3] rounded-xl flex items-center justify-center shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] transition-all duration-300 group-hover:shadow-[inset_2px_2px_5px_#d1d9e6,inset_-2px_-2px_5px_#ffffff]">
+                      {service.icon}
+                    </div>
                   </div>
+                  <h3 className="text-xl font-bold text-[#1f2125] mb-3">
+                    {service.title}
+                  </h3>
+                  <p className="text-base text-[#3c3e41] leading-relaxed font-light mb-2">
+                    {service.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-[#1f2125] mb-3">
-                  {service.title}
-                </h3>
-                <p className="text-base text-[#3c3e41] leading-relaxed font-light mb-2">
-                  {service.description}
-                </p>
-              </div>
-
-              {/* লিঙ্ক সেকশন (কার্যকারিতা ঠিক রেখে টেক্সট পরিবর্তন করা হয়েছে) */}
-              <div className="hidden md:block mt-auto pt-3">
-                <div className="transform translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-in-out">
-                  <Link
-                    href={service.link}
-                    className="font-semibold text-[#FF004F] flex items-center justify-start gap-2"
-                  >
+                <div className="mt-auto pt-3">
+                  <span className="font-semibold text-[#FF004F] flex items-center justify-start gap-2">
                     View Details <FaArrowRight />
-                  </Link>
+                  </span>
                 </div>
-              </div>
-
-              <div className="md:hidden mt-auto pt-3">
-                <Link
-                  href={service.link}
-                  className="font-semibold text-[#FF004F] flex items-center justify-start gap-2"
-                >
-                  View Details <FaArrowRight />
-                </Link>
-              </div>
-            </motion.div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </div>

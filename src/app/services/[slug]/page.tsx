@@ -111,11 +111,11 @@ type PortfolioExample = {
 
 type DbReview = {
   id: number;
-  name: string;
+  reviewer_name: string;
   company: string;
   image: string;
   rating: number;
-  testimonial: string;
+  review_text: string;
   project: string;
 };
 
@@ -155,14 +155,15 @@ export default function ServicePage() {
         .then((data) => {
           const mapped = data.map((item: DbReview) => ({
             id: item.id,
-            name: item.name,
+            reviewer_name: item.reviewer_name,
             company: item.company,
             image: item.image || "/images/hero-image.webp",
             rating: item.rating,
-            testimonial: item.testimonial,
+            review_text: item.review_text,
             project: item.project,
           }));
           setDbReviews(mapped);
+          console.log(mapped);
         });
     }
   }, [service]);
@@ -848,13 +849,13 @@ export default function ServicePage() {
                         <div className="h-full flex flex-col bg-[#ECF0F3] rounded-2xl p-8 shadow-[inset_10px_10px_20px_#d1d9e6,inset_-10px_-10px_20px_#ffffff]">
                           <FaQuoteLeft className="text-[#FF004F] w-8 h-8 mb-6 opacity-40" />
                           <p className="text-[#3c3e41] mb-6 leading-relaxed font-light flex-grow">
-                            {review.testimonial}
+                            {review.review_text}
                           </p>
                           <div className="flex items-center gap-4 mt-auto pt-6 border-t border-[#d1d9e6]">
                             <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] bg-[#ECF0F3]">
                               <Image
                                 src={review.image}
-                                alt={review.name}
+                                alt={review.reviewer_name}
                                 width={48}
                                 height={48}
                                 className="object-cover rounded-full"
@@ -862,7 +863,7 @@ export default function ServicePage() {
                             </div>
                             <div>
                               <div className="font-semibold text-base text-[#1f2125]">
-                                {review.name}
+                                {review.reviewer_name}
                               </div>
                               <div className="text-sm text-[#3c3e41] flex items-center gap-1.5">
                                 <FaBuilding className="w-3 h-3" />

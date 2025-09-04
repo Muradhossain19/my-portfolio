@@ -4,7 +4,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { FaFacebookF, FaTwitter, FaLinkedinIn } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,11 +21,29 @@ const navItems = [
   { name: "Contact", section: "contact" },
 ];
 
+const serviceLinks = [
+  {
+    title: "Web Development",
+    href: "/services/web-development",
+  },
+  {
+    title: "WordPress Solutions",
+    href: "/services/wordpress",
+  },
+  {
+    title: "E-commerce Solutions",
+    href: "/services/ecommerce",
+  },
+];
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const servicesTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Section scroll handler
   const handleSectionScroll = useCallback(
@@ -68,6 +86,20 @@ const Header = () => {
     };
   }, [isMenuOpen]);
 
+  // Desktop: handle hover for services dropdown
+  const handleServicesEnter = () => {
+    if (servicesTimeout.current) clearTimeout(servicesTimeout.current);
+    setIsServicesOpen(true);
+  };
+  const handleServicesLeave = () => {
+    servicesTimeout.current = setTimeout(() => setIsServicesOpen(false), 120);
+  };
+
+  // Mobile: toggle services dropdown
+  const handleMobileServicesToggle = () => {
+    setIsMobileServicesOpen((prev) => !prev);
+  };
+
   return (
     <>
       <header
@@ -89,20 +121,81 @@ const Header = () => {
 
           {/* Desktop Menu */}
           <ul className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <li key={item.name}>
-                <button
-                  type="button"
-                  onClick={() => handleSectionScroll(item.section)}
-                  className="relative font-normal text-[#1f2125] transition-colors duration-300 hover:text-[#FF004F] after:content-[''] after:absolute after:left-1/2 after:bottom-[-5px] after:h-[2px] after:w-0 after:bg-[#FF004F] after:-translate-x-1/2 after:transition-all after:duration-300 hover:after:w-full bg-transparent cursor-pointer"
+            {navItems.map((item) =>
+              item.name === "Services" ? (
+                <li
+                  key={item.name}
+                  className="relative group"
+                  onMouseEnter={handleServicesEnter}
+                  onMouseLeave={handleServicesLeave}
                 >
-                  {item.name}
-                </button>
-              </li>
-            ))}
+                  <Link
+                    href="/services"
+                    className="relative font-normal text-[#1f2125] transition-colors duration-300 hover:text-[#FF004F] after:content-[''] after:absolute after:left-1/2 after:bottom-[-5px] after:h-[2px] after:w-0 after:bg-[#FF004F] after:-translate-x-1/2 after:transition-all after:duration-300 hover:after:w-full bg-transparent cursor-pointer flex items-center gap-1"
+                    aria-haspopup="menu"
+                    aria-expanded={isServicesOpen}
+                    onClick={() => setIsServicesOpen(false)}
+                  >
+                    {item.name}
+                    <svg
+                      className="w-3 h-3 ml-1"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M6 9l6 6 6-6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </Link>
+                  {/* Dropdown */}
+                  <div
+                    className={`absolute left-0 top-full mt-2 min-w-[240px] bg-[#ECF0F3] shadow-lg border border-[#d1d9e6] transition-all duration-200 ${
+                      isServicesOpen
+                        ? "opacity-100 visible translate-y-0"
+                        : "opacity-0 invisible -translate-y-2 pointer-events-none"
+                    }`}
+                    style={{ zIndex: 100 }}
+                  >
+                    <ul>
+                      {serviceLinks.map((service, idx) => (
+                        <React.Fragment key={service.href}>
+                          <li>
+                            <Link
+                              href={service.href}
+                              className="block px-6 py-3 text-[#1f2125] hover:bg-[#FF004F]/10 hover:text-[#FF004F] transition-colors duration-200"
+                              onClick={() => setIsServicesOpen(false)}
+                            >
+                              {service.title}
+                            </Link>
+                          </li>
+                          {/* Full-width dotted border except last item */}
+                          {idx < serviceLinks.length - 1 && (
+                            <div className="border-b border-dotted border-[#d1d9e6] w-full mx-0" />
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              ) : (
+                <li key={item.name}>
+                  <button
+                    type="button"
+                    onClick={() => handleSectionScroll(item.section)}
+                    className="relative font-normal text-[#1f2125] transition-colors duration-300 hover:text-[#FF004F] after:content-[''] after:absolute after:left-1/2 after:bottom-[-5px] after:h-[2px] after:w-0 after:bg-[#FF004F] after:-translate-x-1/2 after:transition-all after:duration-300 hover:after:w-full bg-transparent cursor-pointer"
+                  >
+                    {item.name}
+                  </button>
+                </li>
+              )
+            )}
           </ul>
 
-          {/* Mobile Menu Button - আপনার মূল আইকনটি ব্যবহার করা হয়েছে */}
+          {/* Mobile Menu Button */}
           <div className="md:hidden flex-shrink-0">
             <button
               onClick={() => setIsMenuOpen(true)}
@@ -128,10 +221,9 @@ const Header = () => {
         </nav>
       </header>
 
-      {/* Body padding to compensate for fixed header */}
       <div className="pt-[80px]" />
 
-      {/* Mobile Menu Panel with Scroll */}
+      {/* Mobile Menu Panel */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
@@ -161,7 +253,6 @@ const Header = () => {
                   className="w-12 h-12 rounded-full bg-[#ECF0F3] flex items-center justify-center flex-shrink-0 shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] active:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff]"
                   aria-label="Close menu"
                 >
-                  {/* আপনার মূল ক্লোজ আইকনটি ব্যবহার করা হয়েছে */}
                   <svg
                     className="w-6 h-6 text-[#FF004F]"
                     fill="none"
@@ -185,17 +276,96 @@ const Header = () => {
               <hr className="border-gray-300 my-4" />
 
               <ul className="flex flex-col space-y-4">
-                {navItems.map((item) => (
-                  <li key={item.name}>
-                    <button
-                      type="button"
-                      onClick={() => handleSectionScroll(item.section)}
-                      className="text-sm font-normal text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-200 bg-transparent text-left w-full py-2"
-                    >
-                      {item.name.toUpperCase()}
-                    </button>
-                  </li>
-                ))}
+                {navItems.map((item) =>
+                  item.name === "Services" ? (
+                    <li key={item.name} className="relative">
+                      <div className="flex items-center">
+                        <Link
+                          href="/services"
+                          className="flex-1 text-sm font-normal text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-200 bg-transparent text-left w-full py-2 "
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setIsMobileServicesOpen(false);
+                          }}
+                        >
+                          {item.name.toUpperCase()}
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={handleMobileServicesToggle}
+                          className="p-2 ml-2 flex items-center"
+                          aria-haspopup="menu"
+                          aria-expanded={isMobileServicesOpen}
+                          tabIndex={0}
+                          style={{
+                            border: "1px solid #d1d9e6", // Full border
+                            borderRadius: "6px",
+                            background: "transparent",
+                          }}
+                        >
+                          <svg
+                            className={`w-4 h-4 transition-transform duration-200 ${
+                              isMobileServicesOpen ? "rotate-180" : ""
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M6 9l6 6 6-6"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <div
+                        className={`overflow-hidden transition-all duration-200 ${
+                          isMobileServicesOpen
+                            ? "max-h-60 opacity-100 visible"
+                            : "max-h-0 opacity-0 invisible"
+                        }`}
+                      >
+                        <ul className="flex flex-col bg-[#ECF0F3] mt-2">
+                          {serviceLinks.map((service, idx) => (
+                            <React.Fragment key={service.href}>
+                              <li>
+                                <Link
+                                  href={service.href}
+                                  className="block px-5 text-sm py-3 text-[#3c3e41] hover:bg-[#FF004F]/10 hover:text-[#FF004F] transition-colors duration-200"
+                                  onClick={() => {
+                                    setIsMenuOpen(false);
+                                    setIsMobileServicesOpen(false);
+                                  }}
+                                >
+                                  {service.title}
+                                </Link>
+                              </li>
+                              {/* Dotted border except last item */}
+                              {idx < serviceLinks.length - 1 && (
+                                <div className="border-b border-dotted border-[#d1d9e6] w-full mx-0" />
+                              )}
+                            </React.Fragment>
+                          ))}
+                        </ul>
+                      </div>
+                    </li>
+                  ) : (
+                    <li key={item.name}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleSectionScroll(item.section);
+                          setIsMenuOpen(false);
+                        }}
+                        className="text-sm font-normal text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-200 bg-transparent text-left w-full py-2"
+                      >
+                        {item.name.toUpperCase()}
+                      </button>
+                    </li>
+                  )
+                )}
               </ul>
 
               <div className="mt-auto pt-8">
