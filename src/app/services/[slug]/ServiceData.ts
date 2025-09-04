@@ -44,7 +44,7 @@ export interface Service {
 export const services: Service[] = [
   {
     slug: "web-development",
-    title: "Custom Web Development",
+    title: "Web Development",
     subtitle: "Modern, scalable, and high-performance websites",
     image: "/images/services/web-development.jpg",
     hero_description:

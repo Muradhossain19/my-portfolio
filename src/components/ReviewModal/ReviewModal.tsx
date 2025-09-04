@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   FaUser,
   FaBriefcase,
@@ -10,14 +10,106 @@ import {
   FaPaperPlane,
   FaTimes,
   FaImage,
+  FaChevronDown,
 } from "react-icons/fa";
 import { services } from "@/app/services/[slug]/ServiceData";
 
 const currentDate = new Date();
-const monthYear = currentDate.toLocaleString("default", {
-  month: "long",
-  year: "numeric",
+const currentYear = currentDate.getFullYear();
+
+// Month list for current year and 2023
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const months: string[] = [];
+const years = [2023, 2024, currentYear];
+years.forEach((year) => {
+  const lastMonth = year === currentYear ? currentDate.getMonth() : 11; // 0-indexed
+  for (let m = 0; m <= lastMonth; m++) {
+    months.push(`${monthNames[m]} ${year}`);
+  }
 });
+
+// Default date: current month
+const defaultMonth = `${monthNames[currentDate.getMonth()]} ${currentYear}`;
+
+// Custom dropdown component
+function CustomDropdown({
+  options,
+  value,
+  onChange,
+  icon,
+  placeholder,
+}: {
+  options: string[];
+  value: string;
+  onChange: (val: string) => void;
+  icon?: React.ReactNode;
+  placeholder?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  React.useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        className="w-full pl-12 pr-8 py-4 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] text-[#1f2125] font-light flex items-center justify-between cursor-pointer transition-all duration-300"
+        onClick={() => setOpen((o) => !o)}
+      >
+        <span className="flex items-center gap-2">
+          {icon}
+          {value || <span className="text-gray-400">{placeholder}</span>}
+        </span>
+        <FaChevronDown
+          className={`ml-2 w-4 h-4 text-[#3c3e41] transition-transform ${
+            open ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+      {open && (
+        <div className="absolute left-0 top-full w-full mt-2 bg-[#ECF0F3] rounded-xl shadow-lg z-20 border border-[#d1d9e6]">
+          {options.map((opt) => (
+            <div
+              key={opt}
+              className={`px-5 py-3 cursor-pointer hover:bg-[#FF004F]/10 hover:text-[#FF004F] text-[#1f2125] transition-colors duration-200 ${
+                value === opt ? "bg-[#FF004F]/10 text-[#FF004F]" : ""
+              }`}
+              onClick={() => {
+                onChange(opt);
+                setOpen(false);
+              }}
+            >
+              {opt}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface ReviewForm {
   name: string;
@@ -47,11 +139,12 @@ export default function ReviewModal({
     company: "",
     project: "",
     image: null,
-    date: monthYear,
+    date: defaultMonth, // auto detect current month
     rating: 5,
     testimonial: "",
   });
   const [success, setSuccess] = useState(false);
+  const [dateError, setDateError] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -63,6 +156,12 @@ export default function ReviewModal({
       ...prev,
       [name]: files ? files[0] : value,
     }));
+    if (name === "date") setDateError("");
+  };
+
+  const handleCustomChange = (name: string, value: string) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (name === "date") setDateError("");
   };
 
   const handleRating = (r: number) =>
@@ -70,6 +169,18 @@ export default function ReviewModal({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Date validation: future month not allowed
+    const selectedDate = new Date(form.date + " 1");
+    if (
+      selectedDate.getFullYear() > currentDate.getFullYear() ||
+      (selectedDate.getFullYear() === currentDate.getFullYear() &&
+        selectedDate.getMonth() > currentDate.getMonth())
+    ) {
+      setDateError("Future month is not allowed.");
+      return;
+    }
+
     onSubmit(form);
     setSuccess(true);
     setTimeout(() => {
@@ -159,30 +270,19 @@ export default function ReviewModal({
               </div>
               {/* Service Taken */}
               <div>
-                <label
-                  htmlFor="project"
-                  className="block text-[#1f2125] font-semibold mb-2"
-                >
+                <label className="block text-[#1f2125] font-semibold mb-2">
                   Service Taken *
                 </label>
                 <div className="relative">
-                  <select
-                    id="project"
-                    name="project"
-                    required
+                  <CustomDropdown
+                    options={services.map((s) => s.title)}
                     value={form.project}
-                    onChange={handleChange}
-                    className="w-full pl-12 pr-4 py-4 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] text-[#1f2125] font-light transition-all duration-300 focus:shadow-[inset_8px_8px_16px_#d1d9e6,inset_-8px_-8px_16px_#ffffff] appearance-none"
-                    aria-label="Service Taken"
-                  >
-                    <option value="">Select a service</option>
-                    {services.map((s) => (
-                      <option key={s.slug} value={s.title}>
-                        {s.title}
-                      </option>
-                    ))}
-                  </select>
-                  <FaClipboardList className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#3c3e41] w-4 h-4 pointer-events-none" />
+                    onChange={(val) => handleCustomChange("project", val)}
+                    icon={
+                      <FaClipboardList className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#3c3e41] w-4 h-4" />
+                    }
+                    placeholder="Select a service"
+                  />
                 </div>
               </div>
               {/* Image Upload */}
@@ -198,9 +298,11 @@ export default function ReviewModal({
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                     onChange={handleChange}
                   />
-                  <div className="w-full pl-12 pr-4 py-4 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] text-[#1f2125] font-light transition-all duration-300 flex items-center cursor-pointer">
-                    <FaImage className="mr-3 text-[#3c3e41] w-5 h-5" />
-                    <span>{form.image ? form.image.name : "Choose File"}</span>
+                  <div className="w-full pl-12 pr-4 py-4 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] text-[#1f2125] font-light transition-all duration-300 flex items-center cursor-pointer relative">
+                    <FaImage className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#3c3e41] w-5 h-5" />
+                    <span className="pl-8">
+                      {form.image ? form.image.name : "Choose File"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -210,15 +312,19 @@ export default function ReviewModal({
                   Date
                 </label>
                 <div className="relative">
-                  <input
-                    name="date"
-                    type="text"
+                  <CustomDropdown
+                    options={months}
                     value={form.date}
-                    readOnly
-                    className="w-full pl-12 pr-4 py-4 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] text-[#1f2125] font-light transition-all duration-300 focus:shadow-[inset_8px_8px_16px_#d1d9e6,inset_-8px_-8px_16px_#ffffff]"
+                    onChange={(val) => handleCustomChange("date", val)}
+                    icon={
+                      <FaCalendarAlt className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#3c3e41] w-4 h-4" />
+                    }
+                    placeholder={defaultMonth} // show current month as default
                   />
-                  <FaCalendarAlt className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#3c3e41] w-4 h-4" />
                 </div>
+                {dateError && (
+                  <p className="text-red-500 text-xs mt-2">{dateError}</p>
+                )}
               </div>
               {/* Rating */}
               <div>

@@ -56,7 +56,7 @@ export async function POST(req: Request) {
         data.rating,
         data.company || "",
         data.project || "",
-        data.image || "/images/hero-image.webp",
+        data.image || "/images/default-avater.svg",
         data.date || "",
       ]
     );

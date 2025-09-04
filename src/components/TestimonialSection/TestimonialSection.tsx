@@ -282,7 +282,7 @@ const TestimonialSection = () => {
   const handleAddReview = async (
     review: Omit<Review, "id" | "image"> & { image: File | null }
   ) => {
-    let imageUrl = "/images/hero-image.webp";
+    let imageUrl = "/images/default-avater.svg";
     if (review.image) {
       imageUrl = await fileToBase64(review.image);
     }
@@ -376,7 +376,7 @@ const TestimonialSection = () => {
                 {/* Client Image */}
                 <div className="flex justify-center lg:justify-start">
                   <div className="relative ml-8 lg:ml-12">
-                    <div className="w-32 h-32 rounded-full overflow-hidden shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff] p-2 bg-[#ECF0F3]">
+                    <div className="w-32 h-32 rounded-full overflow-hidden shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff] p-2 bg-[#FF004F]">
                       <div className="w-full h-full rounded-full overflow-hidden">
                         <Image
                           src={
@@ -391,7 +391,7 @@ const TestimonialSection = () => {
                       </div>
                     </div>
                     {/* Rating Badge */}
-                    <div className="absolute -bottom-2 -right-2 lg:right-0 bg-[#ECF0F3] rounded-full p-3 shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff]">
+                    <div className="absolute -bottom-2 -right-2 lg:right-0 bg-[#ECF0F3] rounded-full p-3">
                       <div className="flex gap-1">
                         {renderStars(testimonials[currentIndex].rating)}
                       </div>
