@@ -115,7 +115,7 @@ const getEmailHtml = (data: ContactFormData) => `
               <p style="font-size:15px; color:#888; margin:24px 0 0 0;">
                 If you have any urgent queries, feel free to reply to this email.<br/><br/>
                 Best regards,<br/>
-                <strong>Murad Hossain Portfolio Team</strong>
+                <strong>Murad Hossain</strong>
               </p>
             </td>
           </tr>
@@ -225,7 +225,7 @@ async function sendEmail({
   });
 
   await transporter.sendMail({
-    from: `"Murad Hossain Portfolio" <${process.env.EMAIL_USER}>`,
+    from: `"Murad Hossain" <${process.env.EMAIL_USER}>`,
     to,
     subject,
     html,
