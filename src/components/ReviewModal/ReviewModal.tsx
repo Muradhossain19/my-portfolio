@@ -17,7 +17,7 @@ import { services } from "@/app/services/[slug]/ServiceData";
 const currentDate = new Date();
 const currentYear = currentDate.getFullYear();
 
-// Month list for current year and 2023
+// Month list for current year only
 const monthNames = [
   "January",
   "February",
@@ -32,15 +32,19 @@ const monthNames = [
   "November",
   "December",
 ];
+const months = monthNames
+  .slice(0, currentDate.getMonth() + 1)
+  .map((m) => `${m} ${currentYear}`);
 
-const months: string[] = [];
-const years = [2023, 2024, currentYear];
-years.forEach((year) => {
-  const lastMonth = year === currentYear ? currentDate.getMonth() : 11; // 0-indexed
-  for (let m = 0; m <= lastMonth; m++) {
-    months.push(`${monthNames[m]} ${year}`);
-  }
-});
+// const months: string[] = [];
+// const years = [2023, currentYear];
+// years.forEach((year) => {
+//   const lastMonth =
+//     year === currentYear ? currentDate.getMonth() : 11; // 0-indexed
+//   for (let m = 0; m <= lastMonth; m++) {
+//     months.push(`${monthNames[m]} ${year}`);
+//   }
+// });
 
 // Default date: current month
 const defaultMonth = `${monthNames[currentDate.getMonth()]} ${currentYear}`;

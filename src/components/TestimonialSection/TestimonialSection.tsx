@@ -167,40 +167,67 @@ const TestimonialSection = () => {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [testimonials, setTestimonials] = useState<Review[]>(testimonialsData);
   const [resetKey, setResetKey] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [totalAvgRating, setTotalAvgRating] = useState(0);
   const statsRef = useRef<HTMLDivElement>(null);
 
-  // Fetch reviews from API
+  // Fetch reviews from API (only 6 for display)
   useEffect(() => {
     async function fetchReviews() {
-      const res = await fetch("/api/reviews");
-      const data = await res.json();
-      // Map API data to Review format
-      type ApiReview = {
-        id: number;
-        reviewer_name: string;
-        reviewer_title: string;
-        company?: string;
-        project?: string;
-        image?: string;
-        date?: string;
-        rating: number;
-        review_text: string;
-      };
+      try {
+        const res = await fetch("/api/reviews");
+        const data = await res.json();
 
-      const mapped = data.length
-        ? data.map((item: ApiReview) => ({
-            id: item.id,
-            name: item.reviewer_name,
-            position: item.reviewer_title,
-            company: item.company || "",
-            project: item.project || "",
-            image: item.image || "/images/hero-image.webp",
-            date: item.date || "",
-            rating: item.rating,
-            testimonial: item.review_text,
-          }))
-        : testimonialsData;
-      setTestimonials(mapped);
+        type ApiReview = {
+          id: number;
+          reviewer_name: string;
+          reviewer_title: string;
+          company?: string;
+          project?: string;
+          image?: string;
+          date?: string;
+          rating: number;
+          review_text: string;
+        };
+
+        const mapped = data.length
+          ? data.slice(0, 6).map((item: ApiReview) => ({
+              id: item.id,
+              name: item.reviewer_name,
+              position: item.reviewer_title,
+              company: item.company || "",
+              project: item.project || "",
+              image: item.image || "/images/default-avater.svg",
+              date: item.date || "",
+              rating: item.rating,
+              testimonial: item.review_text,
+            }))
+          : testimonialsData;
+
+        setTestimonials(mapped);
+
+        // Set total stats from all data
+        setTotalReviews(data.length || testimonialsData.length);
+        if (data.length > 0) {
+          const avgRating =
+            data.reduce((sum: number, r: ApiReview) => sum + r.rating, 0) /
+            data.length;
+          setTotalAvgRating(avgRating);
+        } else {
+          const avgRating =
+            testimonialsData.reduce((sum, t) => sum + t.rating, 0) /
+            testimonialsData.length;
+          setTotalAvgRating(avgRating);
+        }
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+        // Use fallback data
+        setTotalReviews(testimonialsData.length);
+        const avgRating =
+          testimonialsData.reduce((sum, t) => sum + t.rating, 0) /
+          testimonialsData.length;
+        setTotalAvgRating(avgRating);
+      }
     }
     fetchReviews();
   }, []);
@@ -291,27 +318,35 @@ const TestimonialSection = () => {
       image: imageUrl,
       id: testimonials.length + 1,
     };
-    await fetch("/api/reviews", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newReview),
-    });
-    setTestimonials((prev) => [...prev, newReview]);
-    setStartCounting(false);
+
+    try {
+      await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newReview),
+      });
+
+      // Update total counts
+      setTotalReviews((prev) => prev + 1);
+      const newAvg =
+        (totalAvgRating * totalReviews + review.rating) / (totalReviews + 1);
+      setTotalAvgRating(newAvg);
+
+      // Update displayed testimonials (only if less than 6)
+      if (testimonials.length < 6) {
+        setTestimonials((prev) => [...prev, newReview]);
+      }
+
+      setStartCounting(false);
+    } catch (error) {
+      console.error("Error adding review:", error);
+    }
   };
 
   const handleOpenReviewModal = () => {
     setResetKey((prev) => prev + 1); // Change key to force reset
     setShowReviewModal(true);
   };
-
-  // For stats calculation:
-  const happyClients: number = testimonials.length;
-  const projectsCompleted: number = testimonials.length;
-  const averageRating: number =
-    testimonials.length > 0
-      ? testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length
-      : 0;
 
   return (
     <section
@@ -484,14 +519,14 @@ const TestimonialSection = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
         >
           {[
-            { number: happyClients, label: "Happy Clients", suffix: "+" },
+            { number: totalReviews, label: "Happy Clients", suffix: "+" },
             {
-              number: projectsCompleted,
+              number: totalReviews,
               label: "Projects Completed",
               suffix: "+",
             },
             {
-              number: parseFloat(averageRating.toFixed(1)),
+              number: parseFloat(totalAvgRating.toFixed(1)),
               label: "Average Rating",
               suffix: "★",
             },
@@ -509,7 +544,7 @@ const TestimonialSection = () => {
                 <CountUp
                   end={stat.number}
                   suffix={stat.suffix}
-                  duration={0.7} // <-- speed up here
+                  duration={0.7}
                   shouldStart={startCounting}
                 />
               </div>
