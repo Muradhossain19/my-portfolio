@@ -3,19 +3,18 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import {
   FaFacebookF,
   FaTwitter,
   FaLinkedinIn,
   FaGithub,
   FaInstagram,
-  FaYoutube,
   FaEnvelope,
   FaPhone,
   FaMapMarkerAlt,
   FaPaperPlane,
   FaHeart,
-  FaCode,
   FaRocket,
   FaLightbulb,
 } from "react-icons/fa";
@@ -56,7 +55,7 @@ const Footer = () => {
   ];
 
   const services = [
-    { label: "Custom Web Development", href: "/services/web-development" },
+    { label: "Web Development", href: "/services/web-development" },
     { label: "WordPress Solutions", href: "/services/wordpress" },
     { label: "E-commerce Solutions", href: "/services/ecommerce" },
   ];
@@ -64,39 +63,33 @@ const Footer = () => {
   const socialLinks = [
     {
       icon: FaFacebookF,
-      href: "https://facebook.com",
+      href: "https://web.facebook.com/murad.hossain.685",
       label: "Facebook",
       color: "hover:text-[#1877f2]",
     },
     {
       icon: FaTwitter,
-      href: "https://twitter.com",
+      href: "https://x.com/MuradHo93458407",
       label: "Twitter",
       color: "hover:text-[#1da1f2]",
     },
     {
       icon: FaLinkedinIn,
-      href: "https://linkedin.com",
+      href: "https://www.linkedin.com/in/wordpress-developer-murad/",
       label: "LinkedIn",
       color: "hover:text-[#0077b5]",
     },
     {
       icon: FaGithub,
-      href: "https://github.com",
+      href: "https://github.com/Muradhossain19",
       label: "GitHub",
       color: "hover:text-[#333]",
     },
     {
       icon: FaInstagram,
-      href: "https://instagram.com",
+      href: "https://www.instagram.com/muradhossainpintu/",
       label: "Instagram",
       color: "hover:text-[#e4405f]",
-    },
-    {
-      icon: FaYoutube,
-      href: "https://youtube.com",
-      label: "YouTube",
-      color: "hover:text-[#ff0000]",
     },
   ];
 
@@ -106,6 +99,7 @@ const Footer = () => {
 
     if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
       setSubscriptionStatus("error");
+      autoHideStatus();
       return;
     }
 
@@ -130,7 +124,13 @@ const Footer = () => {
       setSubscriptionStatus("error");
     } finally {
       setIsSubscribing(false);
+      autoHideStatus();
     }
+  };
+
+  // Auto-hide success/error message after 3s
+  const autoHideStatus = () => {
+    setTimeout(() => setSubscriptionStatus("idle"), 3000);
   };
 
   return (
@@ -156,8 +156,16 @@ const Footer = () => {
             >
               {/* Logo */}
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#FF004F] rounded-xl flex items-center justify-center">
-                  <FaCode className="text-white text-lg md:text-xl" />
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#FF004F] flex items-center justify-center rounded-full overflow-hidden">
+                  <Image
+                    src="/images/Logo/murad.png"
+                    alt="Murad Hossain Logo"
+                    height={70}
+                    width={70}
+                    quality={100}
+                    priority
+                    className="object-cover w-full h-full"
+                  />
                 </div>
                 <div>
                   <h3 className="text-xl md:text-2xl font-bold">
@@ -180,17 +188,27 @@ const Footer = () => {
               <div className="space-y-2 md:space-y-3 mb-6 md:mb-8">
                 <div className="flex items-center gap-3 text-gray-300">
                   <FaMapMarkerAlt className="text-[#FF004F] w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
-                  <span className="text-xs md:text-sm">Dhaka, Bangladesh</span>
-                </div>
-                <div className="flex items-center gap-3 text-gray-300">
-                  <FaEnvelope className="text-[#FF004F] w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                   <span className="text-xs md:text-sm">
-                    hello@muradhossain.com
+                    1550, Sreenagar, Dhaka, Bangladesh
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-gray-300">
+                  <FaEnvelope className="text-[#FF004F] w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                  <a
+                    href="mailto:hello@muradhossain.com"
+                    className="text-xs md:text-sm underline hover:text-[#FF004F] transition-colors"
+                  >
+                    hello@muradhossain.com
+                  </a>
+                </div>
+                <div className="flex items-center gap-3 text-gray-300">
                   <FaPhone className="text-[#FF004F] w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
-                  <span className="text-xs md:text-sm">+880 1700 000000</span>
+                  <a
+                    href="tel:+8801947996585"
+                    className="text-xs md:text-sm underline hover:text-[#FF004F] transition-colors"
+                  >
+                    +880 1947 996585
+                  </a>
                 </div>
               </div>
 

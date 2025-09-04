@@ -110,7 +110,7 @@ const Header = () => {
         <nav className="container mx-auto flex justify-between items-center h-full px-4">
           <Link href="/" className="flex-shrink-0">
             <Image
-              src="/images/Logo/murad-logo.png"
+              src="/images/Logo/main-logo.png"
               alt="Murad Hossain Logo"
               height={70}
               width={150}

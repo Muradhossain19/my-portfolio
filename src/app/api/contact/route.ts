@@ -20,6 +20,7 @@ type ContactFormData = {
   service?: string;
   message?: string;
   price?: string;
+  recaptchaToken: string;
 };
 
 const getEmailHtml = (data: ContactFormData) => `
@@ -142,6 +143,8 @@ const getOwnerEmailHtml = (data: ContactFormData) => `
                 ${
                   data.type === "order"
                     ? "New Order Received"
+                    : data.type === "subscribe"
+                    ? "New Newsletter Subscription"
                     : "New Contact Message"
                 }
               </h2>
@@ -150,39 +153,49 @@ const getOwnerEmailHtml = (data: ContactFormData) => `
           <tr>
             <td style="padding:0 32px 24px 32px;">
               <p style="font-size:16px; color:#444; margin:0 0 16px 0;">
-                You have received a new ${
-                  data.type === "order" ? "order" : "contact"
-                } submission from your portfolio website.
+                ${
+                  data.type === "order"
+                    ? "You have received a new order submission."
+                    : data.type === "subscribe"
+                    ? "You have received a new newsletter subscription."
+                    : "You have received a new contact submission."
+                }
               </p>
               <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9f9f9; border-radius:6px;">
                 <tr>
                   <td style="padding:12px 16px; font-size:15px; color:#333;">
-                    <strong>Name:</strong> ${data.name || "N/A"}<br/>
-                    <strong>Email:</strong> ${data.email}<br/>
                     ${
-                      data.phone
-                        ? `<strong>Phone:</strong> ${data.phone}<br/>`
-                        : ""
-                    }
-                    ${
-                      data.subject
-                        ? `<strong>Subject:</strong> ${data.subject}<br/>`
-                        : ""
-                    }
-                    ${
-                      data.service
-                        ? `<strong>Service:</strong> ${data.service}<br/>`
-                        : ""
-                    }
-                    ${
-                      data.message
-                        ? `<strong>Message:</strong> ${data.message}<br/>`
-                        : ""
-                    }
-                    ${
-                      data.price
-                        ? `<strong>Price:</strong> ${data.price}<br/>`
-                        : ""
+                      data.type === "subscribe"
+                        ? `<strong>Email:</strong> <a href="mailto:${data.email}" style="color:#0073e6;text-decoration:underline;">${data.email}</a><br/>`
+                        : `
+                          <strong>Name:</strong> ${data.name || "N/A"}<br/>
+                          <strong>Email:</strong> ${data.email}<br/>
+                          ${
+                            data.phone
+                              ? `<strong>Phone:</strong> ${data.phone}<br/>`
+                              : ""
+                          }
+                          ${
+                            data.subject
+                              ? `<strong>Subject:</strong> ${data.subject}<br/>`
+                              : ""
+                          }
+                          ${
+                            data.service
+                              ? `<strong>Service:</strong> ${data.service}<br/>`
+                              : ""
+                          }
+                          ${
+                            data.message
+                              ? `<strong>Message:</strong> ${data.message}<br/>`
+                              : ""
+                          }
+                          ${
+                            data.price
+                              ? `<strong>Price:</strong> ${data.price}<br/>`
+                              : ""
+                          }
+                        `
                     }
                   </td>
                 </tr>
@@ -238,6 +251,17 @@ export async function POST(req: Request) {
   try {
     const data: ContactFormData = await req.json();
 
+    // reCAPTCHA ভেরিফিকেশন
+    const { recaptchaToken } = data;
+    const recaptchaRes = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`,
+      { method: "POST" }
+    );
+    const recaptchaData = await recaptchaRes.json();
+    if (!recaptchaData.success) {
+      return new Response("reCAPTCHA failed", { status: 400 });
+    }
+
     if (data.type === "contact") {
       await client.query(
         "INSERT INTO contacts_form (name, email, phone, subject, service, message) VALUES ($1, $2, $3, $4, $5, $6)",
@@ -287,7 +311,11 @@ export async function POST(req: Request) {
       await sendEmail({
         to: ownerEmail,
         subject:
-          data.type === "order" ? "New Order Received" : "New Contact Message",
+          data.type === "order"
+            ? "New Order Received"
+            : data.type === "subscribe"
+            ? "New Newsletter Subscription"
+            : "New Contact Message",
         html: getOwnerEmailHtml(data),
       });
     }

@@ -14,6 +14,7 @@ import {
   FaExclamationTriangle,
 } from "react-icons/fa";
 import CustomDropdown from "./CustomDropdown";
+import ReCAPTCHA from "react-google-recaptcha";
 
 // Animation Variants
 const containerVariants: Variants = {
@@ -69,6 +70,8 @@ const ContactSection = () => {
   const [messageTimeout, setMessageTimeout] = useState<NodeJS.Timeout | null>(
     null
   );
+  const [recaptchaToken, setRecaptchaToken] = useState("");
+  const [recaptchaError, setRecaptchaError] = useState("");
 
   // Services dropdown options
   const services = [
@@ -145,6 +148,10 @@ const ContactSection = () => {
       newErrors.message = "Message must be at least 10 characters";
     }
 
+    if (!recaptchaToken) {
+      newErrors.recaptcha = "Please verify that you are human";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -188,6 +195,11 @@ const ContactSection = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!recaptchaToken) {
+      setRecaptchaError("Please verify you are not a robot.");
+      return;
+    }
+
     if (!validateForm()) {
       return;
     }
@@ -207,6 +219,7 @@ const ContactSection = () => {
           subject: formData.subject,
           service: formData.service,
           message: formData.message,
+          recaptchaToken, // send token to backend
         }),
       });
 
@@ -540,6 +553,19 @@ const ContactSection = () => {
                     /10)
                   </p>
                 </div>
+
+                {/* reCAPTCHA */}
+                <ReCAPTCHA
+                  sitekey="6LfFGL4rAAAAAKUN7WIwjwJuc0kq6LoWRpSY6ObW"
+                  onChange={(token: string | null) => {
+                    setRecaptchaToken(token || "");
+                    setRecaptchaError("");
+                  }}
+                  className="mb-4"
+                />
+                {recaptchaError && (
+                  <p className="text-red-500 text-sm mb-2">{recaptchaError}</p>
+                )}
 
                 {/* Submit Button */}
                 <motion.button
