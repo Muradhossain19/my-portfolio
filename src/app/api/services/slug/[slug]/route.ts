@@ -9,12 +9,13 @@ const pool = new Pool({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> } // এই অংশটা পরিবর্তন
 ) {
   const client = await pool.connect();
 
   try {
-    const slug = params.slug;
+    const resolvedParams = await params; // params resolve করুন
+    const slug = resolvedParams.slug;
 
     const result = await client.query(
       `SELECT 
