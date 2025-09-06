@@ -9,12 +9,13 @@ const pool = new Pool({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // এই অংশটা পরিবর্তন
 ) {
   const client = await pool.connect();
 
   try {
-    const serviceId = params.id;
+    const resolvedParams = await params; // params resolve করুন
+    const serviceId = resolvedParams.id;
 
     const result = await client.query(
       `SELECT 
@@ -59,16 +60,19 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // এই অংশটাও পরিবর্তন
 ) {
   // API route hit হচ্ছে কিনা check করার জন্য
-  console.log("🔥 PUT API CALLED - Service ID:", params.id);
+  console.log("🔥 PUT API CALLED");
   console.log("🔥 Request received at:", new Date().toISOString());
 
   const client = await pool.connect();
 
   try {
-    const serviceId = params.id;
+    const resolvedParams = await params; // params resolve করুন
+    const serviceId = resolvedParams.id;
+    console.log("🔥 Service ID:", serviceId);
+
     const body = await request.json();
 
     console.log("📝 Request body received:", Object.keys(body));
@@ -171,12 +175,13 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // এই অংশটাও পরিবর্তন
 ) {
   const client = await pool.connect();
 
   try {
-    const serviceId = params.id;
+    const resolvedParams = await params; // params resolve করুন
+    const serviceId = resolvedParams.id;
 
     const result = await client.query(
       "DELETE FROM admin_services WHERE id = $1 RETURNING id",
