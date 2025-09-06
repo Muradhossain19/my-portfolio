@@ -93,10 +93,10 @@ const ContactSection = () => {
       details: [
         <a
           key="email"
-          href="mailto:hello@muradhossain.com"
+          href="mailto:contact@muradhossain.com"
           className="text-[#FF004F] underline hover:text-[#e6003d] transition-colors"
         >
-          hello@muradhossain.com
+          contact@muradhossain.com
         </a>,
       ],
     },
