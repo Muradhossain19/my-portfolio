@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { services } from "./ServiceData";
+import { services } from "./ServiceData"; // Keep static data as fallback
 import Image from "next/image";
 import Link from "next/link";
 import { motion, Variants, AnimatePresence } from "framer-motion";
@@ -93,7 +93,30 @@ const optimizedViewport = {
 
 const LOCAL_KEY = "portfolio_loves";
 
-type PortfolioExample = {
+// Properly typed interfaces
+interface PricingTier {
+  price: string;
+  features: string[];
+}
+
+interface ProcessStep {
+  title: string;
+  description: string;
+}
+
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
+interface Testimonial {
+  name: string;
+  company: string;
+  feedback: string;
+  rating: number;
+}
+
+interface PortfolioExample {
   id: string;
   title: string;
   description: string;
@@ -107,9 +130,35 @@ type PortfolioExample = {
   likes: number;
   link: string;
   features: string[];
-};
+}
 
-type DbReview = {
+interface DbService {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  hero_description: string;
+  overview: string;
+  features: string[];
+  process: ProcessStep[];
+  benefits: string[];
+  technologies: string[];
+  portfolio_examples: PortfolioExample[];
+  pricing: {
+    basic: PricingTier;
+    standard: PricingTier;
+    premium: PricingTier;
+  };
+  faqs: FAQ[];
+  testimonials: Testimonial[];
+  why_choose: string[];
+  delivery_time: string;
+  guarantee: string;
+  is_active: boolean;
+}
+
+interface DbReview {
   id: number;
   reviewer_name: string;
   company: string;
@@ -117,11 +166,43 @@ type DbReview = {
   rating: number;
   review_text: string;
   project: string;
-};
+}
+
+// API Response types
+interface ServiceApiResponse {
+  success: boolean;
+  service?: {
+    id: string;
+    slug: string;
+    title: string;
+    subtitle: string;
+    image: string;
+    hero_description: string;
+    overview: string;
+    features: string;
+    process: string;
+    benefits: string;
+    technologies: string;
+    portfolio_examples: string;
+    pricing: string;
+    faqs: string;
+    testimonials: string;
+    why_choose: string;
+    delivery_time: string;
+    guarantee: string;
+    is_active: boolean;
+  };
+  error?: string;
+}
 
 export default function ServicePage() {
   const { slug } = useParams<{ slug: string }>();
-  const service = services.find((s) => s.slug === slug);
+
+  // State for database service
+  const [service, setService] = useState<DbService | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [activePricing, setActivePricing] = useState<
     "basic" | "standard" | "premium"
   >("standard");
@@ -145,15 +226,102 @@ export default function ServicePage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [loves, setLoves] = useState<{ [key: string]: number }>({});
-  // Fetch reviews from database for this service
   const [dbReviews, setDbReviews] = useState<DbReview[]>([]);
 
+  // Safe JSON parse function with proper typing
+  function safeJsonParse<T>(jsonString: string, fallback: T): T {
+    try {
+      if (!jsonString || jsonString.trim() === "") {
+        return fallback;
+      }
+      return JSON.parse(jsonString) as T;
+    } catch (error) {
+      console.warn("JSON parse error:", error);
+      return fallback;
+    }
+  }
+
+  // Fetch service data from database
+  useEffect(() => {
+    const fetchService = async () => {
+      if (!slug) return;
+
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/services/slug/${slug}`);
+
+        if (!response.ok) {
+          throw new Error(`Service not found: ${response.status}`);
+        }
+
+        const data = (await response.json()) as ServiceApiResponse;
+
+        if (data.success && data.service) {
+          // Parse JSON fields safely with proper types
+          const parsedService: DbService = {
+            ...data.service,
+            features: safeJsonParse<string[]>(data.service.features, []),
+            process: safeJsonParse<ProcessStep[]>(data.service.process, []),
+            benefits: safeJsonParse<string[]>(data.service.benefits, []),
+            technologies: safeJsonParse<string[]>(
+              data.service.technologies,
+              []
+            ),
+            portfolio_examples: safeJsonParse<PortfolioExample[]>(
+              data.service.portfolio_examples,
+              []
+            ),
+            pricing: safeJsonParse<{
+              basic: PricingTier;
+              standard: PricingTier;
+              premium: PricingTier;
+            }>(data.service.pricing, {
+              basic: { price: "", features: [] },
+              standard: { price: "", features: [] },
+              premium: { price: "", features: [] },
+            }),
+            faqs: safeJsonParse<FAQ[]>(data.service.faqs, []),
+            testimonials: safeJsonParse<Testimonial[]>(
+              data.service.testimonials,
+              []
+            ),
+            why_choose: safeJsonParse<string[]>(data.service.why_choose, []),
+          };
+
+          setService(parsedService);
+        } else {
+          // Fallback to static data if not found in database
+          const staticService = services.find((s) => s.slug === slug);
+          if (staticService) {
+            setService(staticService as DbService);
+          } else {
+            setError("Service not found");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching service:", error);
+        // Fallback to static data
+        const staticService = services.find((s) => s.slug === slug);
+        if (staticService) {
+          setService(staticService as DbService);
+        } else {
+          setError("Service not found");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchService();
+  }, [slug]);
+
+  // Fetch reviews with proper typing
   useEffect(() => {
     if (service) {
       fetch(`/api/reviews?project=${encodeURIComponent(service.title)}`)
         .then((res) => res.json())
-        .then((data) => {
-          const mapped = data.map((item: DbReview) => ({
+        .then((data: DbReview[]) => {
+          const mapped: DbReview[] = data.map((item: DbReview) => ({
             id: item.id,
             reviewer_name: item.reviewer_name,
             company: item.company,
@@ -163,7 +331,9 @@ export default function ServicePage() {
             project: item.project,
           }));
           setDbReviews(mapped);
-          console.log(mapped);
+        })
+        .catch((error) => {
+          console.error("Error fetching reviews:", error);
         });
     }
   }, [service]);
@@ -172,19 +342,19 @@ export default function ServicePage() {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem(LOCAL_KEY);
       if (stored) {
-        setLoves(JSON.parse(stored));
+        setLoves(JSON.parse(stored) as { [key: string]: number });
       } else {
         const initialLoves: { [key: string]: number } = {};
-        services.forEach((s) =>
-          s.portfolio_examples.forEach((p) => {
+        if (service) {
+          service.portfolio_examples.forEach((p) => {
             initialLoves[p.id] = p.likes;
-          })
-        );
+          });
+        }
         setLoves(initialLoves);
         localStorage.setItem(LOCAL_KEY, JSON.stringify(initialLoves));
       }
     }
-  }, []);
+  }, [service]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && Object.keys(loves).length > 0) {
@@ -265,7 +435,35 @@ export default function ServicePage() {
     setExpandedFaq(expandedFaq === index ? null : index);
   };
 
-  if (!service) {
+  // Loading state
+  if (loading) {
+    return (
+      <>
+        <PageHeader
+          title="Loading..."
+          subtitle="Fetching service details"
+          breadcrumbs={[
+            { label: "Services", href: "/services" },
+            { label: "Loading...", href: "#" },
+          ]}
+        />
+        <div className="min-h-[40vh] bg-[#ECF0F3] flex flex-col items-center justify-center text-center py-20">
+          <div className="w-20 h-20 bg-[#ECF0F3] rounded-full flex items-center justify-center mb-6 shadow-[inset_10px_10px_20px_#d1d9e6,inset_-10px_-10px_20px_#ffffff]">
+            <div className="w-8 h-8 border-4 border-[#FF004F] border-t-transparent rounded-full animate-spin"></div>
+          </div>
+          <h2 className="text-3xl font-bold text-[#1f2125] mb-4">
+            Loading Service...
+          </h2>
+          <p className="text-[#3c3e41] mb-8 max-w-md">
+            Please wait while we fetch the service details.
+          </p>
+        </div>
+      </>
+    );
+  }
+
+  // Error state
+  if (error || !service) {
     return (
       <>
         <PageHeader

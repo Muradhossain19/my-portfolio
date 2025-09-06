@@ -10,9 +10,11 @@
     "postbuild": "next-sitemap"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.23.12",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.539.0",
     "next": "15.4.6",
     "next-sitemap": "^4.2.3",

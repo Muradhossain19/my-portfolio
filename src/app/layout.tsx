@@ -2,9 +2,7 @@
 
 import { Montserrat, Poppins } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header/Header";
-import Footer from "@/components/Footer/Footer";
-import BackToTopButton from "@/components/BackToTopButton/BackToTopButton";
+import ConditionalLayout from "@/components/ConditionalLayout/ConditionalLayout";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -35,10 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${montserrat.variable} ${poppins.variable}`}>
-        <Header />
-        <main>{children}</main>
-        <Footer />
-        <BackToTopButton />
+        <ConditionalLayout>{children}</ConditionalLayout>
       </body>
     </html>
   );
