@@ -238,8 +238,8 @@ const HeroSection = () => {
               <Image
                 src="/images/hero-image.webp"
                 alt="Murad Hossain - Web Developer"
-                layout="fill"
-                objectFit="cover"
+                fill
+                style={{ objectFit: "cover" }}
                 className="rounded-full p-3"
                 priority
               />
