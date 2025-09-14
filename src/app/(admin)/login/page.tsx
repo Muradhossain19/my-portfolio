@@ -14,6 +14,10 @@ import {
   FaUserShield,
 } from "react-icons/fa";
 
+export const metadata = {
+  robots: "noindex, nofollow",
+};
+
 const AdminLoginPage = () => {
   const { login, user, loading } = useAdminAuth();
   const router = useRouter();
