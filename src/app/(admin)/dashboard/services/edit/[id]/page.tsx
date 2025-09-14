@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, Variants } from "framer-motion";
 import {
   FaSave,
@@ -14,6 +14,7 @@ import {
   FaEye,
 } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 
 interface ServiceForm {
@@ -83,6 +84,8 @@ const EditService = () => {
   const [newTechnology, setNewTechnology] = useState("");
   const [newBenefit, setNewBenefit] = useState("");
   const [newWhyChoose, setNewWhyChoose] = useState("");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
 
   useEffect(() => {
     const fetchService = async () => {
@@ -356,6 +359,25 @@ const EditService = () => {
       ...prev!,
       faqs: prev!.faqs.filter((_, i) => i !== index),
     }));
+  };
+
+  // Image upload handler (for preview only, not actual upload)
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !formData) return;
+
+    setImageUploading(true);
+
+    // Show preview (base64)
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prev) => ({
+        ...prev!,
+        image: reader.result as string,
+      }));
+      setImageUploading(false);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSave = async (is_active?: boolean) => {
@@ -674,9 +696,9 @@ const EditService = () => {
             </div>
             <div className="md:col-span-2">
               <label className="block text-[#1f2125] font-semibold mb-3">
-                Service Image URL *
+                Service Image *
               </label>
-              <div className="relative">
+              <div className="relative flex items-center gap-4">
                 <FaImage className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#3c3e41]/70 w-4 h-4" />
                 <input
                   type="url"
@@ -689,6 +711,28 @@ const EditService = () => {
                   }
                   placeholder="https://example.com/image.jpg"
                   className="w-full pl-12 pr-4 py-3 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_rgba(209,217,230,0.8),inset_-5px_-5px_10px_rgba(255,255,255,0.8)] text-[#1f2125] placeholder-[#3c3e41]/70 transition-all duration-300 focus:shadow-[inset_8px_8px_16px_rgba(209,217,230,0.8),inset_-8px_-8px_16px_rgba(255,255,255,0.8)]"
+                />
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="ml-2 px-4 py-2 bg-[#FF004F] text-white rounded-lg hover:bg-[#e6003d] transition"
+                  disabled={imageUploading}
+                >
+                  {imageUploading ? "Uploading..." : "Upload"}
+                </button>
+                <Image
+                  src={formData.image}
+                  alt="Preview"
+                  width={64}
+                  height={64}
+                  className="w-16 h-16 object-cover rounded-lg border ml-4"
                 />
               </div>
             </div>
