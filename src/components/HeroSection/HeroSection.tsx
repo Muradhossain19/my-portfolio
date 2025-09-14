@@ -13,7 +13,6 @@ const typingTexts = ["Web Developer.", "WordPress Designer."];
 
 const HeroSection = () => {
   const [textIndex, setTextIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -21,19 +20,6 @@ const HeroSection = () => {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-    const handleResize = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        setIsMobile(window.innerWidth <= 767);
-      }, 150);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const containerVariants = {
@@ -250,18 +236,13 @@ const HeroSection = () => {
           >
             <div className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] lg:w-[400px] lg:h-[400px] bg-[#ECF0F3] rounded-full shadow-[20px_20px_60px_#d1d9e6,-20px_-20px_60px_#ffffff]">
               <Image
-                src={
-                  isMobile
-                    ? "/images/mobile-hero.webp"
-                    : "/images/hero-image.webp"
-                }
+                src="/images/hero-image.webp"
                 alt="Murad Hossain - Web Developer"
                 fill
                 sizes="(max-width: 600px) 90vw, (max-width: 1200px) 400px, 400px"
                 style={{ objectFit: "cover" }}
                 className="rounded-full p-3"
                 priority
-                fetchPriority="high"
               />
             </div>
           </motion.div>
