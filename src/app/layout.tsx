@@ -23,6 +23,9 @@ export const metadata = {
   verification: {
     google: "HfnbO6pivguUmdwXN7OgwPFw1JxvOBOBZoefaJPm5xo",
   },
+  alternates: {
+    canonical: "https://www.muradhossain.com/",
+  },
 };
 
 export default function RootLayout({
