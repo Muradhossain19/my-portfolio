@@ -239,6 +239,7 @@ const HeroSection = () => {
                 src="/images/hero-image.webp"
                 alt="Murad Hossain - Web Developer"
                 fill
+                sizes="(max-width: 600px) 90vw, (max-width: 1200px) 400px, 400px"
                 style={{ objectFit: "cover" }}
                 className="rounded-full p-3"
                 priority

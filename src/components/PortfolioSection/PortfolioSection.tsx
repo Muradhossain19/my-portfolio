@@ -20,7 +20,7 @@ import {
 const portfolioData = [
   {
     id: 1,
-    images: ["/images/portfolio/akhand-ekonomi.png"],
+    images: ["/images/portfolio/akhand-ekonomi.webp"],
     category: "Web Development",
     title: "Akhand Ekonomi - Your Financial Partner",
     description:
@@ -42,7 +42,7 @@ const portfolioData = [
   },
   {
     id: 2,
-    images: ["/images/portfolio/schemafai.png"],
+    images: ["/images/portfolio/schemafai.webp"],
     category: "Web Development",
     title: "Schemafai - A Scheduling Platform",
     description:
@@ -65,7 +65,7 @@ const portfolioData = [
 
   {
     id: 3,
-    images: ["/images/portfolio/MavinAds.png"],
+    images: ["/images/portfolio/MavinAds.webp"],
     category: "WordPress",
     title: "MavinAds - Leading Digital Marketing Agency",
     description:
@@ -87,7 +87,7 @@ const portfolioData = [
   },
   {
     id: 4,
-    images: ["/images/portfolio/Route-Runner-Brokerage-Update.png"],
+    images: ["/images/portfolio/Route-Runner-Brokerage-Update.webp"],
     category: "WordPress",
     title: "Route Runner Brokerage - Your Logistics Partner",
     description:
@@ -109,7 +109,7 @@ const portfolioData = [
   },
   {
     id: 5,
-    images: ["/images/portfolio/colorley-ecommerce.png"],
+    images: ["/images/portfolio/colorley-ecommerce.webp"],
     category: "E-commerce",
     title: "Colorley - E-commerce Store",
     description:
@@ -131,7 +131,7 @@ const portfolioData = [
   },
   {
     id: 6,
-    images: ["/images/portfolio/nosy-be-landing-page.png"],
+    images: ["/images/portfolio/nosy-be-landing-page.webp"],
     category: "WordPress",
     title: "Nosy Be - Real Estate Landing Page",
     description:
@@ -153,7 +153,7 @@ const portfolioData = [
   },
   {
     id: 7,
-    images: ["/images/portfolio/Analysify.png"],
+    images: ["/images/portfolio/Analysify.webp"],
     category: "WordPress",
     title: "Analysify - Personal Portfolio Website",
     description:
@@ -175,7 +175,7 @@ const portfolioData = [
   },
   {
     id: 8,
-    images: ["/images/portfolio/aurabysr-ecommerce.jpg"],
+    images: ["/images/portfolio/aurabysr-ecommerce.webp"],
     category: "E-commerce",
     title: "Aurabysr - E-commerce Website",
     description:
@@ -197,7 +197,7 @@ const portfolioData = [
   },
   {
     id: 9,
-    images: ["/images/portfolio/lakeside-roofing.png"],
+    images: ["/images/portfolio/lakeside-roofing.webp"],
     category: "WordPress",
     title: "Lakeside Roofing - Roofing Services Website",
     description:
@@ -219,7 +219,7 @@ const portfolioData = [
   },
   {
     id: 10,
-    images: ["/images/portfolio/Serpixi.png"],
+    images: ["/images/portfolio/Serpixi.webp"],
     category: "WordPress",
     title: "Serpixi - Digital Marketing Agency",
     description:
@@ -241,7 +241,7 @@ const portfolioData = [
   },
   {
     id: 11,
-    images: ["/images/portfolio/tizfai.png"],
+    images: ["/images/portfolio/tizfai.webp"],
     category: "WordPress",
     title: "Tizfai - Your IT Solutions Partner",
     description:
@@ -263,7 +263,7 @@ const portfolioData = [
   },
   {
     id: 12,
-    images: ["/images/portfolio/medfai.png"],
+    images: ["/images/portfolio/medfai.webp"],
     category: "WordPress",
     title: "Medfai - Healthcare App Landing Page",
     description:
@@ -285,7 +285,7 @@ const portfolioData = [
   },
   {
     id: 13,
-    images: ["/images/portfolio/techguidecenter.png"],
+    images: ["/images/portfolio/techguidecenter.webp"],
     category: "WordPress",
     title: "TechGuideCenter - Your Tech Resource Hub",
     description:
@@ -607,6 +607,7 @@ const PortfolioSection = () => {
                     alt={item.title}
                     width={600}
                     height={1000}
+                    loading="lazy"
                     className="w-full h-auto object-cover absolute top-0 left-0 transition-transform duration-[4000ms] ease-in-out group-hover:-translate-y-[calc(100%-16rem)]"
                   />
                   <Link
