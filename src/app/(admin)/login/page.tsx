@@ -1,5 +1,5 @@
 //src/app/(admin)/login/page.tsx
-
+import { Metadata } from "next";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
@@ -12,7 +12,7 @@ import {
   FaUserShield,
 } from "react-icons/fa";
 
-export const metadata = {
+export const metadata: Metadata = {
   robots: "noindex, nofollow",
 };
 
