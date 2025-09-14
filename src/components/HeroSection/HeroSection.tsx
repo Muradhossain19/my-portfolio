@@ -24,9 +24,12 @@ const HeroSection = () => {
   }, []);
 
   useEffect(() => {
-    // Function to check screen width
+    let timeoutId: NodeJS.Timeout;
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 767); // Tailwind sm breakpoint
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setIsMobile(window.innerWidth <= 767);
+      }, 150);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
