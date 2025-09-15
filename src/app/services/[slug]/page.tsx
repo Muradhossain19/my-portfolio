@@ -664,8 +664,7 @@ export default function ServicePage() {
                 My Working Process
               </h2>
               <p className="text-lg text-[#3c3e41] max-w-2xl mx-auto">
-                I follow a structured and agile process to ensure every project
-                is a success.
+                From Idea to Launch: A Collaborative Process for Your Success.
               </p>
             </motion.div>
 
