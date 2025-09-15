@@ -45,7 +45,8 @@ export const services: Service[] = [
   {
     slug: "web-development",
     title: "Web Development",
-    subtitle: "Modern, scalable, and high-performance websites",
+    subtitle:
+      "Fast, secure, and beautiful websites designed to grow your business.",
     image: "/images/services/web-development.jpg",
     hero_description:
       "Transform your business with cutting-edge web development solutions. I create fast, responsive, and user-friendly websites that drive results and engage your audience.",
