@@ -243,6 +243,7 @@ const HeroSection = () => {
                 style={{ objectFit: "cover" }}
                 className="rounded-full p-3"
                 priority
+                fetchPriority="high"
               />
             </div>
           </motion.div>
