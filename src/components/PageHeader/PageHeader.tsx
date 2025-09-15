@@ -31,18 +31,23 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center">
-          {/* Page Title */}
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#1f2125]">
+          {/* Page Title (no animation) */}
+          <h1 className="text-3xl md:text-5xl font-bold text-[#1f2125] mb-4">
             {title}
           </h1>
 
           {/* Subtitle */}
           {subtitle && (
-            <p className="text-lg md:text-xl text-[#3c3e41] mb-8">{subtitle}</p>
+            <p className="text-lg text-[#3c3e41] max-w-2xl mx-auto mb-8 font-light">
+              {subtitle}
+            </p>
           )}
 
           {/* Breadcrumbs */}
-          <div className="flex items-center justify-center gap-2">
+          <nav
+            className="items-center justify-center flex-wrap gap-2 bg-[#ECF0F3] rounded-full px-6 py-3 shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] inline-flex"
+            aria-label="Breadcrumb"
+          >
             <Link
               href="/"
               className="flex items-center gap-2 text-[#3c3e41] hover:text-[#FF004F] transition-colors duration-300 text-sm font-medium"
@@ -70,7 +75,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                 </React.Fragment>
               )
             )}
-          </div>
+          </nav>
         </div>
       </div>
     </section>
