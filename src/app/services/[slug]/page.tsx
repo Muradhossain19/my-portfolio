@@ -1,6 +1,9 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
+import SkeletonService from "@/components/SkeletonService/SkeletonService";
+import PageHeaderSkeleton from "@/components/PageHeader/PageHeaderSkeleton";
 import { services } from "./ServiceData"; // Keep static data as fallback
 import Image from "next/image";
 import Link from "next/link";
@@ -30,7 +33,6 @@ import {
   FaPlus,
   FaMinus,
 } from "react-icons/fa";
-import { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import ContactModal from "@/components/ContactModal/ContactModal";
@@ -435,29 +437,11 @@ export default function ServicePage() {
     setExpandedFaq(expandedFaq === index ? null : index);
   };
 
-  // Loading state
   if (loading) {
     return (
       <>
-        <PageHeader
-          title="Loading..."
-          subtitle="Fetching service details"
-          breadcrumbs={[
-            { label: "Services", href: "/services" },
-            { label: "Loading...", href: "#" },
-          ]}
-        />
-        <div className="min-h-[40vh] bg-[#ECF0F3] flex flex-col items-center justify-center text-center py-20">
-          <div className="w-20 h-20 bg-[#ECF0F3] rounded-full flex items-center justify-center mb-6 shadow-[inset_10px_10px_20px_#d1d9e6,inset_-10px_-10px_20px_#ffffff]">
-            <div className="w-8 h-8 border-4 border-[#FF004F] border-t-transparent rounded-full animate-spin"></div>
-          </div>
-          <h2 className="text-3xl font-bold text-[#1f2125] mb-4">
-            Loading Service...
-          </h2>
-          <p className="text-[#3c3e41] mb-8 max-w-md">
-            Please wait while we fetch the service details.
-          </p>
-        </div>
+        <PageHeaderSkeleton />
+        <SkeletonService />
       </>
     );
   }

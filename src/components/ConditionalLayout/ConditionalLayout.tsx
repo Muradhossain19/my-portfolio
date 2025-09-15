@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import BackToTopButton from "@/components/BackToTopButton/BackToTopButton";
+import TopProgressBar from "../TopProgressBar/TopProgressBar";
 
 export default function ConditionalLayout({
   children,
@@ -19,6 +20,7 @@ export default function ConditionalLayout({
   return (
     <>
       {!hideHeaderFooter && <Header />}
+      <TopProgressBar />
       <main>{children}</main>
       {!hideHeaderFooter && <Footer />}
       {!hideHeaderFooter && <BackToTopButton />}
