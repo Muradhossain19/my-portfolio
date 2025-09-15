@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import SkeletonService from "@/components/SkeletonService/SkeletonService";
-import PageHeaderSkeleton from "@/components/PageHeader/PageHeaderSkeleton";
+// import PageHeaderSkeleton from "@/components/PageHeader/PageHeaderSkeleton";
 import { services } from "./ServiceData"; // Keep static data as fallback
 import Image from "next/image";
 import Link from "next/link";
@@ -202,6 +202,7 @@ export default function ServicePage() {
 
   // State for database service
   const [service, setService] = useState<DbService | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -229,6 +230,8 @@ export default function ServicePage() {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [loves, setLoves] = useState<{ [key: string]: number }>({});
   const [dbReviews, setDbReviews] = useState<DbReview[]>([]);
+
+  const staticService = services.find((s) => s.slug === slug);
 
   // Safe JSON parse function with proper typing
   function safeJsonParse<T>(jsonString: string, fallback: T): T {
@@ -293,7 +296,7 @@ export default function ServicePage() {
           setService(parsedService);
         } else {
           // Fallback to static data if not found in database
-          const staticService = services.find((s) => s.slug === slug);
+
           if (staticService) {
             setService(staticService as DbService);
           } else {
@@ -302,8 +305,7 @@ export default function ServicePage() {
         }
       } catch (error) {
         console.error("Error fetching service:", error);
-        // Fallback to static data
-        const staticService = services.find((s) => s.slug === slug);
+
         if (staticService) {
           setService(staticService as DbService);
         } else {
@@ -315,6 +317,7 @@ export default function ServicePage() {
     };
 
     fetchService();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   // Fetch reviews with proper typing
@@ -440,7 +443,17 @@ export default function ServicePage() {
   if (loading) {
     return (
       <>
-        <PageHeaderSkeleton />
+        <PageHeader
+          title={staticService?.title || "Service"}
+          subtitle={staticService?.subtitle || ""}
+          breadcrumbs={[
+            { label: "Services", href: "/services" },
+            {
+              label: staticService?.title || "Service",
+              href: `/services/${slug}`,
+            },
+          ]}
+        />
         <SkeletonService />
       </>
     );
@@ -451,12 +464,14 @@ export default function ServicePage() {
     return (
       <>
         <PageHeader
-          title="Service Not Found"
-          subtitle="The requested service could not be found"
+          title={staticService?.title || service?.title || "Service"}
+          subtitle={staticService?.subtitle || service?.subtitle || ""}
           breadcrumbs={[
-            { label: "Home", href: "/" },
-            { label: "Services", href: "/" },
-            { label: "Not Found", href: "#" },
+            { label: "Services", href: "/services" },
+            {
+              label: staticService?.title || service?.title || "Service",
+              href: `/services/${slug}`,
+            },
           ]}
         />
         <div className="min-h-[40vh] bg-[#ECF0F3] flex flex-col items-center justify-center text-center py-20">
@@ -483,11 +498,14 @@ export default function ServicePage() {
   return (
     <>
       <PageHeader
-        title={service.title}
-        subtitle={service.subtitle}
+        title={staticService?.title || service.title}
+        subtitle={staticService?.subtitle || service.subtitle}
         breadcrumbs={[
           { label: "Services", href: "/services" },
-          { label: service.title, href: `/services/${service.slug}` },
+          {
+            label: staticService?.title || service.title,
+            href: `/services/${slug}`,
+          },
         ]}
       />
       <div className="bg-[#ECF0F3]">
