@@ -510,10 +510,10 @@ export default function ServicePage() {
       />
       <div className="bg-[#ECF0F3]">
         {/* Hero Section */}
-        <section className="py-16 md:py-20">
-          <div className="container mx-auto px-4 max-w-6xl">
+        <section className="py-10 md:py-16">
+          <div className="container mx-auto px-2 ">
             <motion.div
-              className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center mb-12"
               initial="hidden"
               animate="visible"
               variants={staggerContainer}
@@ -575,7 +575,7 @@ export default function ServicePage() {
 
             {/* Quick Stats */}
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-3 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-4"
               initial="hidden"
               whileInView="visible"
               viewport={optimizedViewport}
@@ -612,7 +612,7 @@ export default function ServicePage() {
 
         {/* Features Section */}
         <section id="features" className="py-16 md:py-20 scroll-mt-20">
-          <div className="container mx-auto px-4 max-w-6xl">
+          <div className="container mx-auto px-2 max-w-6xl">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -630,7 +630,7 @@ export default function ServicePage() {
             </motion.div>
 
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
               initial="hidden"
               whileInView="visible"
               viewport={optimizedViewport}
@@ -746,7 +746,7 @@ export default function ServicePage() {
 
         {/* Portfolio Examples */}
         <section className="py-16">
-          <div className="container mx-auto px-4 max-w-6xl">
+          <div className="container mx-auto px-2 max-w-6xl">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -763,7 +763,7 @@ export default function ServicePage() {
             </motion.div>
 
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-3 gap-8"
+              className="grid grid-cols-1 md:grid-cols-3 gap-4"
               initial="hidden"
               whileInView="visible"
               viewport={optimizedViewport}
@@ -818,8 +818,8 @@ export default function ServicePage() {
 
         {/* Pricing Section - FULLY REBUILT to match PricingSection.tsx */}
         <section id="pricing" className="py-16 md:py-20 scroll-mt-20">
-          <div className="container mx-auto px-4 max-w-6xl">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-12 items-start">
+          <div className="container mx-auto px-2 max-w-6xl">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
               {/* Left Side - Sticky Heading */}
               <motion.div
                 className="lg:sticky lg:top-28 self-start"

@@ -544,8 +544,9 @@ export const services: Service[] = [
   {
     slug: "ecommerce",
     title: "E-commerce Solutions",
-    subtitle: "Powerful online stores that drive sales and growth",
-    image: "/images/services/ecommerce.jpg",
+    subtitle:
+      "I build fast, reliable online stores that help your business grow.",
+    image: "/images/services/E-Commerce-Solutions",
     hero_description:
       "Launch your online business with a robust e-commerce solution designed to maximize sales and provide excellent user experience. From WooCommerce to custom platforms.",
     overview:

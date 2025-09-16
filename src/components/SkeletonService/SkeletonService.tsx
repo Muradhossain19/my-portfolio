@@ -2,7 +2,7 @@ export default function SkeletonService() {
   return (
     <div className="animate-pulse bg-[#ECF0F3] min-h-[80vh]">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 max-w-6xl py-16 flex flex-col lg:flex-row gap-12">
+      <div className="container mx-auto px-4  py-16 flex flex-col lg:flex-row gap-12">
         <div className="flex-1 space-y-4">
           <div className="w-32 h-8 bg-gray-200 rounded" />
           <div className="w-3/4 h-10 bg-gray-200 rounded" />
@@ -14,7 +14,7 @@ export default function SkeletonService() {
           </div>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <div className="w-80 h-80 bg-gray-200 rounded-2xl" />
+          <div className="w-120 h-120 bg-gray-200 rounded-2xl" />
         </div>
       </div>
 
