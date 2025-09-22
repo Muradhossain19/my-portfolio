@@ -35,6 +35,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="canonical" href="https://www.muradhossain.com/" />
+      </head>
       <body className={`${montserrat.variable} ${poppins.variable}`}>
         <ConditionalLayout>{children}</ConditionalLayout>
       </body>
