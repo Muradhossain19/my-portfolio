@@ -251,16 +251,16 @@ export async function POST(req: Request) {
   try {
     const data: ContactFormData = await req.json();
 
-    // reCAPTCHA ভেরিফিকেশন
-    const { recaptchaToken } = data;
-    const recaptchaRes = await fetch(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`,
-      { method: "POST" }
-    );
-    const recaptchaData = await recaptchaRes.json();
-    if (!recaptchaData.success) {
-      return new Response("reCAPTCHA failed", { status: 400 });
-    }
+    // reCAPTCHA ভেরিফিকেশন (কমেন্ট করে রাখুন)
+    // const { recaptchaToken } = data;
+    // const recaptchaRes = await fetch(
+    //   `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`,
+    //   { method: "POST" }
+    // );
+    // const recaptchaData = await recaptchaRes.json();
+    // if (!recaptchaData.success) {
+    //   return new Response("reCAPTCHA failed", { status: 400 });
+    // }
 
     if (data.type === "contact") {
       await client.query(
