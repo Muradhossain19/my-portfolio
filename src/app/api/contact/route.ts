@@ -249,7 +249,6 @@ export async function POST(req: Request) {
   try {
     const data: ContactFormData = await req.json();
 
-    // reCAPTCHA ভেরিফিকেশন (কমেন্ট করে রাখুন)
     // const { recaptchaToken } = data;
     // const recaptchaRes = await fetch(
     //   `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`,
