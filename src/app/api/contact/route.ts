@@ -10,7 +10,6 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-// ডেটার জন্য একটি ইন্টারফেস
 type ContactFormData = {
   type: "contact" | "order" | "subscribe";
   name?: string;
