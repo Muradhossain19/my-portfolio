@@ -245,7 +245,6 @@ async function sendEmail({
   });
 }
 
-// মূল POST ফাংশন
 export async function POST(req: Request) {
   const client = await pool.connect();
   try {
