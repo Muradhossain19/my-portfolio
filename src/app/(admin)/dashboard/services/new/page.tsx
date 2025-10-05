@@ -10,9 +10,12 @@ import {
   FaTimes,
   FaDollarSign,
   FaCheck,
+  FaFolder,
 } from "react-icons/fa";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import portfolioData from "@/components/PortfolioSection/PortfolioData";
 
 interface ServiceForm {
   title: string;
@@ -790,6 +793,163 @@ const AddNewService = () => {
                 <FaPlus className="w-3 h-3" />
               </button>
             </div>
+          </div>
+        </motion.div>
+
+        {/* Portfolio Examples Section */}
+        <motion.div
+          variants={itemVariants}
+          className="bg-[#ECF0F3] rounded-2xl p-8 shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff]"
+        >
+          <h2 className="text-xl font-bold text-[#1f2125] mb-6">
+            Portfolio Examples
+          </h2>
+
+          {/* Available Portfolio Items */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-[#1f2125] mb-4">
+              Available Portfolio Items
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-60 overflow-y-auto p-2 bg-[#ECF0F3] rounded-xl shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff]">
+              {portfolioData
+                .filter(
+                  (item) =>
+                    formData.title &&
+                    (item.category
+                      .toLowerCase()
+                      .includes(formData.title.toLowerCase()) ||
+                      item.services
+                        .toLowerCase()
+                        .includes(formData.title.toLowerCase()) ||
+                      item.title
+                        .toLowerCase()
+                        .includes(formData.title.toLowerCase()))
+                )
+                .map((item) => (
+                  <div
+                    key={item.id}
+                    className="p-3 bg-[#ECF0F3] rounded-lg shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] cursor-pointer hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] transition-all duration-300"
+                    onClick={() => {
+                      const portfolioItem = {
+                        id: String(item.id),
+                        title: item.title,
+                        description: item.description,
+                        longDescription: item.longDescription,
+                        image: item.images[0] || "",
+                        images: item.images,
+                        client: item.client,
+                        date: item.date,
+                        services: item.services,
+                        budget: item.budget,
+                        likes: item.likes,
+                        link: item.link,
+                        features: item.features,
+                      };
+
+                      const isAlreadyAdded = formData.portfolio_examples.some(
+                        (p) => p.id === portfolioItem.id
+                      );
+                      if (!isAlreadyAdded) {
+                        setFormData((prev) => ({
+                          ...prev,
+                          portfolio_examples: [
+                            ...prev.portfolio_examples,
+                            portfolioItem,
+                          ],
+                        }));
+                      }
+                    }}
+                  >
+                    <div className="relative h-24 mb-2 rounded-lg overflow-hidden">
+                      <Image
+                        src={item.images[0]}
+                        alt={item.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <h4 className="text-sm font-semibold text-[#1f2125] mb-1 line-clamp-2">
+                      {item.title}
+                    </h4>
+                    <p className="text-xs text-[#3c3e41]">{item.category}</p>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-xs text-[#FF004F]">
+                        {item.client}
+                      </span>
+                      <button
+                        type="button"
+                        className="text-xs bg-[#FF004F] text-white px-2 py-1 rounded hover:bg-[#e6003d] transition-colors"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          {/* Selected Portfolio Items */}
+          <div>
+            <h3 className="text-lg font-semibold text-[#1f2125] mb-4">
+              Selected Portfolio Items ({formData.portfolio_examples.length})
+            </h3>
+            {formData.portfolio_examples.length === 0 ? (
+              <div className="text-center py-8 text-[#3c3e41]">
+                <FaFolder className="w-12 h-12 mx-auto mb-4 text-[#d1d9e6]" />
+                <p>No portfolio items selected</p>
+                <p className="text-sm mt-1">
+                  Select from available items above
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {formData.portfolio_examples.map((item, index) => (
+                  <div
+                    key={item.id}
+                    className="p-4 bg-[#ECF0F3] rounded-xl shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff]"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                        <Image
+                          src={item.image}
+                          alt={item.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-semibold text-[#1f2125] mb-1 line-clamp-2">
+                          {item.title}
+                        </h4>
+                        <p className="text-xs text-[#3c3e41] mb-2 line-clamp-2">
+                          {item.description}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-[#FF004F]">
+                            {item.client}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                portfolio_examples:
+                                  prev.portfolio_examples.filter(
+                                    (_, i) => i !== index
+                                  ),
+                              }));
+                            }}
+                            className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition-colors"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </motion.div>
 

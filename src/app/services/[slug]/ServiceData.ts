@@ -1,3 +1,38 @@
+import portfolioData from "@/components/PortfolioSection/PortfolioData";
+
+// Helper: Map service slug to portfolio category
+const serviceCategoryMap: Record<string, string> = {
+  "web-development": "Web Development",
+  wordpress: "WordPress",
+  ecommerce: "E-commerce",
+};
+
+// Function to get portfolio examples for a service
+function getPortfolioExamples(serviceSlug: string) {
+  const category = serviceCategoryMap[serviceSlug];
+  return portfolioData
+    .filter(
+      (item) =>
+        item.category.toLowerCase().includes(category.toLowerCase()) ||
+        item.services.toLowerCase().includes(category.toLowerCase())
+    )
+    .map((item) => ({
+      id: String(item.id),
+      title: item.title,
+      description: item.description,
+      longDescription: item.longDescription,
+      image: item.images[0] || "", // <-- set image from images array
+      images: item.images,
+      client: item.client,
+      date: item.date,
+      services: item.services,
+      budget: item.budget,
+      likes: item.likes,
+      link: item.link,
+      features: item.features,
+    }));
+}
+
 export interface Service {
   slug: string;
   title: string;
@@ -118,80 +153,7 @@ export const services: Service[] = [
       "Docker",
       "Tailwind CSS",
     ],
-    portfolio_examples: [
-      {
-        id: "web-dev-1",
-        title: "E-commerce Fashion Store",
-        image: "/images/portfolio/ecommerce-example.jpg",
-        images: [
-          "/images/portfolio/ecommerce-example.jpg",
-          "/images/portfolio/fashion-store.jpg",
-        ],
-        description:
-          "A complete online store with product catalog, payment integration, and order management system.",
-        longDescription:
-          "Developed a full-featured e-commerce platform for a fashion brand using Next.js and Stripe. The platform includes advanced product filtering, a seamless checkout experience, and a custom admin dashboard for managing orders and inventory.",
-        client: "Aura Fashion",
-        date: "July 2025",
-        services: "Web Development, E-commerce",
-        budget: "$7,000",
-        likes: 142,
-        link: "https://example.com",
-        features: [
-          "Stripe Payment Gateway Integration",
-          "Custom Admin Dashboard",
-          "Advanced Product Filtering",
-          "Responsive Design",
-        ],
-      },
-      {
-        id: "web-dev-2",
-        title: "Corporate Business Website",
-        image: "/images/portfolio/corporate-example.jpg",
-        images: ["/images/portfolio/corporate-example.jpg"],
-        description:
-          "Professional website with content management system and lead generation forms.",
-        longDescription:
-          "Created a professional and modern corporate website for a financial consulting firm. The site was built on a headless CMS for easy content updates and optimized for lead generation with integrated forms and CRM.",
-        client: "Innovate Finance",
-        date: "May 2025",
-        services: "Web Design, CMS Integration",
-        budget: "$4,500",
-        likes: 98,
-        link: "https://example.com",
-        features: [
-          "Headless CMS (Sanity.io)",
-          "Lead Generation Forms",
-          "Blog and News Section",
-          "SEO Optimization",
-        ],
-      },
-      {
-        id: "web-dev-3",
-        title: "SaaS Application Dashboard",
-        image: "/images/portfolio/saas-example.jpg",
-        images: [
-          "/images/portfolio/saas-example.jpg",
-          "/images/portfolio/saas-example-2.jpg",
-        ],
-        description:
-          "Complex dashboard application with user authentication and data visualization.",
-        longDescription:
-          "Designed and developed a complex SaaS dashboard for a data analytics company. The application features secure user authentication, real-time data visualization with D3.js, and a subscription management system.",
-        client: "Data Insights Inc.",
-        date: "March 2025",
-        services: "SaaS Development, UI/UX Design",
-        budget: "$12,000",
-        likes: 215,
-        link: "https://example.com",
-        features: [
-          "Real-time Data Visualization",
-          "User Authentication (JWT)",
-          "Subscription Management",
-          "Team Collaboration Tools",
-        ],
-      },
-    ],
+    portfolio_examples: getPortfolioExamples("web-development"),
     pricing: {
       basic: {
         price: "$500 - $1,500",
@@ -371,77 +333,7 @@ export const services: Service[] = [
       "Webpack",
       "Git",
     ],
-    portfolio_examples: [
-      {
-        id: "wp-project-1",
-        title: "Custom Blog Theme",
-        image: "/images/portfolio/blog-theme.jpg",
-        images: ["/images/portfolio/blog-theme.jpg"],
-        description:
-          "A responsive blog theme with custom post types and advanced customization options.",
-        longDescription:
-          "A fully custom WordPress theme built from scratch for a popular travel blogger. The theme features unique layouts for different post formats, an integrated map for travel logs, and is highly optimized for performance and SEO.",
-        client: "Wanderlust Chronicles",
-        date: "June 2025",
-        services: "Theme Development, ACF",
-        budget: "$3,000",
-        likes: 189,
-        link: "https://example.com",
-        features: [
-          "Custom Post Types for Destinations",
-          "Interactive Map Integration",
-          "Advanced Custom Fields (ACF) Pro",
-          "Lazy Loading for Images",
-        ],
-      },
-      {
-        id: "wp-project-2",
-        title: "WooCommerce Store",
-        image: "/images/portfolio/woocommerce-store.jpg",
-        images: [
-          "/images/portfolio/woocommerce-store.jpg",
-          "/images/portfolio/woocommerce-store-2.jpg",
-        ],
-        description:
-          "Complete e-commerce solution with custom checkout process and payment integration.",
-        longDescription:
-          "Developed a WooCommerce store for an artisanal coffee brand. The project included a custom theme, subscription-based products, and integration with a third-party shipping provider for real-time rate calculation.",
-        client: "Artisan Roast Co.",
-        date: "April 2025",
-        services: "WooCommerce, Plugin Dev",
-        budget: "$5,500",
-        likes: 250,
-        link: "https://example.com",
-        features: [
-          "WooCommerce Subscriptions",
-          "Custom Checkout Fields",
-          "Shipping API Integration",
-          "Product Bundles",
-        ],
-      },
-      {
-        id: "wp-project-3",
-        title: "Headless WordPress Site",
-        image: "/images/portfolio/headless-wp.jpg",
-        images: ["/images/portfolio/headless-wp.jpg"],
-        description:
-          "Modern headless WordPress setup with React frontend for improved performance.",
-        longDescription:
-          "Built a headless WordPress site for a tech news portal. The backend is powered by WordPress and its REST API, while the frontend is a lightning-fast Next.js application. This architecture provides superior performance and security.",
-        client: "Tech Today",
-        date: "February 2025",
-        services: "Headless WP, Next.js",
-        budget: "$8,000",
-        likes: 312,
-        link: "https://example.com",
-        features: [
-          "Next.js Frontend",
-          "WordPress REST API",
-          "Static Site Generation (SSG)",
-          "Instant Search Functionality",
-        ],
-      },
-    ],
+    portfolio_examples: getPortfolioExamples("wordpress"),
     pricing: {
       basic: {
         price: "$800 - $2,000",
@@ -615,77 +507,7 @@ export const services: Service[] = [
       "Google Analytics",
       "Facebook Pixel",
     ],
-    portfolio_examples: [
-      {
-        id: "ecom-project-1",
-        title: "Fashion E-commerce Store",
-        image: "/images/portfolio/fashion-store.jpg",
-        images: [
-          "/images/portfolio/fashion-store.jpg",
-          "/images/portfolio/ecommerce-example.jpg",
-        ],
-        description:
-          "Complete fashion store with size guides, wishlist functionality, and advanced filtering options.",
-        longDescription:
-          "A stylish and modern e-commerce store for a boutique fashion brand. The site features advanced product filtering by size, color, and style, a user-friendly wishlist, and a seamless one-page checkout process to maximize conversions.",
-        client: "Chic Boutique",
-        date: "August 2025",
-        services: "WooCommerce, UI/UX Design",
-        budget: "$6,000",
-        likes: 280,
-        link: "https://example.com",
-        features: [
-          "Advanced Product Filtering",
-          "Customer Wishlist Functionality",
-          "One-Page Checkout",
-          "Instagram Feed Integration",
-        ],
-      },
-      {
-        id: "ecom-project-2",
-        title: "Electronics Marketplace",
-        image: "/images/portfolio/electronics-store.jpg",
-        images: ["/images/portfolio/electronics-store.jpg"],
-        description:
-          "Multi-vendor marketplace with product comparison, reviews, and affiliate program integration.",
-        longDescription:
-          "Developed a multi-vendor marketplace for electronics, allowing different sellers to list their products. Key features include a product comparison tool, customer reviews and ratings, and an integrated affiliate program to drive sales.",
-        client: "Gadget Hub",
-        date: "July 2025",
-        services: "Custom Platform, Marketplace",
-        budget: "$15,000",
-        likes: 450,
-        link: "https://example.com",
-        features: [
-          "Multi-vendor Functionality",
-          "Product Comparison Engine",
-          "Customer Review System",
-          "Affiliate Program Integration",
-        ],
-      },
-      {
-        id: "ecom-project-3",
-        title: "Digital Products Store",
-        image: "/images/portfolio/digital-store.jpg",
-        images: ["/images/portfolio/digital-store.jpg"],
-        description:
-          "Store specializing in digital downloads with automated delivery and license management.",
-        longDescription:
-          "A specialized e-commerce store for selling digital products like software, e-books, and design assets. The platform features secure, automated digital delivery upon purchase and a system for managing software licenses.",
-        client: "Creative Assets",
-        date: "June 2025",
-        services: "E-commerce, Digital Delivery",
-        budget: "$4,000",
-        likes: 195,
-        link: "https://example.com",
-        features: [
-          "Automated Digital Product Delivery",
-          "Secure Download Links",
-          "Software License Key Generation",
-          "Customer Account Area",
-        ],
-      },
-    ],
+    portfolio_examples: getPortfolioExamples("ecommerce"),
     pricing: {
       basic: {
         price: "$1,200 - $3,000",
