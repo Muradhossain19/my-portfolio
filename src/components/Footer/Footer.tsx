@@ -17,7 +17,7 @@ import {
   FaHeart,
   FaRocket,
   FaLightbulb,
-  FaArrowRight,
+  FaChevronRight,
 } from "react-icons/fa";
 
 const Footer = () => {
@@ -312,7 +312,7 @@ const Footer = () => {
                       href={link.href}
                       className="text-gray-300 hover:text-[#FF004F] transition-colors duration-300 text-xs md:text-sm flex items-center gap-2 group"
                     >
-                      <FaArrowRight className="text-[#FF004F] w-3 h-3" />
+                      <FaChevronRight className="text-[#FF004F] w-3 h-3" />
                       {link.label}
                     </Link>
                   ) : (
@@ -321,7 +321,7 @@ const Footer = () => {
                       onClick={() => handleSectionScroll(link.section!)}
                       className="bg-transparent text-gray-300 hover:text-[#FF004F] transition-colors duration-300 text-xs md:text-sm flex items-center gap-2 group cursor-pointer p-0"
                     >
-                      <FaArrowRight className="text-[#FF004F] w-3 h-3" />
+                      <FaChevronRight className="text-[#FF004F] w-3 h-3" />
                       {link.label}
                     </button>
                   )}
@@ -353,7 +353,7 @@ const Footer = () => {
                     href={service.href}
                     className="text-gray-300 hover:text-[#FF004F] transition-colors duration-300 text-xs md:text-sm flex items-center gap-2 group"
                   >
-                    <FaArrowRight className="text-[#FF004F] w-3 h-3" />
+                    <FaChevronRight className="text-[#FF004F] w-3 h-3" />
                     {service.label}
                   </Link>
                 </motion.li>
