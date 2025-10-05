@@ -17,6 +17,7 @@ import {
   FaHeart,
   FaRocket,
   FaLightbulb,
+  FaArrowRight,
 } from "react-icons/fa";
 
 const Footer = () => {
@@ -307,22 +308,20 @@ const Footer = () => {
                   transition={{ duration: 0.2 }}
                 >
                   {link.href ? (
-                    // Blog page link
                     <Link
                       href={link.href}
                       className="text-gray-300 hover:text-[#FF004F] transition-colors duration-300 text-xs md:text-sm flex items-center gap-2 group"
                     >
-                      <span className="w-1 h-1 bg-gray-600 rounded-full group-hover:bg-[#FF004F] transition-colors duration-300"></span>
+                      <FaArrowRight className="text-[#FF004F] w-3 h-3" />
                       {link.label}
                     </Link>
                   ) : (
-                    // Section scroll button
                     <button
                       type="button"
                       onClick={() => handleSectionScroll(link.section!)}
                       className="bg-transparent text-gray-300 hover:text-[#FF004F] transition-colors duration-300 text-xs md:text-sm flex items-center gap-2 group cursor-pointer p-0"
                     >
-                      <span className="w-1 h-1 bg-gray-600 rounded-full group-hover:bg-[#FF004F] transition-colors duration-300"></span>
+                      <FaArrowRight className="text-[#FF004F] w-3 h-3" />
                       {link.label}
                     </button>
                   )}
@@ -354,7 +353,7 @@ const Footer = () => {
                     href={service.href}
                     className="text-gray-300 hover:text-[#FF004F] transition-colors duration-300 text-xs md:text-sm flex items-center gap-2 group"
                   >
-                    <span className="w-1 h-1 bg-gray-600 rounded-full group-hover:bg-[#FF004F] transition-colors duration-300"></span>
+                    <FaArrowRight className="text-[#FF004F] w-3 h-3" />
                     {service.label}
                   </Link>
                 </motion.li>

@@ -40,7 +40,7 @@ export default function BackToTopButton() {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed bottom-8 right-8 z-[99] h-14 w-14 cursor-pointer rounded-full bg-[#ECF0F3] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] transition-all duration-300 ease-in-out hover:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] ${
+      className={`fixed bottom-8 right-8 z-[99] h-14 w-14 cursor-pointer rounded-full bg-[#ECF0F3]  transition-all duration-300 ease-in-out hover:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
       }`}
       aria-label="Go to top"
