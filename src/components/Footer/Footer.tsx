@@ -407,9 +407,7 @@ const Footer = () => {
             >
               <p className="text-gray-400 text-xs md:text-sm flex flex-col md:flex-row items-center justify-center md:justify-end gap-1">
                 <span className="flex items-center gap-1">
-                  © {currentYear} Murad Hossain. Made with{" "}
-                  <FaHeart className="text-[#FF004F] w-3 h-3 animate-pulse" />{" "}
-                  in Bangladesh
+                  © {currentYear} Murad Hossain
                 </span>
               </p>
               <p className="text-gray-500 text-xs mt-1">
