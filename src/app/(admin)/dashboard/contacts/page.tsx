@@ -213,10 +213,12 @@ const ContactsManagement = () => {
         if (isSubscriptionForm(item)) {
           return item.email.toLowerCase().includes(searchTerm.toLowerCase());
         } else {
+          // Type assertion to ensure item has name, email, and subject properties
+          const formItem = item as ContactForm | OrderForm;
           return (
-            item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.subject.toLowerCase().includes(searchTerm.toLowerCase())
+            formItem.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            formItem.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            formItem.subject.toLowerCase().includes(searchTerm.toLowerCase())
           );
         }
       });
