@@ -509,14 +509,14 @@ const ContactsManagement = () => {
                         ) : (
                           <>
                             <p className="text-[#1f2125] font-medium">
-                              {item.name}
+                              {(item as ContactForm | OrderForm).name}
                             </p>
                             <p className="text-sm text-[#3c3e41]">
-                              {item.email}
+                              {(item as ContactForm | OrderForm).email}
                             </p>
-                            {item.phone && (
+                            {(item as ContactForm | OrderForm).phone && (
                               <p className="text-xs text-[#3c3e41]">
-                                {item.phone}
+                                {(item as ContactForm | OrderForm).phone}
                               </p>
                             )}
                           </>
