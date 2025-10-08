@@ -533,7 +533,7 @@ const ContactsManagement = () => {
                         </p>
                         {isContactForm(item) && (
                           <p className="text-xs text-[#3c3e41] mt-1">
-                            Service: {item.service}
+                            Service: {(item as ContactForm).service}
                           </p>
                         )}
                       </td>
@@ -542,7 +542,7 @@ const ContactsManagement = () => {
                   {activeTab === "orders" && isOrderForm(item) && (
                     <td className="p-6">
                       <span className="text-lg font-bold text-green-600">
-                        {item.price}
+                        {(item as OrderForm).price}
                       </span>
                     </td>
                   )}
@@ -677,7 +677,9 @@ const ContactsManagement = () => {
                     <label className="text-sm font-semibold text-[#1f2125] mb-2 block">
                       Service
                     </label>
-                    <p className="text-[#3c3e41]">{selectedItem.service}</p>
+                    <p className="text-[#3c3e41]">
+                      {(selectedItem as ContactForm).service}
+                    </p>
                   </div>
                 )}
 
@@ -688,7 +690,7 @@ const ContactsManagement = () => {
                       Price
                     </label>
                     <p className="text-[#FF004F] text-lg font-bold">
-                      {selectedItem.price}
+                      {(selectedItem as OrderForm).price}
                     </p>
                   </div>
                 )}
