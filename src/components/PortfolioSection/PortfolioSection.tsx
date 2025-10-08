@@ -11,11 +11,46 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaCalendarAlt,
-  // FaDollarSign,
   FaUser,
   FaCog,
 } from "react-icons/fa";
 import portfolioData from "./PortfolioData";
+
+// Interface for database portfolio item
+interface DatabasePortfolioItem {
+  id: number;
+  images: string[];
+  category: string;
+  title: string;
+  description: string;
+  long_description: string;
+  client: string;
+  date: string;
+  services: string;
+  budget: string;
+  likes: number;
+  link: string;
+  features: string[];
+  created_at?: string;
+  updated_at?: string;
+}
+
+// Interface for static portfolio item (keeping original structure)
+interface PortfolioItem {
+  id: number;
+  images: string[];
+  category: string;
+  title: string;
+  description: string;
+  longDescription: string;
+  client: string;
+  date: string;
+  services: string;
+  budget: string;
+  likes: number;
+  link: string;
+  features: string[];
+}
 
 // Categories for filtering
 const categories = ["All", "Web Development", "WordPress", "E-commerce"];
@@ -50,30 +85,95 @@ const modalContentVariants: Variants = {
 const PortfolioSection = () => {
   const headingText = "My Portfolio";
   const [activeFilter, setActiveFilter] = useState("All");
-  const [filteredItems, setFilteredItems] = useState(portfolioData);
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
+  const [filteredItems, setFilteredItems] = useState<PortfolioItem[]>([]);
   const [loves, setLoves] = useState<{ [key: number]: number }>({});
   const [selectedProject, setSelectedProject] = useState<PortfolioItem | null>(
     null
   );
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
+  // Function to transform database item to component format
+  const transformDatabaseItem = (
+    dbItem: DatabasePortfolioItem
+  ): PortfolioItem => {
+    return {
+      id: dbItem.id,
+      images: dbItem.images,
+      category: dbItem.category,
+      title: dbItem.title,
+      description: dbItem.description,
+      longDescription: dbItem.long_description,
+      client: dbItem.client,
+      date: dbItem.date,
+      services: dbItem.services,
+      budget: dbItem.budget,
+      likes: dbItem.likes,
+      link: dbItem.link,
+      features: dbItem.features,
+    };
+  };
+
+  // Fetch portfolio data from database with fallback to static data
+  const fetchPortfolioData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/admin/portfolio");
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data.success && data.portfolio && data.portfolio.length > 0) {
+          // Transform database items to component format
+          const transformedItems = data.portfolio.map(
+            (item: DatabasePortfolioItem) => transformDatabaseItem(item)
+          );
+          setPortfolioItems(transformedItems);
+          console.log("Portfolio data loaded from database");
+        } else {
+          // Fallback to static data
+          setPortfolioItems(portfolioData);
+          console.log("Using fallback static portfolio data");
+        }
+      } else {
+        // Fallback to static data
+        setPortfolioItems(portfolioData);
+        console.log("API request failed, using static portfolio data");
+      }
+    } catch (error) {
+      console.error("Error fetching portfolio data:", error);
+      // Fallback to static data
+      setPortfolioItems(portfolioData);
+      console.log("Error occurred, using static portfolio data");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Fetch portfolio data on component mount
+  useEffect(() => {
+    fetchPortfolioData();
+  }, [fetchPortfolioData]);
+
+  // Filter items based on active filter
   useEffect(() => {
     if (activeFilter === "All") {
-      setFilteredItems(portfolioData);
+      setFilteredItems(portfolioItems);
     } else {
-      const newItems = portfolioData.filter(
+      const newItems = portfolioItems.filter(
         (item) => item.category === activeFilter
       );
       setFilteredItems(newItems);
     }
     setCurrentPage(1); // Reset to first page on filter change
-  }, [activeFilter]);
+  }, [activeFilter, portfolioItems]);
 
   // Fetch loves from backend on mount
   useEffect(() => {
@@ -83,7 +183,8 @@ const PortfolioSection = () => {
         const data: Array<{ portfolio_id: number; loves_count: number }> =
           await res.json();
         const lovesObj: { [key: number]: number } = {};
-        portfolioData.forEach((item) => {
+
+        portfolioItems.forEach((item) => {
           const found = data.find(
             (d: { portfolio_id: number; loves_count: number }) =>
               d.portfolio_id === item.id
@@ -94,14 +195,17 @@ const PortfolioSection = () => {
       } catch {
         // fallback to initial likes if API fails
         const initialLoves: { [key: number]: number } = {};
-        portfolioData.forEach((item) => {
+        portfolioItems.forEach((item) => {
           initialLoves[item.id] = item.likes;
         });
         setLoves(initialLoves);
       }
     }
-    fetchLoves();
-  }, []);
+
+    if (portfolioItems.length > 0) {
+      fetchLoves();
+    }
+  }, [portfolioItems]);
 
   // Update love count in backend and refetch
   const handleLove = async (id: number, e: React.MouseEvent) => {
@@ -117,7 +221,7 @@ const PortfolioSection = () => {
       const data: Array<{ portfolio_id: number; loves_count: number }> =
         await res.json();
       const lovesObj: { [key: number]: number } = {};
-      portfolioData.forEach((item) => {
+      portfolioItems.forEach((item) => {
         const found = data.find(
           (d: { portfolio_id: number; loves_count: number }) =>
             d.portfolio_id === item.id
@@ -133,22 +237,6 @@ const PortfolioSection = () => {
       }));
     }
   };
-
-  interface PortfolioItem {
-    id: number;
-    images: string[];
-    category: string;
-    title: string;
-    description: string;
-    longDescription: string;
-    client: string;
-    date: string;
-    services: string;
-    budget: string;
-    likes: number;
-    link: string;
-    features: string[];
-  }
 
   const openModal = (project: PortfolioItem) => {
     // First save scroll position
@@ -197,7 +285,7 @@ const PortfolioSection = () => {
     }, 100); // modal close animation wait
   };
 
-  // Image navigation functions যোগ করুন
+  // Image navigation functions
   const prevImage = () => {
     setCurrentImageIndex((prev) => Math.max(0, prev - 1));
   };
@@ -251,6 +339,22 @@ const PortfolioSection = () => {
   const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <section
+        id="portfolio"
+        className="bg-[#ECF0F3] py-10 md:py-16 overflow-x-hidden"
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex justify-center items-center py-20">
+            <div className="w-12 h-12 border-4 border-[#FF004F] border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -341,7 +445,7 @@ const PortfolioSection = () => {
                       type="button"
                     >
                       <FaHeart className="transition-colors duration-200 hover:text-[#FF004F]" />
-                      <span>{loves[item.id]}</span>
+                      <span>{loves[item.id] || item.likes}</span>
                     </button>
                   </div>
                   <h3 className="text-lg font-bold text-[#1f2125] leading-snug group-hover:text-[#FF004F] transition-colors duration-300">
@@ -352,6 +456,15 @@ const PortfolioSection = () => {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* Empty State */}
+        {filteredItems.length === 0 && !isLoading && (
+          <div className="text-center py-12">
+            <p className="text-[#3c3e41] text-lg">
+              No projects found for this category.
+            </p>
+          </div>
+        )}
 
         {/* Pagination */}
         {totalPages > 1 && (
@@ -519,16 +632,6 @@ const PortfolioSection = () => {
                           {selectedProject.services}
                         </p>
                       </div>
-
-                      {/* <div className="p-3 rounded-xl bg-[#ECF0F3] shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff]">
-                        <div className="flex items-center gap-2 text-[#FF004F] mb-1">
-                          <FaDollarSign className="w-3 h-3" />
-                          <span className="text-xs font-medium">Budget</span>
-                        </div>
-                        <p className="text-[#1f2125] font-semibold text-sm">
-                          {selectedProject.budget}
-                        </p>
-                      </div> */}
                     </div>
 
                     {/* Features */}
@@ -568,7 +671,9 @@ const PortfolioSection = () => {
                         aria-label="Love"
                       >
                         <FaHeart />
-                        <span>{loves[selectedProject.id]}</span>
+                        <span>
+                          {loves[selectedProject.id] || selectedProject.likes}
+                        </span>
                       </button>
                     </div>
                   </div>

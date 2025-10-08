@@ -10,7 +10,6 @@ import {
   FaCog,
   FaUsers,
   FaEnvelope,
-  FaChartLine,
   FaBell,
   FaSignOutAlt,
   FaUserShield,
@@ -18,6 +17,7 @@ import {
   FaProjectDiagram,
   FaBars,
   FaTimes,
+  FaBlog,
 } from "react-icons/fa";
 import Link from "next/link";
 
@@ -96,10 +96,10 @@ function AdminSidebarLayout({ children }: { children: React.ReactNode }) {
       active: pathname.startsWith("/dashboard/reviews"),
     },
     {
-      title: "Analytics",
-      icon: FaChartLine,
-      href: "/dashboard/analytics",
-      active: pathname.startsWith("/dashboard/analytics"),
+      title: "Blog",
+      icon: FaBlog,
+      href: "/dashboard/blog",
+      active: pathname.startsWith("/dashboard/blog"),
     },
     {
       title: "Settings",

@@ -3,25 +3,14 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
-import {
-  FaUsers,
-  FaProjectDiagram,
-  FaEnvelope,
-  FaHeart,
-  FaPlus,
-  FaEdit,
-  FaBell,
-  FaChartLine,
-  FaCalendarAlt,
-  FaClipboardList,
-} from "react-icons/fa";
+import { FaUsers, FaEnvelope, FaPlus, FaBell, FaStar } from "react-icons/fa";
 import Link from "next/link";
 
 interface DashboardStats {
   totalContacts: number;
   totalReviews: number;
   totalSubscribers: number;
-  totalPortfolioLikes: number;
+  totalPortfolios: number; // <-- নতুন property
 }
 
 interface RecentActivity {
@@ -29,6 +18,7 @@ interface RecentActivity {
   type: "contact" | "review" | "subscription";
   message: string;
   timestamp: string;
+  created_at?: string;
 }
 
 const AdminDashboard = () => {
@@ -36,21 +26,71 @@ const AdminDashboard = () => {
     totalContacts: 0,
     totalReviews: 0,
     totalSubscribers: 0,
-    totalPortfolioLikes: 0,
+    totalPortfolios: 0, // <-- নতুন property
   });
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
+        console.log("Fetching dashboard data..."); // Debug log
+
+        // Fetch stats
+        const statsResponse = await fetch("/api/admin/dashboard-stats");
+        if (statsResponse.ok) {
+          const statsData = await statsResponse.json();
+          console.log("Stats data received:", statsData); // Debug log
+          setStats(statsData);
+        } else {
+          console.log("Stats API failed, using fallback data");
+          setStats({
+            totalContacts: 25,
+            totalReviews: 12,
+            totalSubscribers: 48,
+            totalPortfolios: 8, // <-- fallback value
+          });
+        }
+
+        // Fetch recent activity
+        const activityResponse = await fetch("/api/admin/recent-activity");
+        if (activityResponse.ok) {
+          const activityData = await activityResponse.json();
+          console.log("Activity data received:", activityData); // Debug log
+          setRecentActivity(activityData);
+        } else {
+          console.log("Activity API failed, using fallback data");
+          // Fallback dummy data
+          setRecentActivity([
+            {
+              id: 1,
+              type: "contact",
+              message: "New contact form submission from John Doe",
+              timestamp: "2 hours ago",
+            },
+            {
+              id: 2,
+              type: "review",
+              message: "New 5-star review received",
+              timestamp: "4 hours ago",
+            },
+            {
+              id: 3,
+              type: "subscription",
+              message: "New newsletter subscription",
+              timestamp: "6 hours ago",
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        // Fallback to dummy data
         setStats({
           totalContacts: 25,
           totalReviews: 12,
           totalSubscribers: 48,
-          totalPortfolioLikes: 156,
+          totalPortfolios: 8, // <-- fallback value
         });
-
         setRecentActivity([
           {
             id: 1,
@@ -71,15 +111,25 @@ const AdminDashboard = () => {
             timestamp: "6 hours ago",
           },
         ]);
-      } catch (error) {
-        console.error("Error fetching stats:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStats();
+    fetchData();
   }, []);
+
+  // Filter activities by type
+  const getReviewActivities = () => {
+    return recentActivity.filter((activity) => activity.type === "review");
+  };
+
+  const getFormsAndLikesActivities = () => {
+    return recentActivity.filter(
+      (activity) =>
+        activity.type === "contact" || activity.type === "subscription"
+    );
+  };
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -124,17 +174,17 @@ const AdminDashboard = () => {
       color: "bg-[#FF004F]",
     },
     {
-      title: "Manage Services",
-      description: "Edit existing services",
-      icon: FaEdit,
-      href: "/dashboard/services",
-      color: "bg-[#3c3e41]",
+      title: "Add New Portfolio",
+      description: "Showcase your latest work",
+      icon: FaPlus,
+      href: "/dashboard/portfolios/new",
+      color: "bg-[#FF004F]",
     },
     {
-      title: "View Analytics",
-      description: "Check website performance",
-      icon: FaChartLine,
-      href: "/dashboard/analytics",
+      title: "Add New Blog",
+      description: "Share a new blog post",
+      icon: FaPlus,
+      href: "/dashboard/blog/new",
       color: "bg-[#FF004F]",
     },
   ];
@@ -162,9 +212,9 @@ const AdminDashboard = () => {
       bgColor: "bg-[#FF004F]/10",
     },
     {
-      title: "Portfolio Likes",
-      value: stats.totalPortfolioLikes,
-      icon: FaHeart,
+      title: "Total Portfolios", // <-- পরিবর্তন
+      value: stats.totalPortfolios, // <-- পরিবর্তন
+      icon: FaStar,
       color: "text-[#3c3e41]",
       bgColor: "bg-[#3c3e41]/10",
     },
@@ -241,93 +291,107 @@ const AdminDashboard = () => {
         </div>
       </motion.section>
 
-      {/* Recent Activity & Today's Schedule */}
+      {/* Recent Activities - Split into two sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent Activity */}
+        {/* Client Reviews Activity */}
         <motion.section variants={itemVariants}>
-          <h2 className="text-xl font-semibold text-[#1f2125] mb-6">
-            Recent Activity
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-[#1f2125]">
+              Recent Reviews
+            </h2>
+            <Link
+              href="/dashboard/reviews"
+              className="text-sm text-[#FF004F] hover:underline"
+            >
+              View All
+            </Link>
+          </div>
           <div className="bg-[#ECF0F3] rounded-2xl p-6 shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff]">
             <div className="space-y-4">
-              {recentActivity.map((activity) => (
-                <div
-                  key={activity.id}
-                  className="flex items-start gap-4 p-4 bg-[#ECF0F3] rounded-xl shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]"
-                >
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      activity.type === "contact"
-                        ? "bg-[#FF004F]/10"
-                        : activity.type === "review"
-                        ? "bg-[#3c3e41]/10"
-                        : "bg-[#FF004F]/10"
-                    }`}
-                  >
-                    {activity.type === "contact" && (
-                      <FaEnvelope className="w-3 h-3 text-[#FF004F]" />
-                    )}
-                    {activity.type === "review" && (
-                      <FaUsers className="w-3 h-3 text-[#3c3e41]" />
-                    )}
-                    {activity.type === "subscription" && (
-                      <FaBell className="w-3 h-3 text-[#FF004F]" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm text-[#1f2125] font-medium">
-                      {activity.message}
-                    </p>
-                    <p className="text-xs text-[#3c3e41] mt-1">
-                      {activity.timestamp}
-                    </p>
-                  </div>
+              {getReviewActivities().length > 0 ? (
+                getReviewActivities()
+                  .slice(0, 5)
+                  .map((activity) => (
+                    <div
+                      key={activity.id}
+                      className="flex items-start gap-4 p-4 bg-[#ECF0F3] rounded-xl shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]"
+                    >
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center bg-[#3c3e41]/10">
+                        <FaStar className="w-3 h-3 text-yellow-500" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm text-[#1f2125] font-medium">
+                          {activity.message}
+                        </p>
+                        <p className="text-xs text-[#3c3e41] mt-1">
+                          {activity.timestamp}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+              ) : (
+                <div className="text-center py-8">
+                  <FaStar className="w-12 h-12 text-[#d1d9e6] mx-auto mb-2" />
+                  <p className="text-[#3c3e41]">No recent reviews</p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </motion.section>
 
-        {/* Today's Schedule */}
+        {/* Forms & Subscriptions Activity */}
         <motion.section variants={itemVariants}>
-          <h2 className="text-xl font-semibold text-[#1f2125] mb-6">
-            Today&#39;s Schedule
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-[#1f2125]">
+              Recent Forms & Subscriptions
+            </h2>
+            <Link
+              href="/dashboard/contacts"
+              className="text-sm text-[#FF004F] hover:underline"
+            >
+              View All
+            </Link>
+          </div>
           <div className="bg-[#ECF0F3] rounded-2xl p-6 shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff]">
             <div className="space-y-4">
-              <div className="flex items-center gap-4 p-4 bg-[#ECF0F3] rounded-xl shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]">
-                <div className="w-8 h-8 bg-[#FF004F]/10 rounded-full flex items-center justify-center">
-                  <FaCalendarAlt className="w-3 h-3 text-[#FF004F]" />
+              {getFormsAndLikesActivities().length > 0 ? (
+                getFormsAndLikesActivities()
+                  .slice(0, 5)
+                  .map((activity) => (
+                    <div
+                      key={activity.id}
+                      className="flex items-start gap-4 p-4 bg-[#ECF0F3] rounded-xl shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]"
+                    >
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          activity.type === "contact"
+                            ? "bg-[#FF004F]/10"
+                            : "bg-[#FF004F]/10"
+                        }`}
+                      >
+                        {activity.type === "contact" && (
+                          <FaEnvelope className="w-3 h-3 text-[#FF004F]" />
+                        )}
+                        {activity.type === "subscription" && (
+                          <FaBell className="w-3 h-3 text-[#FF004F]" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm text-[#1f2125] font-medium">
+                          {activity.message}
+                        </p>
+                        <p className="text-xs text-[#3c3e41] mt-1">
+                          {activity.timestamp}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+              ) : (
+                <div className="text-center py-8">
+                  <FaEnvelope className="w-12 h-12 text-[#d1d9e6] mx-auto mb-2" />
+                  <p className="text-[#3c3e41]">No recent submissions</p>
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm text-[#1f2125] font-medium">
-                    Review client proposals
-                  </p>
-                  <p className="text-xs text-[#3c3e41] mt-1">10:00 AM</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 p-4 bg-[#ECF0F3] rounded-xl shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]">
-                <div className="w-8 h-8 bg-[#3c3e41]/10 rounded-full flex items-center justify-center">
-                  <FaClipboardList className="w-3 h-3 text-[#3c3e41]" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm text-[#1f2125] font-medium">
-                    Update portfolio projects
-                  </p>
-                  <p className="text-xs text-[#3c3e41] mt-1">2:00 PM</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 p-4 bg-[#ECF0F3] rounded-xl shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]">
-                <div className="w-8 h-8 bg-[#FF004F]/10 rounded-full flex items-center justify-center">
-                  <FaProjectDiagram className="w-3 h-3 text-[#FF004F]" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm text-[#1f2125] font-medium">
-                    Client meeting - Website redesign
-                  </p>
-                  <p className="text-xs text-[#3c3e41] mt-1">4:30 PM</p>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </motion.section>

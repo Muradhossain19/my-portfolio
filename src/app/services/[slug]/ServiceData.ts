@@ -263,7 +263,8 @@ export const services: Service[] = [
   {
     slug: "wordpress",
     title: "WordPress Solutions",
-    subtitle: "Custom themes, plugins, and headless WordPress development",
+    subtitle:
+      "Empower Your Brand with Custom, Scalable, and Lightning-Fast WordPress Solutions",
     image: "/images/services/wordpress.jpg",
     hero_description:
       "Unlock the full potential of WordPress with custom solutions tailored to your needs. From theme development to headless setups, I create powerful and flexible WordPress sites.",

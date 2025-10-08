@@ -21,7 +21,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   breadcrumbs,
 }) => {
   return (
-    <section className="bg-[#ECF0F3] py-20 md:py-28 relative overflow-hidden">
+    <section className="bg-[#ECF0F3] py-8 md:py-12 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-20 left-10 w-20 h-20 bg-[#FF004F] rounded-full blur-xl"></div>
