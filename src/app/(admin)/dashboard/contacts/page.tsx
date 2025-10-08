@@ -529,7 +529,7 @@ const ContactsManagement = () => {
                     !isSubscriptionForm(item) && (
                       <td className="p-6">
                         <p className="text-[#1f2125] font-medium line-clamp-2">
-                          {item.subject}
+                          {(item as ContactForm | OrderForm).subject}
                         </p>
                         {isContactForm(item) && (
                           <p className="text-xs text-[#3c3e41] mt-1">
@@ -561,7 +561,9 @@ const ContactsManagement = () => {
                       {activeTab !== "subscriptions" &&
                         !isSubscriptionForm(item) && (
                           <button
-                            onClick={() => handleView(item)}
+                            onClick={() =>
+                              handleView(item as ContactForm | OrderForm)
+                            }
                             className="w-8 h-8 bg-[#ECF0F3] rounded-lg shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] flex items-center justify-center text-[#FF004F] transition-all duration-300"
                             title="View Details"
                           >
