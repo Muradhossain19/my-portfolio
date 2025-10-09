@@ -121,11 +121,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         listElement.innerHTML = listHTML;
         const listNode = listElement.firstChild;
 
-        if (listNode) {
-          range.insertNode(listNode);
-
-          // Position cursor inside the list item
-          const listItem = listNode.querySelector("li");
+        if (listNode && (listNode as Element).querySelector) {
+          const listItem = (listNode as Element).querySelector("li");
           if (listItem) {
             range.selectNodeContents(listItem);
             range.collapse(false);
