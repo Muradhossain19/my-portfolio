@@ -801,7 +801,7 @@ const BlogManagement = () => {
                           }
                           rows={3}
                           className="w-full px-4 py-3 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] text-[#1f2125] resize-none"
-                          required
+                          // required
                         />
                       </div>
 
@@ -959,7 +959,7 @@ const BlogManagement = () => {
                     </div>
 
                     {/* Right Column - Content Editor */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <h4 className="text-lg font-semibold text-[#1f2125] mb-4">
                         Content *
                       </h4>

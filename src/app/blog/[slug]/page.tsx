@@ -991,10 +991,54 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
 
       {/* Custom Styles for Blog Content - Updated */}
       <style jsx global>{`
-        .blog-content h1,
-        .blog-content h2,
-        .blog-content h3,
-        .blog-content h4,
+        .blog-content {
+          font-size: 16px;
+          color: #3c3e41;
+          line-height: 1.6;
+        }
+
+        .blog-content h1 {
+          font-size: 2.25rem !important;
+          font-weight: 700 !important;
+          margin: 1.5rem 0 1rem 0 !important;
+          color: #1f2125 !important;
+          line-height: 1.2 !important;
+          display: block !important;
+          font-family: var(--font-montserrat);
+        }
+
+        .blog-content h2 {
+          font-size: 1.875rem !important;
+          font-weight: 600 !important;
+          margin: 1.25rem 0 0.75rem 0 !important;
+          color: #1f2125 !important;
+          line-height: 1.3 !important;
+          display: block !important;
+          border-bottom: 2px solid #ff004f;
+          padding-bottom: 0.5rem;
+          font-family: var(--font-montserrat);
+        }
+
+        .blog-content h3 {
+          font-size: 1.5rem !important;
+          font-weight: 600 !important;
+          margin: 1rem 0 0.5rem 0 !important;
+          color: #1f2125 !important;
+          line-height: 1.4 !important;
+          display: block !important;
+          font-family: var(--font-montserrat);
+        }
+
+        .blog-content h4 {
+          font-size: 1.25rem !important;
+          font-weight: 600 !important;
+          margin: 0.75rem 0 0.5rem 0 !important;
+          color: #1f2125 !important;
+          line-height: 1.4 !important;
+          display: block !important;
+          font-family: var(--font-montserrat);
+        }
+
         .blog-content h5,
         .blog-content h6 {
           font-family: var(--font-montserrat);
@@ -1004,83 +1048,72 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           margin-bottom: 1rem;
         }
 
-        .blog-content h2 {
-          font-size: 1.5rem;
-          border-bottom: 2px solid #ff004f;
-          padding-bottom: 0.5rem;
-        }
-
-        .blog-content h3 {
-          font-size: 1.25rem;
-        }
-
         .blog-content p {
-          margin-bottom: 1.5rem;
+          margin: 0.75rem 0 !important;
+          color: #3c3e41 !important;
+          line-height: 1.6 !important;
+          display: block !important;
           font-size: 1rem;
         }
 
-        .blog-content ul,
+        .blog-content ul {
+          margin: 1rem 0 !important;
+          padding-left: 2rem !important;
+          color: #3c3e41 !important;
+          list-style-type: disc !important;
+          display: block !important;
+        }
+
         .blog-content ol {
-          margin-bottom: 1.5rem;
-          padding-left: 1.5rem;
-          list-style: none;
-          position: relative;
+          margin: 1rem 0 !important;
+          padding-left: 2rem !important;
+          color: #3c3e41 !important;
+          list-style-type: decimal !important;
+          display: block !important;
         }
 
-        .blog-content ul li {
-          margin-bottom: 0.5rem;
-          position: relative;
-          padding-left: 1.5rem;
+        .blog-content li {
+          margin: 0.25rem 0 !important;
+          line-height: 1.6 !important;
+          display: list-item !important;
         }
 
-        .blog-content ul li:before {
-          content: "•";
+        /* Custom bullet for ul */
+        .blog-content ul li::marker {
           color: #ff004f;
-          font-weight: bold;
-          position: absolute;
-          left: 0;
-          top: 0;
           font-size: 1.2em;
         }
 
-        .blog-content ol {
-          counter-reset: list-counter;
-        }
-
-        .blog-content ol li {
-          margin-bottom: 0.5rem;
-          position: relative;
-          padding-left: 2rem;
-          counter-increment: list-counter;
-        }
-
-        .blog-content ol li:before {
-          content: counter(list-counter) ".";
+        /* Custom number color for ol */
+        .blog-content ol li::marker {
           color: #ff004f;
           font-weight: bold;
-          position: absolute;
-          left: 0;
-          top: 0;
-        }
-
-        .blog-content strong {
-          color: #1f2125;
-          font-weight: 600;
-        }
-
-        .blog-content em {
-          font-style: italic;
-          color: #3c3e41;
         }
 
         .blog-content blockquote {
-          border-left: 4px solid #ff004f;
-          padding-left: 1rem;
-          margin: 1.5rem 0;
-          font-style: italic;
-          background: rgba(255, 0, 79, 0.05);
-          padding: 1rem;
-          border-radius: 0.5rem;
+          border-left: 4px solid #ff004f !important;
+          padding: 0.75rem 1rem !important;
+          margin: 1rem 0 !important;
+          background: #f8f9fa !important;
+          color: #3c3e41 !important;
+          font-style: italic !important;
+          border-radius: 0 0.5rem 0.5rem 0 !important;
+          display: block !important;
+        }
+
+        .blog-content pre {
+          background: #f8f9fa !important;
+          padding: 1rem !important;
+          border-radius: 0.5rem !important;
+          overflow-x: auto !important;
+          margin: 1rem 0 !important;
+          font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace !important;
+          font-size: 14px !important;
+          line-height: 1.4 !important;
+          color: #2d3748 !important;
+          border: 1px solid #e2e8f0 !important;
+          display: block !important;
+          white-space: pre !important;
         }
 
         .blog-content code {
@@ -1088,43 +1121,100 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           padding: 0.2rem 0.4rem;
           border-radius: 0.25rem;
           font-family: "Courier New", monospace;
-          font-size: 0.9em;
+          font-size: 0.95em;
           color: #ff004f;
-        }
-
-        .blog-content pre {
-          background: #1f2125;
-          color: #ffffff;
-          padding: 1rem;
-          border-radius: 0.5rem;
-          overflow-x: auto;
-          margin: 1.5rem 0;
         }
 
         .blog-content pre code {
           background: transparent;
           padding: 0;
-          color: #ffffff;
+          color: #2d3748;
+        }
+
+        .blog-content img {
+          max-width: 100% !important;
+          height: auto !important;
+          border-radius: 0.5rem !important;
+          margin: 1rem 0 !important;
+          display: block !important;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
         }
 
         .blog-content a {
-          color: #ff004f;
-          text-decoration: underline;
+          color: #ff004f !important;
+          text-decoration: underline !important;
+          font-weight: 500 !important;
           transition: color 0.3s ease;
         }
 
         .blog-content a:hover {
-          color: #e6003d;
+          color: #e6003d !important;
         }
 
-        .blog-content img {
-          max-width: 100%;
-          height: auto;
-          border-radius: 0.5rem;
-          margin: 1.5rem 0;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .blog-content strong {
+          font-weight: 700 !important;
+          color: #1f2125 !important;
         }
 
+        .blog-content em {
+          font-style: italic !important;
+          color: #3c3e41 !important;
+        }
+
+        .blog-content u {
+          text-decoration: underline !important;
+        }
+
+        .blog-content s {
+          text-decoration: line-through !important;
+          color: #6b7280 !important;
+        }
+
+        /* Custom spacer styling */
+        .blog-content .custom-spacer {
+          display: block !important;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          line-height: 1 !important;
+          font-size: 1px !important;
+          min-height: 5px !important;
+          user-select: none !important;
+          pointer-events: none !important;
+        }
+
+        .blog-content .spacing-block {
+          display: block !important;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          line-height: 1 !important;
+          font-size: 1px !important;
+          min-height: 8px !important;
+          user-select: none !important;
+          pointer-events: none !important;
+        }
+
+        /* Colored div styling */
+        .blog-content .colored-div {
+          display: block !important;
+          width: 100% !important;
+          min-height: 40px !important;
+          border-radius: 16px !important;
+          margin: 16px 0 !important;
+          padding: 24px !important;
+          outline: none !important;
+          box-sizing: border-box !important;
+        }
+
+        .blog-content .colored-div:empty:before {
+          content: "Type your content here...";
+          color: rgba(60, 62, 65, 0.6);
+          font-style: italic;
+          pointer-events: none;
+        }
+
+        /* Table styles */
         .blog-content table {
           width: 100%;
           border-collapse: collapse;
