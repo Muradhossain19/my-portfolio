@@ -3,7 +3,14 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
-import { FaUsers, FaEnvelope, FaPlus, FaBell, FaStar } from "react-icons/fa";
+import {
+  FaUsers,
+  FaEnvelope,
+  FaPlus,
+  FaBell,
+  FaStar,
+  FaFileAlt,
+} from "react-icons/fa";
 import Link from "next/link";
 
 interface DashboardStats {
@@ -15,7 +22,7 @@ interface DashboardStats {
 
 interface RecentActivity {
   id: number;
-  type: "contact" | "review" | "subscription";
+  type: "contact" | "review" | "subscription" | "order"; // <-- "order" added
   message: string;
   timestamp: string;
   created_at?: string;
@@ -127,7 +134,9 @@ const AdminDashboard = () => {
   const getFormsAndLikesActivities = () => {
     return recentActivity.filter(
       (activity) =>
-        activity.type === "contact" || activity.type === "subscription"
+        activity.type === "contact" ||
+        activity.type === "subscription" ||
+        activity.type === "order" // <-- include order
     );
   };
 
@@ -366,7 +375,11 @@ const AdminDashboard = () => {
                         className={`w-8 h-8 rounded-full flex items-center justify-center ${
                           activity.type === "contact"
                             ? "bg-[#FF004F]/10"
-                            : "bg-[#FF004F]/10"
+                            : activity.type === "subscription"
+                            ? "bg-[#FF004F]/10"
+                            : activity.type === "order"
+                            ? "bg-green-100"
+                            : ""
                         }`}
                       >
                         {activity.type === "contact" && (
@@ -374,6 +387,9 @@ const AdminDashboard = () => {
                         )}
                         {activity.type === "subscription" && (
                           <FaBell className="w-3 h-3 text-[#FF004F]" />
+                        )}
+                        {activity.type === "order" && (
+                          <FaFileAlt className="w-3 h-3 text-green-600" />
                         )}
                       </div>
                       <div className="flex-1">

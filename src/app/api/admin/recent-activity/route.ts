@@ -35,11 +35,21 @@ export async function GET() {
       LIMIT 3
     `);
 
+    // Get recent orders (last 5)
+    const recentOrders = await client.query(`
+      SELECT 'order' as type, name, email, created_at, 
+             'New order form submission from ' || name as message
+      FROM orders_contact_form 
+      ORDER BY created_at DESC 
+      LIMIT 3
+    `);
+
     // Combine all activities
     const allActivities = [
       ...recentContacts.rows,
       ...recentReviews.rows,
       ...recentSubscriptions.rows,
+      ...recentOrders.rows,
     ];
 
     // Sort by date and limit to 10 most recent

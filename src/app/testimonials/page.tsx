@@ -70,13 +70,41 @@ const TestimonialsPage = () => {
           company: item.company || "",
           project: item.project || "",
           image: item.image || "/images/default-avater.svg",
-          date: item.date || "",
+          date: item.date || "Unknown Date",
           rating: item.rating,
           testimonial: item.review_text,
         }));
 
-        setReviews(mapped);
-        setFilteredReviews(mapped);
+        // Helper function to parse different date formats
+        const parseDate = (dateString: string): Date => {
+          // Handle "September 2025" format
+          if (/^[A-Za-z]+ \d{4}$/.test(dateString)) {
+            return new Date(dateString + " 01"); // Add day 01 for parsing
+          }
+
+          // Handle "July 2025" etc.
+          const monthYear = dateString.match(/^([A-Za-z]+) (\d{4})$/);
+          if (monthYear) {
+            const month = monthYear[1];
+            const year = monthYear[2];
+            return new Date(`${month} 1, ${year}`);
+          }
+
+          // Try standard date parsing
+          const parsed = new Date(dateString);
+          return isNaN(parsed.getTime()) ? new Date(0) : parsed;
+        };
+
+        // Sort by date (latest first) - parse date strings properly
+        const sortedMapped = mapped.sort((a: Review, b: Review) => {
+          const dateA = parseDate(a.date);
+          const dateB = parseDate(b.date);
+
+          return dateB.getTime() - dateA.getTime();
+        });
+
+        setReviews(sortedMapped);
+        setFilteredReviews(sortedMapped);
       } catch (error) {
         console.error("Error fetching reviews:", error);
       } finally {
@@ -153,6 +181,45 @@ const TestimonialsPage = () => {
     ));
   };
 
+  // Add Skeleton Component
+  const TestimonialSkeleton = () => (
+    <div className="bg-[#ECF0F3] rounded-2xl p-6 shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff] animate-pulse">
+      {/* Quote Icon Skeleton */}
+      <div className="absolute top-4 right-4 w-8 h-8 bg-gray-300 rounded-full"></div>
+
+      {/* Client Image & Info Skeleton */}
+      <div className="flex items-center gap-4 mb-4">
+        <div className="w-16 h-16 rounded-full bg-gray-300"></div>
+        <div className="flex-1 space-y-2">
+          <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+          <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+          <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+        </div>
+      </div>
+
+      {/* Rating Skeleton */}
+      <div className="flex gap-1 mb-4">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="w-4 h-4 bg-gray-300 rounded"></div>
+        ))}
+      </div>
+
+      {/* Testimonial Text Skeleton */}
+      <div className="space-y-2 mb-4">
+        <div className="h-3 bg-gray-300 rounded w-full"></div>
+        <div className="h-3 bg-gray-300 rounded w-full"></div>
+        <div className="h-3 bg-gray-300 rounded w-3/4"></div>
+        <div className="h-3 bg-gray-300 rounded w-5/6"></div>
+      </div>
+
+      {/* Project & Date Skeleton */}
+      <div className="flex items-center justify-between pt-4 border-t border-[#d1d9e6]">
+        <div className="h-3 bg-gray-300 rounded w-1/3"></div>
+        <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+      </div>
+    </div>
+  );
+
   if (loading) {
     return (
       <div className="bg-[#ECF0F3] min-h-screen">
@@ -163,18 +230,39 @@ const TestimonialsPage = () => {
         />
         <section className="py-20">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[...Array(6)].map((_, index) => (
+            {/* Stats Section Skeleton */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+              {[...Array(4)].map((_, index) => (
                 <div
                   key={index}
-                  className="bg-[#ECF0F3] rounded-2xl p-6 shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff] animate-pulse"
+                  className="text-center p-6 bg-[#ECF0F3] rounded-2xl shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff] animate-pulse"
                 >
-                  <div className="h-32 bg-gray-300 rounded-xl mb-4"></div>
-                  <div className="space-y-3">
-                    <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-                    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-                    <div className="h-20 bg-gray-300 rounded"></div>
-                  </div>
+                  <div className="h-8 bg-gray-300 rounded mb-2 mx-auto w-16"></div>
+                  <div className="h-4 bg-gray-300 rounded mx-auto w-24"></div>
+                </div>
+              ))}
+            </div>
+
+            {/* Search and Filter Skeleton */}
+            <div className="mb-8">
+              <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between mb-6">
+                <div className="flex-1 max-w-md">
+                  <div className="h-12 bg-gray-300 rounded-xl animate-pulse"></div>
+                </div>
+                <div className="h-12 w-32 bg-gray-300 rounded-xl animate-pulse"></div>
+              </div>
+            </div>
+
+            {/* Results Info Skeleton */}
+            <div className="mb-8">
+              <div className="h-4 bg-gray-300 rounded w-64 animate-pulse"></div>
+            </div>
+
+            {/* Reviews Grid Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {[...Array(6)].map((_, index) => (
+                <div key={index} className="relative">
+                  <TestimonialSkeleton />
                 </div>
               ))}
             </div>

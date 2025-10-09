@@ -94,14 +94,7 @@ interface BlogPost {
   updated_at?: string;
 }
 
-const categories = [
-  "All",
-  "Technology",
-  "Development",
-  "Backend",
-  "Design",
-  "JavaScript",
-];
+const categories = ["All", "WordPress", "Web Development", "E-commerce"];
 
 const BlogManagement = () => {
   // States
@@ -116,6 +109,9 @@ const BlogManagement = () => {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [postToDelete, setPostToDelete] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [showModalCategoryDropdown, setShowModalCategoryDropdown] =
+    useState(false);
 
   // Form data state
   const [formData, setFormData] = useState({
@@ -125,7 +121,7 @@ const BlogManagement = () => {
     content: "",
     image: "",
     category: "",
-    author: "Tizfai",
+    author: "Murad Hossain",
     date: "",
     read_time: "5 min read",
     likes: 0,
@@ -264,7 +260,7 @@ const BlogManagement = () => {
       content: "",
       image: "",
       category: "",
-      author: "Tizfai",
+      author: "Murad Hossain",
       date: "",
       read_time: "5 min read",
       likes: 0,
@@ -375,6 +371,22 @@ const BlogManagement = () => {
     a.click();
     window.URL.revokeObjectURL(url);
   };
+
+  useEffect(() => {
+    const handler = () => setShowCategoryDropdown(false);
+    if (showCategoryDropdown) {
+      window.addEventListener("click", handler);
+      return () => window.removeEventListener("click", handler);
+    }
+  }, [showCategoryDropdown]);
+
+  useEffect(() => {
+    const handler = () => setShowModalCategoryDropdown(false);
+    if (showModalCategoryDropdown) {
+      window.addEventListener("click", handler);
+      return () => window.removeEventListener("click", handler);
+    }
+  }, [showModalCategoryDropdown]);
 
   if (loading) {
     return (
@@ -488,21 +500,40 @@ const BlogManagement = () => {
             variants={itemVariants}
             className="flex flex-col md:flex-row gap-4 mb-6"
           >
-            {/* Category Filter */}
-            <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 ${
-                    selectedCategory === category
-                      ? "bg-[#FF004F] text-white shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff]"
-                      : "bg-[#ECF0F3] text-[#3c3e41] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:text-[#FF004F]"
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
+            {/* Custom Category Dropdown */}
+            <div className="relative w-64">
+              <button
+                type="button"
+                className="w-full px-4 py-3 bg-[#ECF0F3] rounded-xl border border-[#d1d9e6] text-left font-medium text-[#1f2125] flex items-center justify-between shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] focus:outline-none"
+                onClick={() => setShowCategoryDropdown((prev) => !prev)}
+              >
+                {selectedCategory}
+                <span className="ml-2">
+                  <svg width="16" height="16" fill="currentColor">
+                    <path d="M4 6l4 4 4-4" />
+                  </svg>
+                </span>
+              </button>
+              {showCategoryDropdown && (
+                <div className="absolute z-10 mt-2 w-full bg-white rounded-xl shadow-lg border border-[#d1d9e6]">
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => {
+                        setSelectedCategory(category);
+                        setShowCategoryDropdown(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 hover:bg-[#FF004F]/10 rounded-xl ${
+                        selectedCategory === category
+                          ? "bg-[#FF004F]/10 font-semibold"
+                          : ""
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Search and Export */}
@@ -794,24 +825,47 @@ const BlogManagement = () => {
                           <label className="block text-sm font-semibold text-[#1f2125] mb-2">
                             Category *
                           </label>
-                          <select
-                            value={formData.category}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                category: e.target.value,
-                              })
-                            }
-                            className="w-full px-4 py-3 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] text-[#1f2125]"
-                            required
-                          >
-                            <option value="">Select Category</option>
-                            <option value="Technology">Technology</option>
-                            <option value="Development">Development</option>
-                            <option value="Backend">Backend</option>
-                            <option value="Design">Design</option>
-                            <option value="JavaScript">JavaScript</option>
-                          </select>
+                          <div className="relative">
+                            <button
+                              type="button"
+                              className="w-full px-4 py-3 bg-[#ECF0F3] rounded-xl border border-[#d1d9e6] text-left font-medium text-[#1f2125] flex items-center justify-between shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] focus:outline-none"
+                              onClick={() =>
+                                setShowModalCategoryDropdown((prev) => !prev)
+                              }
+                            >
+                              {formData.category || "Select Category"}
+                              <span className="ml-2">
+                                <svg width="16" height="16" fill="currentColor">
+                                  <path d="M4 6l4 4 4-4" />
+                                </svg>
+                              </span>
+                            </button>
+                            {showModalCategoryDropdown && (
+                              <div className="absolute z-10 mt-2 w-full bg-white rounded-xl shadow-lg border border-[#d1d9e6]">
+                                {[
+                                  "WordPress",
+                                  "Web Development",
+                                  "E-commerce",
+                                ].map((category) => (
+                                  <button
+                                    key={category}
+                                    type="button"
+                                    onClick={() => {
+                                      setFormData({ ...formData, category });
+                                      setShowModalCategoryDropdown(false);
+                                    }}
+                                    className={`w-full text-left px-4 py-2 hover:bg-[#FF004F]/10 rounded-xl ${
+                                      formData.category === category
+                                        ? "bg-[#FF004F]/10 font-semibold"
+                                        : ""
+                                    }`}
+                                  >
+                                    {category}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
 
                         <div>

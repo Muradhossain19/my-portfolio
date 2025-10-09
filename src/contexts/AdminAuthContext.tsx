@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 interface User {
   id: number;
@@ -22,21 +23,28 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
 
-  // Check if user is authenticated on mount
+  // Check if user is authenticated on mount and on every route change
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [pathname]); // <-- route change এও checkAuth হবে
 
   const checkAuth = async () => {
+    setLoading(true);
     try {
-      const response = await fetch("/api/admin/auth/verify");
+      const response = await fetch("/api/admin/auth/verify", {
+        cache: "no-store",
+      });
       const data = await response.json();
 
       if (data.success) {
         setUser(data.user);
+      } else {
+        setUser(null);
       }
     } catch (error) {
+      setUser(null);
       console.error("Auth check failed:", error);
     } finally {
       setLoading(false);

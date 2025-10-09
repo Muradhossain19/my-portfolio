@@ -32,6 +32,7 @@ import {
   FaQuoteLeft,
   FaPlus,
   FaMinus,
+  FaProjectDiagram,
 } from "react-icons/fa";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
@@ -132,6 +133,7 @@ interface PortfolioExample {
   likes: number;
   link: string;
   features: string[];
+  category: string; // Add this line
 }
 
 interface DbService {
@@ -197,6 +199,22 @@ interface ServiceApiResponse {
   error?: string;
 }
 
+interface DatabasePortfolioItem {
+  id: number;
+  title: string;
+  description: string;
+  long_description: string;
+  images: string | string[];
+  client: string;
+  date: string;
+  services: string;
+  budget: string;
+  likes: number;
+  link: string;
+  features: string | string[];
+  category: string;
+}
+
 export default function ServicePage() {
   const { slug } = useParams<{ slug: string }>();
 
@@ -230,7 +248,11 @@ export default function ServicePage() {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [loves, setLoves] = useState<{ [key: string]: number }>({});
   const [dbReviews, setDbReviews] = useState<DbReview[]>([]);
-
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioExample[]>([]);
+  const [hoveredPortfolioId, setHoveredPortfolioId] = useState<string | null>(
+    null
+  );
+  const [hoveredModalImage, setHoveredModalImage] = useState<boolean>(false);
   const staticService = services.find((s) => s.slug === slug);
 
   // Safe JSON parse function with proper typing
@@ -272,10 +294,7 @@ export default function ServicePage() {
               data.service.technologies,
               []
             ),
-            portfolio_examples: safeJsonParse<PortfolioExample[]>(
-              data.service.portfolio_examples,
-              []
-            ),
+            portfolio_examples: [],
             pricing: safeJsonParse<{
               basic: PricingTier;
               standard: PricingTier;
@@ -342,6 +361,57 @@ export default function ServicePage() {
         });
     }
   }, [service]);
+
+  // Fetch portfolio items
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      try {
+        const res = await fetch("/api/admin/portfolio");
+        const data: { success: boolean; portfolio: DatabasePortfolioItem[] } =
+          await res.json();
+        if (data.success && data.portfolio) {
+          // Transform DB item to PortfolioExample type
+          const transformed: PortfolioExample[] = data.portfolio.map(
+            (item: DatabasePortfolioItem) => ({
+              id: String(item.id),
+              title: item.title,
+              description: item.description,
+              longDescription: item.long_description,
+              image: Array.isArray(item.images)
+                ? item.images[0]
+                : typeof item.images === "string"
+                ? JSON.parse(item.images)[0]
+                : "",
+              images: Array.isArray(item.images)
+                ? item.images
+                : typeof item.images === "string"
+                ? JSON.parse(item.images)
+                : [],
+              client: item.client,
+              date: item.date,
+              services: item.services,
+              budget: item.budget,
+              likes: item.likes,
+              link: item.link,
+              features: Array.isArray(item.features)
+                ? item.features
+                : typeof item.features === "string"
+                ? JSON.parse(item.features)
+                : [],
+              category: item.category, // Add this line
+            })
+          );
+          setPortfolioItems(transformed);
+        } else {
+          setPortfolioItems([]);
+        }
+      } catch (error) {
+        console.error("Error fetching portfolio:", error);
+        setPortfolioItems([]);
+      }
+    };
+    fetchPortfolio();
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -439,6 +509,27 @@ export default function ServicePage() {
   const toggleFaq = (index: number) => {
     setExpandedFaq(expandedFaq === index ? null : index);
   };
+
+  // Add this function to get related portfolios based on service
+  const getRelatedPortfolios = useCallback(() => {
+    if (!service) return [];
+
+    return portfolioItems.filter((item) => {
+      // Match by service title
+      if (item.category === service.title) return true;
+
+      // Match by service category mapping
+      const serviceMappings = {
+        "WordPress Solutions": ["WordPress", "CMS"],
+        "Web Development": ["Web Development", "Frontend", "Full Stack"],
+        "E-commerce Solutions": ["E-commerce", "Online Store", "Shopping"],
+      };
+
+      const serviceCategories =
+        serviceMappings[service.title as keyof typeof serviceMappings] || [];
+      return serviceCategories.includes(item.category);
+    });
+  }, [portfolioItems, service]);
 
   if (loading) {
     return (
@@ -755,10 +846,10 @@ export default function ServicePage() {
               className="text-center mb-12"
             >
               <h2 className="text-3xl font-bold text-[#1f2125] mb-4">
-                Portfolio Examples
+                Related Portfolio Examples
               </h2>
               <p className="text-[#3c3e41]">
-                See some of my recent work in this category.
+                See examples of our {service.title} work.
               </p>
             </motion.div>
 
@@ -769,50 +860,78 @@ export default function ServicePage() {
               viewport={optimizedViewport}
               variants={staggerContainer}
             >
-              {service.portfolio_examples.map((example, idx) => (
-                <motion.div
-                  key={example.id || idx}
-                  variants={fadeInUp}
-                  className="group bg-[#ECF0F3] rounded-2xl shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff] overflow-hidden cursor-pointer"
-                  onClick={() => openModal(example)}
-                >
-                  <div className="relative h-64 overflow-hidden rounded-t-2xl">
-                    <Image
-                      src={example.image}
-                      alt={example.title}
-                      fill
-                      className="w-full h-full object-cover absolute top-0 left-0 transition-transform duration-[4000ms] ease-in-out group-hover:-translate-y-[calc(100%-16rem)]"
-                    />
-                    <a
-                      href={example.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="absolute top-4 right-4 w-10 h-10 bg-black/30 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm"
-                    >
-                      <FaExternalLinkAlt />
-                    </a>
-                  </div>
-                  <div className="p-5">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-xs font-medium text-[#FF004F] uppercase tracking-wider">
-                        {service.title}
-                      </span>
-                      <button
-                        onClick={(e) => handleLove(example.id, e)}
-                        className="flex items-center gap-1.5 text-sm text-[#3c3e41] cursor-pointer focus:outline-none"
+              {getRelatedPortfolios()
+                .slice(0, 6)
+                .map((example, idx) => (
+                  <motion.div
+                    key={example.id || idx}
+                    variants={fadeInUp}
+                    className="group bg-[#ECF0F3] rounded-2xl shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff] overflow-hidden cursor-pointer"
+                    onClick={() => openModal(example)}
+                    onMouseEnter={() => setHoveredPortfolioId(example.id)}
+                    onMouseLeave={() => setHoveredPortfolioId(null)}
+                  >
+                    <div className="relative h-64 overflow-hidden rounded-t-2xl">
+                      {/* Updated image container with scroll animation */}
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={example.images?.[0] || example.image}
+                          alt={example.title}
+                          width={600}
+                          height={1000}
+                          loading="lazy"
+                          className={`w-full h-auto object-cover absolute top-0 left-0 transition-transform duration-[4000ms] ease-in-out ${
+                            hoveredPortfolioId === example.id
+                              ? "group-hover:-translate-y-[calc(100%-16rem)]"
+                              : ""
+                          }`}
+                        />
+                      </div>
+
+                      <a
+                        href={example.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="absolute top-4 right-4 w-10 h-10 bg-black/30 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm"
                       >
-                        <FaHeart className="transition-colors duration-200 hover:text-[#FF004F]" />
-                        <span>{loves[example.id] || example.likes}</span>
-                      </button>
+                        <FaExternalLinkAlt />
+                      </a>
                     </div>
-                    <h3 className="text-lg font-bold text-[#1f2125] leading-snug group-hover:text-[#FF004F] transition-colors duration-300">
-                      {example.title}
-                    </h3>
-                  </div>
-                </motion.div>
-              ))}
+                    <div className="p-5">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-xs font-medium text-[#FF004F] uppercase tracking-wider">
+                          {example.category}
+                        </span>
+                        <button
+                          onClick={(e) => handleLove(example.id, e)}
+                          className="flex items-center gap-1.5 text-sm text-[#3c3e41] cursor-pointer focus:outline-none"
+                        >
+                          <FaHeart className="transition-colors duration-200 hover:text-[#FF004F]" />
+                          <span>{loves[example.id] || example.likes}</span>
+                        </button>
+                      </div>
+                      <h3 className="text-lg font-bold text-[#1f2125] leading-snug group-hover:text-[#FF004F] transition-colors duration-300">
+                        {example.title}
+                      </h3>
+                    </div>
+                  </motion.div>
+                ))}
             </motion.div>
+
+            {getRelatedPortfolios().length === 0 && (
+              <div className="text-center text-[#3c3e41] py-12">
+                <div className="w-16 h-16 bg-[#ECF0F3] rounded-full flex items-center justify-center mx-auto mb-4 shadow-[inset_10px_10px_20px_#d1d9e6,inset_-10px_-10px_20px_#ffffff]">
+                  <FaProjectDiagram className="w-6 h-6 text-[#3c3e41]" />
+                </div>
+                <h3 className="text-lg font-bold text-[#1f2125] mb-2">
+                  No Related Portfolio Items
+                </h3>
+                <p className="text-[#3c3e41]">
+                  Portfolio examples for this service will be added soon.
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -1254,9 +1373,13 @@ export default function ServicePage() {
                 </button>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 max-h-[calc(80vh-100px)] overflow-y-auto">
-                {/* Left: Image Slider */}
+                {/* Left: Image Slider with hover scroll animation */}
                 <div className="relative bg-[#ECF0F3] p-6">
-                  <div className="relative aspect-[3/4] rounded-xl overflow-hidden group">
+                  <div
+                    className="relative aspect-[3/4] rounded-xl overflow-hidden group"
+                    onMouseEnter={() => setHoveredModalImage(true)}
+                    onMouseLeave={() => setHoveredModalImage(false)}
+                  >
                     <Image
                       src={
                         selectedProject.images
@@ -1264,8 +1387,13 @@ export default function ServicePage() {
                           : selectedProject.image
                       }
                       alt={selectedProject.title}
-                      fill
-                      className="object-cover"
+                      width={600}
+                      height={1000}
+                      className={`w-full h-auto object-cover absolute top-0 left-0 transition-transform duration-[4000ms] ease-in-out ${
+                        hoveredModalImage
+                          ? "group-hover:-translate-y-[calc(100%-24rem)]"
+                          : ""
+                      }`}
                     />
                     {selectedProject.images &&
                       selectedProject.images.length > 1 && (
@@ -1293,6 +1421,24 @@ export default function ServicePage() {
                           >
                             <FaChevronRight />
                           </button>
+
+                          {/* Image Indicators */}
+                          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                            {selectedProject.images.map((_, index) => (
+                              <button
+                                key={index}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setCurrentImageIndex(index);
+                                }}
+                                className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                                  index === currentImageIndex
+                                    ? "bg-[#FF004F]"
+                                    : "bg-[#FF004F]/50"
+                                }`}
+                              />
+                            ))}
+                          </div>
                         </>
                       )}
                   </div>

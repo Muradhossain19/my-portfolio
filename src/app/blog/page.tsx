@@ -18,14 +18,7 @@ import {
 import PageHeader from "../../components/PageHeader/PageHeader";
 
 // Categories for filtering
-const categories = [
-  "All",
-  "Technology",
-  "Development",
-  "Backend",
-  "Design",
-  "JavaScript",
-];
+const categories = ["All", "WordPress", "Web Development", "E-commerce"];
 
 // Interface for database blog post
 interface DatabaseBlogPost {

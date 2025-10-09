@@ -28,6 +28,7 @@ function AdminSidebarLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [hasUnread, setHasUnread] = useState(false);
 
   useEffect(() => {
     if (!loading && !user && !pathname.includes("/login")) {
@@ -46,6 +47,23 @@ function AdminSidebarLayout({ children }: { children: React.ReactNode }) {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    async function fetchRecent() {
+      const res = await fetch("/api/admin/recent-activity");
+      const data = await res.json();
+      // ধরুন, নতুন activity এলে hasUnread true করুন
+      if (data && data.length > 0) {
+        // আপনি চাইলে localStorage দিয়ে শেষ দেখা টাইম ট্র্যাক করতে পারেন
+        const lastSeen = localStorage.getItem("dashboard-last-seen");
+        const latest = data[0]?.created_at;
+        if (!lastSeen || (latest && latest > lastSeen)) {
+          setHasUnread(true);
+        }
+      }
+    }
+    fetchRecent();
   }, []);
 
   if (loading) {
@@ -235,8 +253,24 @@ function AdminSidebarLayout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-[#ECF0F3] rounded-xl shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] flex items-center justify-center">
-                <FaBell className="w-4 h-4 text-[#3c3e41]" />
+              <div className="relative">
+                <div
+                  className="w-10 h-10 bg-[#ECF0F3] rounded-xl shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] flex items-center justify-center cursor-pointer"
+                  onClick={() => {
+                    setHasUnread(false);
+                    // শেষ দেখা টাইম save করুন
+                    localStorage.setItem(
+                      "dashboard-last-seen",
+                      new Date().toISOString()
+                    );
+                    // এখানে notification drawer/modal খুলতে পারেন
+                  }}
+                >
+                  <FaBell className="w-4 h-4 text-[#3c3e41]" />
+                  {hasUnread && (
+                    <span className="absolute top-1 right-1 w-3 h-3 bg-[#FF004F] rounded-full border-2 border-white animate-pulse"></span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
