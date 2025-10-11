@@ -52,6 +52,15 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     img: HTMLImageElement | null;
   } | null>(null);
 
+  // Add new state for div context menu
+  const [divMenu, setDivMenu] = useState<{
+    top: number;
+    left: number;
+    div: HTMLDivElement | null;
+    showColorPicker: boolean;
+    currentColor?: string; // Add this line
+  } | null>(null);
+
   // Color palettes
   const textColors = [
     "#000000",
@@ -559,7 +568,26 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         }
       }
 
-      // Handle Enter in headings to create new paragraph
+      // Nested list support: Tab/Shift+Tab for indent/outdent
+      if (e.key === "Tab") {
+        const selection = window.getSelection();
+        if (selection && selection.anchorNode) {
+          let li = selection.anchorNode as HTMLElement | null;
+          while (li && li.nodeType !== 1) li = li.parentElement;
+          if (li && li.tagName === "LI") {
+            e.preventDefault();
+            if (e.shiftKey) {
+              // Outdent
+              executeCommand("outdent");
+            } else {
+              // Indent
+              executeCommand("indent");
+            }
+          }
+        }
+      }
+
+      // Always insert a new <p> on Enter for block elements
       if (e.key === "Enter") {
         const selection = window.getSelection();
         if (selection && selection.rangeCount > 0) {
@@ -573,9 +601,17 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           if (
             parentElement &&
             parentElement.nodeType === Node.ELEMENT_NODE &&
-            ["H1", "H2", "H3", "H4", "H5", "H6"].includes(
-              (parentElement as Element).tagName
-            )
+            [
+              "H1",
+              "H2",
+              "H3",
+              "H4",
+              "H5",
+              "H6",
+              "P",
+              "DIV",
+              "BLOCKQUOTE",
+            ].includes((parentElement as Element).tagName)
           ) {
             e.preventDefault();
             executeCommand("insertHTML", "<p><br></p>");
@@ -664,22 +700,125 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     },
   ];
 
+  // Add function to change div color
+  const changeDivColor = useCallback(
+    (div: HTMLDivElement, color: string) => {
+      div.style.backgroundColor = color;
+      div.style.border =
+        color === "#ffffff" ? "1px solid #e2e8f0" : "1px solid transparent";
+
+      // Update the current color in divMenu state
+      setDivMenu((prev) => (prev ? { ...prev, currentColor: color } : null));
+
+      handleInput();
+    },
+    [handleInput]
+  );
+
+  // Update the existing useEffect for image clicks to also handle div clicks
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (!(e.target instanceof HTMLImageElement)) {
-        setImageMenu(null);
+      const target = e.target as HTMLElement;
+
+      // Handle image clicks
+      if (target instanceof HTMLImageElement) {
+        const img = target as HTMLImageElement;
+        const rect = img.getBoundingClientRect();
+        setImageMenu({
+          top: rect.top + window.scrollY + rect.height + 4,
+          left: rect.left + window.scrollX,
+          img,
+        });
+        setDivMenu(null); // Close div menu if open
         return;
       }
-      const img = e.target as HTMLImageElement;
-      const rect = img.getBoundingClientRect();
-      setImageMenu({
-        top: rect.top + window.scrollY + rect.height + 4,
-        left: rect.left + window.scrollX,
-        img,
-      });
+
+      // Handle colored div clicks
+      if (
+        target.classList.contains("colored-div") ||
+        target.closest(".colored-div")
+      ) {
+        const div = target.classList.contains("colored-div")
+          ? (target as HTMLDivElement)
+          : (target.closest(".colored-div") as HTMLDivElement);
+
+        if (div) {
+          const rect = div.getBoundingClientRect();
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+          const menuWidth = 200;
+          const menuHeight = 250;
+
+          // Better color detection and conversion
+          const getCurrentColor = (): string => {
+            const computedStyle = window.getComputedStyle(div);
+            const bgColor =
+              div.style.backgroundColor || computedStyle.backgroundColor;
+
+            // Convert RGB/RGBA to HEX
+            const rgbToHex = (rgb: string): string => {
+              if (rgb.startsWith("#")) {
+                return rgb.toLowerCase();
+              }
+
+              const rgbMatch = rgb.match(/\d+/g);
+              if (rgbMatch && rgbMatch.length >= 3) {
+                const r = parseInt(rgbMatch[0]);
+                const g = parseInt(rgbMatch[1]);
+                const b = parseInt(rgbMatch[2]);
+
+                const toHex = (n: number) => {
+                  const hex = n.toString(16);
+                  return hex.length === 1 ? "0" + hex : hex;
+                };
+
+                return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+              }
+
+              return rgb.toLowerCase();
+            };
+
+            return rgbToHex(bgColor);
+          };
+
+          // Calculate optimal position
+          let top = rect.top + window.scrollY;
+          let left = rect.right + window.scrollX + 10;
+
+          // Check if menu would go off screen horizontally
+          if (left + menuWidth > viewportWidth) {
+            left = rect.left + window.scrollX - menuWidth - 10;
+            if (left < 0) {
+              left = Math.max(10, (viewportWidth - menuWidth) / 2);
+            }
+          }
+
+          // Check if menu would go off screen vertically
+          if (top + menuHeight > viewportHeight + window.scrollY) {
+            top = rect.top + window.scrollY - menuHeight - 10;
+            if (top < window.scrollY + 10) {
+              top = window.scrollY + 10;
+            }
+          }
+
+          setDivMenu({
+            top,
+            left,
+            div,
+            showColorPicker: false,
+            currentColor: getCurrentColor(),
+          });
+          setImageMenu(null);
+          return;
+        }
+      }
+
+      // Close both menus if clicking elsewhere
+      setImageMenu(null);
+      setDivMenu(null);
     };
 
-    const editor = editorRef.current; // <--- copy ref value
+    const editor = editorRef.current;
 
     if (editor) {
       editor.addEventListener("click", handler);
@@ -1332,6 +1471,130 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           >
             Close
           </button>
+        </div>
+      )}
+
+      {/* New Div Context Menu */}
+      {divMenu && divMenu.div && (
+        <div
+          style={{
+            position: "absolute",
+            top: divMenu.top,
+            left: divMenu.left,
+            zIndex: 1000,
+            background: "#fff",
+            border: "1px solid #d1d9e6",
+            borderRadius: 8,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            padding: 8,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+            minWidth: 140,
+            maxWidth: 200,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setDivMenu((prev) =>
+                prev
+                  ? { ...prev, showColorPicker: !prev.showColorPicker }
+                  : null
+              );
+            }}
+            className="px-3 py-2 rounded bg-[#FF004F] text-white text-xs font-medium hover:bg-[#e6003d] transition-colors"
+          >
+            Change Color
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              if (divMenu.div) {
+                divMenu.div.remove();
+                setDivMenu(null);
+                handleInput();
+              }
+            }}
+            className="px-3 py-2 rounded bg-gray-200 text-[#3c3e41] text-xs font-medium hover:bg-gray-300 transition-colors"
+          >
+            Remove Block
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setDivMenu(null)}
+            className="px-3 py-2 rounded bg-gray-100 text-[#3c3e41] text-xs font-medium hover:bg-gray-200 transition-colors"
+          >
+            Close
+          </button>
+
+          {/* Responsive Color Picker for Div */}
+          {divMenu.showColorPicker && (
+            <div
+              className="p-2 bg-gray-50 rounded border-t"
+              style={{
+                maxHeight: "200px",
+                overflowY: "auto",
+                // Ensure it doesn't go beyond screen bounds
+                maxWidth:
+                  Math.min(200, window.innerWidth - divMenu.left - 20) + "px",
+              }}
+            >
+              <div className="grid grid-cols-5 gap-1">
+                {divColors.map((color) => {
+                  // Better color matching
+                  const normalizeColor = (c: string) =>
+                    c.toLowerCase().replace(/\s/g, "");
+                  const isCurrentColor =
+                    normalizeColor(divMenu.currentColor || "") ===
+                    normalizeColor(color);
+
+                  return (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => changeDivColor(divMenu.div!, color)}
+                      className={`w-6 h-6 rounded border hover:scale-110 transition-all duration-200 flex-shrink-0 relative ${
+                        isCurrentColor
+                          ? "border-[#FF004F] border-2 ring-2 ring-[#FF004F] ring-opacity-30 shadow-md"
+                          : "border-gray-300"
+                      }`}
+                      style={{ backgroundColor: color }}
+                      title={`${color} ${isCurrentColor ? "(Current)" : ""}`}
+                    >
+                      {/* Enhanced checkmark for current color */}
+                      {isCurrentColor && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-3 h-3 rounded-full bg-[#FF004F] flex items-center justify-center shadow-sm">
+                            <svg
+                              className="w-2 h-2 text-white font-bold"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Show current color info */}
+              {divMenu.currentColor && (
+                <div className="mt-2 text-xs text-gray-600 text-center">
+                  Current: {divMenu.currentColor}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

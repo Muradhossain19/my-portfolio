@@ -239,10 +239,10 @@ const BlogManagement = () => {
       });
 
       if (response.ok) {
-        fetchBlogPosts();
-        resetForm();
-        setShowAddModal(false);
-        setShowEditModal(false);
+        // fetchBlogPosts();
+        // resetForm();
+        // setShowAddModal(false);
+        // setShowEditModal(false);
       }
     } catch (error) {
       console.error("Error saving blog post:", error);
@@ -716,9 +716,12 @@ const BlogManagement = () => {
             animate="visible"
             exit="exit"
             onClick={() => {
-              setShowAddModal(false);
-              setShowEditModal(false);
-              resetForm();
+              if (!isSubmitting) {
+                setShowAddModal(false);
+                setShowEditModal(false);
+                resetForm();
+                fetchBlogPosts();
+              }
             }}
           >
             <motion.div
@@ -735,6 +738,7 @@ const BlogManagement = () => {
                     setShowAddModal(false);
                     setShowEditModal(false);
                     resetForm();
+                    fetchBlogPosts();
                   }}
                   className="w-10 h-10 rounded-full bg-[#ECF0F3] shadow-[5px_5px_10px_#d1d9e6,-5px_-5px_10px_#ffffff] flex items-center justify-center text-[#FF004F] hover:text-[#e6003d] transition-colors duration-200"
                 >
@@ -981,6 +985,7 @@ const BlogManagement = () => {
                         setShowAddModal(false);
                         setShowEditModal(false);
                         resetForm();
+                        // fetchBlogPosts();
                       }}
                       className="px-6 py-3 bg-[#ECF0F3] text-[#3c3e41] rounded-xl font-semibold shadow-[5px_5px_15px_#d1d9e6,-5px_-5px_15px_#ffffff] hover:shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] transition-all duration-200"
                     >
