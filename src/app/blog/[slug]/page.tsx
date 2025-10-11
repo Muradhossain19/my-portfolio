@@ -684,7 +684,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
 
               {/* Post Title - Responsive font sizes */}
               <motion.h1
-                className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#1f2125] leading-tight mb-6"
+                className="text-2xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#1f2125] leading-tight mb-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
@@ -1259,6 +1259,30 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
 
         .overflow-y-auto::-webkit-scrollbar-thumb:hover {
           background: #e6003d;
+        }
+
+        @media (max-width: 640px) {
+          .blog-content h1 {
+            font-size: 1.9rem !important;
+            margin: 1.2rem 0 0.8rem 0 !important;
+          }
+          .blog-content h2 {
+            font-size: 1.4rem !important;
+            margin: 1rem 0 0.6rem 0 !important;
+            padding-bottom: 0.3rem !important;
+          }
+          .blog-content h3 {
+            font-size: 1.25rem !important;
+            margin: 0.8rem 0 0.4rem 0 !important;
+          }
+          .blog-content h4 {
+            font-size: 1rem !important;
+            margin: 0.6rem 0 0.3rem 0 !important;
+          }
+          .blog-content p,
+          .blog-content li {
+            font-size: 0.98rem !important;
+          }
         }
       `}</style>
     </div>
