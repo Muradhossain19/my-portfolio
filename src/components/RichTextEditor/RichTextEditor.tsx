@@ -505,7 +505,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     const url = prompt("Enter image URL:");
     if (!url) return;
 
-    const imgHTML = `<img src="${url}" alt="Inserted image" style="max-width: 100%; height: auto; display: block; margin: 1rem 0; border-radius: 0.5rem;">`;
+    const altText = prompt("Enter Alt text for SEO (describe the image):");
+    const finalAltText = altText || "Image"; // Default fallback
+
+    const imgHTML = `<img src="${url}" alt="${finalAltText}" style="max-width: 100%; height: auto; display: block; margin: 1rem 0; border-radius: 0.5rem;">`;
     executeCommand("insertHTML", imgHTML);
   }, [executeCommand]);
 
@@ -715,7 +718,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     [handleInput]
   );
 
-  // Update the existing useEffect for image clicks to also handle div clicks
+  // Update the existing useEffect for image clicks to handle positioning better
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -724,16 +727,26 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       if (target instanceof HTMLImageElement) {
         const img = target as HTMLImageElement;
         const rect = img.getBoundingClientRect();
-        setImageMenu({
-          top: rect.top + window.scrollY + rect.height + 4,
-          left: rect.left + window.scrollX,
-          img,
-        });
-        setDivMenu(null); // Close div menu if open
+        const editorRect = editorRef.current?.getBoundingClientRect();
+
+        if (editorRect) {
+          // Calculate position relative to the page, not the editor
+          const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
+          const scrollLeft =
+            window.pageXOffset || document.documentElement.scrollLeft;
+
+          setImageMenu({
+            top: rect.bottom + scrollTop + 8, // 8px gap below image
+            left: rect.left + scrollLeft,
+            img,
+          });
+        }
+        setDivMenu(null);
         return;
       }
 
-      // Handle colored div clicks
+      // Handle colored div clicks (existing logic unchanged)
       if (
         target.classList.contains("colored-div") ||
         target.closest(".colored-div")
@@ -755,7 +768,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             const bgColor =
               div.style.backgroundColor || computedStyle.backgroundColor;
 
-            // Convert RGB/RGBA to HEX
             const rgbToHex = (rgb: string): string => {
               if (rgb.startsWith("#")) {
                 return rgb.toLowerCase();
@@ -1318,6 +1330,24 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
         }
 
+        /* Show alt text when image fails to load */
+        [contenteditable] img[alt]:after {
+          content: attr(alt);
+          display: block;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: #f8f9fa;
+          color: #6b7280;
+          font-size: 14px;
+          text-align: center;
+          padding: 20px;
+          border: 1px dashed #d1d5db;
+          border-radius: 0.5rem;
+        }
+
         [contenteditable] a {
           color: #ff004f !important;
           text-decoration: underline !important;
@@ -1424,17 +1454,20 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       {imageMenu && imageMenu.img && (
         <div
           style={{
-            position: "absolute",
-            top: imageMenu.top,
-            left: imageMenu.left,
-            zIndex: 1000,
+            position: "fixed", // Changed from absolute to fixed
+            top: imageMenu.top + "px",
+            left: imageMenu.left + "px",
+            zIndex: 9999, // Higher z-index
             background: "#fff",
             border: "1px solid #d1d9e6",
             borderRadius: 8,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+            boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
             padding: 8,
             display: "flex",
             gap: 8,
+            flexWrap: "wrap",
+            minWidth: "200px",
+            maxWidth: "300px",
           }}
         >
           <button
@@ -1447,10 +1480,27 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
                 handleInput();
               }
             }}
-            className="px-2 py-1 rounded bg-[#FF004F] text-white text-xs"
+            className="px-3 py-2 rounded bg-[#FF004F] text-white text-xs font-medium hover:bg-[#e6003d] transition-colors"
           >
-            Replace
+            Replace URL
           </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              const currentAlt = imageMenu.img?.alt || "";
+              const newAltText = prompt("Enter Alt text for SEO:", currentAlt);
+              if (newAltText !== null && imageMenu.img) {
+                imageMenu.img.alt = newAltText;
+                setImageMenu(null);
+                handleInput();
+              }
+            }}
+            className="px-3 py-2 rounded bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 transition-colors"
+          >
+            Edit Alt Text
+          </button>
+
           <button
             type="button"
             onClick={() => {
@@ -1460,17 +1510,27 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
                 handleInput();
               }
             }}
-            className="px-2 py-1 rounded bg-gray-200 text-[#3c3e41] text-xs"
+            className="px-3 py-2 rounded bg-gray-200 text-[#3c3e41] text-xs font-medium hover:bg-gray-300 transition-colors"
           >
             Remove
           </button>
+
           <button
             type="button"
             onClick={() => setImageMenu(null)}
-            className="px-2 py-1 rounded bg-gray-100 text-[#3c3e41] text-xs"
+            className="px-3 py-2 rounded bg-gray-100 text-[#3c3e41] text-xs font-medium hover:bg-gray-200 transition-colors"
           >
             Close
           </button>
+
+          {/* Show current Alt text */}
+          {imageMenu.img?.alt && (
+            <div className="w-full mt-2 pt-2 border-t border-gray-200">
+              <div className="text-xs text-gray-600">
+                <strong>Current Alt:</strong> {imageMenu.img.alt}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

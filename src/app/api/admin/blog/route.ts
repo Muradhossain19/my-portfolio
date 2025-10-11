@@ -49,6 +49,7 @@ export async function POST(request: Request) {
         data.excerpt,
         data.content,
         data.image,
+        data.imageAlt,
         data.category,
         data.author,
         data.date,

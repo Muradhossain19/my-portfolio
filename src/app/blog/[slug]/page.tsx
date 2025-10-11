@@ -646,7 +646,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="relative h-64 md:h-96 rounded-2xl overflow-hidden mb-8 shadow-[10px_10px_20px_#d1d9e6,-10px_-10px_20px_#ffffff]">
                 <Image
                   src={post.image}
-                  alt={post.title}
+                  alt={post.slug}
                   fill
                   className="object-cover"
                   priority

@@ -14,7 +14,7 @@ import {
   FaSave,
   FaCalendarAlt,
   FaUser,
-  FaHeart,
+  FaThumbsUp,
   FaGlobe,
   FaEyeSlash,
   FaStar,
@@ -81,6 +81,7 @@ interface BlogPost {
   excerpt: string;
   content: string;
   image: string;
+  imageAlt: string; // Add this new field
   category: string;
   author: string;
   date: string;
@@ -112,6 +113,7 @@ const BlogManagement = () => {
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [showModalCategoryDropdown, setShowModalCategoryDropdown] =
     useState(false);
+  const [likes, setLikes] = useState<{ [key: number]: number }>({});
 
   // Form data state
   const [formData, setFormData] = useState({
@@ -120,6 +122,7 @@ const BlogManagement = () => {
     excerpt: "",
     content: "",
     image: "",
+    imageAlt: "",
     category: "",
     author: "Murad Hossain",
     date: "",
@@ -184,6 +187,42 @@ const BlogManagement = () => {
     fetchBlogPosts();
   }, [fetchBlogPosts]);
 
+  useEffect(() => {
+    if (blogPosts.length === 0) return;
+
+    const fetchLikes = async () => {
+      try {
+        const res = await fetch("/api/blog-likes");
+        if (res.ok) {
+          const data: Array<{ blog_id: number; likes_count: number }> =
+            await res.json();
+          const likesObj: { [key: number]: number } = {};
+          blogPosts.forEach((post) => {
+            const found = data.find((d) => d.blog_id === post.id);
+            likesObj[post.id] = found ? found.likes_count : post.likes;
+          });
+          setLikes(likesObj);
+        } else {
+          // fallback to initial likes
+          const initialLikes: { [key: number]: number } = {};
+          blogPosts.forEach((post) => {
+            initialLikes[post.id] = post.likes;
+          });
+          setLikes(initialLikes);
+        }
+      } catch (error) {
+        console.error("Error fetching likes:", error);
+        const initialLikes: { [key: number]: number } = {};
+        blogPosts.forEach((post) => {
+          initialLikes[post.id] = post.likes;
+        });
+        setLikes(initialLikes);
+      }
+    };
+
+    fetchLikes();
+  }, [blogPosts]);
+
   // Filter blog posts
   const getFilteredPosts = () => {
     let filtered = blogPosts;
@@ -217,6 +256,7 @@ const BlogManagement = () => {
         ...formData,
         slug: formData.slug || generateSlug(formData.title),
         tags: formData.tags.split(",").map((tag) => tag.trim()),
+        imageAlt: formData.imageAlt,
         date:
           formData.date ||
           new Date().toLocaleDateString("en-US", {
@@ -259,6 +299,7 @@ const BlogManagement = () => {
       excerpt: "",
       content: "",
       image: "",
+      imageAlt: "",
       category: "",
       author: "Murad Hossain",
       date: "",
@@ -280,6 +321,7 @@ const BlogManagement = () => {
       excerpt: post.excerpt,
       content: post.content,
       image: post.image,
+      imageAlt: post.imageAlt || "",
       category: post.category,
       author: post.author,
       date: post.date,
@@ -505,28 +547,40 @@ const BlogManagement = () => {
               <button
                 type="button"
                 className="w-full px-4 py-3 bg-[#ECF0F3] rounded-xl border border-[#d1d9e6] text-left font-medium text-[#1f2125] flex items-center justify-between shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] focus:outline-none"
-                onClick={() => setShowCategoryDropdown((prev) => !prev)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Add this to prevent event bubbling
+                  setShowCategoryDropdown((prev) => !prev);
+                }}
               >
                 {selectedCategory}
                 <span className="ml-2">
-                  <svg width="16" height="16" fill="currentColor">
+                  <svg
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    className={`transition-transform duration-200 ${
+                      showCategoryDropdown ? "rotate-180" : ""
+                    }`}
+                  >
                     <path d="M4 6l4 4 4-4" />
                   </svg>
                 </span>
               </button>
               {showCategoryDropdown && (
-                <div className="absolute z-10 mt-2 w-full bg-white rounded-xl shadow-lg border border-[#d1d9e6]">
+                <div className="absolute z-50 mt-2 w-full bg-white rounded-xl shadow-lg border border-[#d1d9e6]">
                   {categories.map((category) => (
                     <button
                       key={category}
-                      onClick={() => {
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Add this
                         setSelectedCategory(category);
                         setShowCategoryDropdown(false);
                       }}
-                      className={`w-full text-left px-4 py-2 hover:bg-[#FF004F]/10 rounded-xl ${
+                      className={`w-full text-left px-4 py-2 hover:bg-[#FF004F]/10 rounded-xl transition-colors duration-200 ${
                         selectedCategory === category
-                          ? "bg-[#FF004F]/10 font-semibold"
-                          : ""
+                          ? "bg-[#FF004F]/10 font-semibold text-[#FF004F]"
+                          : "text-[#3c3e41]"
                       }`}
                     >
                       {category}
@@ -656,8 +710,8 @@ const BlogManagement = () => {
                     {post.author}
                   </span>
                   <span className="flex items-center gap-1">
-                    <FaHeart className="w-3 h-3" />
-                    {post.likes}
+                    <FaThumbsUp className="w-3 h-3" />
+                    {likes[post.id] || post.likes}
                   </span>
                 </div>
 
@@ -809,8 +863,9 @@ const BlogManagement = () => {
                         />
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-semibold text-[#1f2125] mb-2">
+                      {/* Featured Image URL field - updated */}
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-[#3c3e41]">
                           Featured Image URL *
                         </label>
                         <input
@@ -819,8 +874,32 @@ const BlogManagement = () => {
                           onChange={(e) =>
                             setFormData({ ...formData, image: e.target.value })
                           }
-                          className="w-full px-4 py-3 bg-[#ECF0F3] rounded-xl border-none outline-none shadow-[inset_5px_5px_10px_#d1d9e6,inset_-5px_-5px_10px_#ffffff] text-[#1f2125]"
+                          className="w-full px-4 py-3 rounded-xl border border-[#d1d9e6] focus:outline-none focus:border-[#FF004F] transition-colors bg-white"
+                          placeholder="https://example.com/image.jpg"
                           required
+                        />
+                      </div>
+
+                      {/* Add new Alt Text field */}
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-[#3c3e41]">
+                          Image Alt Text *
+                          <span className="text-xs text-gray-500 ml-2">
+                            (SEO & Accessibility)
+                          </span>
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.imageAlt}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              imageAlt: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-3 rounded-xl border border-[#d1d9e6] focus:outline-none focus:border-[#FF004F] transition-colors bg-white"
+                          placeholder="Describe the image for SEO and accessibility"
+                          // required
                         />
                       </div>
 
@@ -1134,7 +1213,7 @@ const BlogManagement = () => {
                       </span>
                       <span>{selectedPost.read_time}</span>
                       <span className="flex items-center gap-1">
-                        <FaHeart className="w-3 h-3" />
+                        <FaThumbsUp className="w-3 h-3" />
                         {selectedPost.likes}
                       </span>
                     </div>
