@@ -718,35 +718,35 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     [handleInput]
   );
 
-  // Update the existing useEffect for image clicks to handle positioning better
+  // Update the existing useEffect for image clicks to handle table clicks properly
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
 
-      // Handle image clicks
+      // Handle image clicks (existing code)
       if (target instanceof HTMLImageElement) {
         const img = target as HTMLImageElement;
         const rect = img.getBoundingClientRect();
         const editorRect = editorRef.current?.getBoundingClientRect();
 
         if (editorRect) {
-          // Calculate position relative to the page, not the editor
           const scrollTop =
             window.pageYOffset || document.documentElement.scrollTop;
           const scrollLeft =
             window.pageXOffset || document.documentElement.scrollLeft;
 
           setImageMenu({
-            top: rect.bottom + scrollTop + 8, // 8px gap below image
+            top: rect.bottom + scrollTop + 8,
             left: rect.left + scrollLeft,
             img,
           });
         }
         setDivMenu(null);
+
         return;
       }
 
-      // Handle colored div clicks (existing logic unchanged)
+      // Handle colored div clicks (existing code unchanged)
       if (
         target.classList.contains("colored-div") ||
         target.closest(".colored-div")
@@ -825,7 +825,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         }
       }
 
-      // Close both menus if clicking elsewhere
+      // Close all menus if clicking elsewhere
       setImageMenu(null);
       setDivMenu(null);
     };
@@ -1635,7 +1635,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
                             >
                               <path
                                 fillRule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1  0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                 clipRule="evenodd"
                               />
                             </svg>
@@ -1657,6 +1657,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           )}
         </div>
       )}
+
+      {/* Table Context Menu */}
     </div>
   );
 };

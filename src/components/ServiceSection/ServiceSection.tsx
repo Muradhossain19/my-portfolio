@@ -104,7 +104,7 @@ const ServiceSection = () => {
         </motion.h2>
         <motion.p
           className="text-base sm:text-lg text-center text-[#3c3e41] max-w-2xl mx-auto mb-16"
-          style={{ fontFamily: "var(--font-poppins)", fontWeight: 300 }}
+          style={{ fontWeight: 300 }}
           variants={subtitleVariants}
           initial="hidden"
           whileInView="visible"

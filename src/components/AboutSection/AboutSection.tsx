@@ -122,6 +122,7 @@ const AboutSection = () => {
         <motion.p
           className="text-base sm:text-lg text-center text-[#3c3e41] max-w-2xl mx-auto mb-16 font-light"
           variants={subtitleVariants}
+          style={{ fontWeight: 300 }}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.5 }}

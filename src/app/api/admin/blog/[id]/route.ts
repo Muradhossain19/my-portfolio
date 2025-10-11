@@ -55,10 +55,10 @@ export async function PUT(
     const result = await client.query(
       `UPDATE blog_posts SET 
        title = $1, slug = $2, excerpt = $3, content = $4, image = $5, 
-       image_alt = $6, category = $7, author = $8, date = $9, read_time = $10, 
-       likes = $11, tags = $12, featured = $13, meta_description = $14, published = $15,
+       category = $6, author = $7, date = $8, read_time = $9, likes = $10, 
+       tags = $11, featured = $12, meta_description = $13, published = $14,
        updated_at = CURRENT_TIMESTAMP
-       WHERE id = $16
+       WHERE id = $15
        RETURNING *`,
       [
         data.title,
@@ -66,7 +66,6 @@ export async function PUT(
         data.excerpt,
         data.content,
         data.image,
-        data.imageAlt, // Add this new field
         data.category,
         data.author,
         data.date,

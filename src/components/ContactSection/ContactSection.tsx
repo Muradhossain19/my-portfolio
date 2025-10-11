@@ -292,8 +292,9 @@ const ContactSection = () => {
             </span>
           </motion.h2>
           <motion.p
-            className="text-lg text-[#3c3e41] max-w-2xl mx-auto font-light"
+            className="text-base sm:text-lg text-[#3c3e41] max-w-2xl mx-auto font-light"
             variants={itemVariants}
+            style={{ fontWeight: 300 }}
           >
             Ready to start your next project? Let&apos;s discuss how I can help
             bring your ideas to life. I&apos;m always excited to work on new

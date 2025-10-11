@@ -231,8 +231,9 @@ const BlogSection = () => {
         </motion.h2>
 
         <motion.p
-          className="text-center text-[#3c3e41] mb-16 max-w-2xl mx-auto font-light md:font-normal"
+          className="text-base sm:text-lg text-center text-[#3c3e41] mb-16 max-w-2xl mx-auto font-light md:font-normal"
           initial={{ opacity: 0, y: 20 }}
+          style={{ fontWeight: 300 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}

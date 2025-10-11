@@ -81,7 +81,7 @@ interface BlogPost {
   excerpt: string;
   content: string;
   image: string;
-  imageAlt: string; // Add this new field
+  // imageAlt: string; // Add this new field
   category: string;
   author: string;
   date: string;
@@ -122,7 +122,7 @@ const BlogManagement = () => {
     excerpt: "",
     content: "",
     image: "",
-    imageAlt: "",
+    // imageAlt: "",
     category: "",
     author: "Murad Hossain",
     date: "",
@@ -256,7 +256,7 @@ const BlogManagement = () => {
         ...formData,
         slug: formData.slug || generateSlug(formData.title),
         tags: formData.tags.split(",").map((tag) => tag.trim()),
-        imageAlt: formData.imageAlt,
+        // imageAlt: formData.imageAlt,
         date:
           formData.date ||
           new Date().toLocaleDateString("en-US", {
@@ -299,7 +299,7 @@ const BlogManagement = () => {
       excerpt: "",
       content: "",
       image: "",
-      imageAlt: "",
+      // imageAlt: "",
       category: "",
       author: "Murad Hossain",
       date: "",
@@ -321,7 +321,7 @@ const BlogManagement = () => {
       excerpt: post.excerpt,
       content: post.content,
       image: post.image,
-      imageAlt: post.imageAlt || "",
+      // imageAlt: post.imageAlt || "",
       category: post.category,
       author: post.author,
       date: post.date,
@@ -881,7 +881,7 @@ const BlogManagement = () => {
                       </div>
 
                       {/* Add new Alt Text field */}
-                      <div className="space-y-2">
+                      {/* <div className="space-y-2">
                         <label className="block text-sm font-medium text-[#3c3e41]">
                           Image Alt Text *
                           <span className="text-xs text-gray-500 ml-2">
@@ -901,7 +901,7 @@ const BlogManagement = () => {
                           placeholder="Describe the image for SEO and accessibility"
                           // required
                         />
-                      </div>
+                      </div> */}
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
